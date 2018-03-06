@@ -107,4 +107,10 @@ public class Track implements View {
      */
     @Override
     public void keyUp(KeyEvent e) {}
+
+    @Override
+    public void update(double delta) {
+        // TODO Auto-generated method stub
+
+    }
 }
