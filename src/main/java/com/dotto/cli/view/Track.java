@@ -37,7 +37,7 @@ public class Track implements View {
     }
 
     public void start() throws IOException {
-        String path = Util.getAssetPath("/assets/dotto.wav");
+        String path = Util.getAssetPath("../assets/dotto.wav");
         Core.audioManager.load(path);
         Core.audioManager.play(path);
     }

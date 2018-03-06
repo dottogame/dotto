@@ -18,10 +18,9 @@ public final class TrackData {
     private final byte bpm;
     /** The preview times for this track in milliseconds. */
     private final int[] Preview;
-    
+
     /**
-     * Constructs a new instance of the {@code Track} object with the
-     * given parameters.
+     * Constructs a new instance of the {@code Track} object with the given parameters.
      * 
      * @param TrackName The name of this track.
      * @param TrackAuthor The name of the author of this track.
@@ -30,7 +29,10 @@ public final class TrackData {
      * @param TrackPath The path to this track.
      * @param Preview The preview times for this track in milliseconds.
      */
-    public TrackData(String TrackName, String TrackAuthor, String TrackPath, String Source, byte bpm, int[] Preview) {
+    public TrackData(
+        String TrackName, String TrackAuthor, String TrackPath, String Source,
+        byte bpm, int[] Preview
+    ) {
         this.TrackName = TrackName;
         this.TrackAuthor = TrackAuthor;
         this.TrackPath = TrackPath;

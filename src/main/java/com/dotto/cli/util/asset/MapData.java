@@ -18,7 +18,7 @@ public final class MapData {
     private final byte AccelerationSpeed;
     /** The path to this map. */
     private final String MapPath;
-    
+
     /**
      * @param MapName
      * @param ClickCount
@@ -27,7 +27,10 @@ public final class MapData {
      * @param AccelerationSpeed
      * @param MapPath
      */
-    public MapData(String MapName, int ClickCount, int SlideCount, int HopCount, byte AccelerationSpeed, String MapPath) {
+    public MapData(
+        String MapName, int ClickCount, int SlideCount, int HopCount,
+        byte AccelerationSpeed, String MapPath
+    ) {
         this.MapName = MapName;
         this.ClickCount = ClickCount;
         this.SlideCount = SlideCount;
