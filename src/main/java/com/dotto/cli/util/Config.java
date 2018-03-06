@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.dotto.cli.Core;
@@ -57,5 +58,15 @@ public class Config {
         WIDTH = json.getInt("width");
         HEIGHT = json.getInt("height");
         FULLSCREEN = json.getBoolean("fullscreen");
+        JSONObject controls = json.getJSONObject("controls");
+        UP_KEY = controls.getInt("up");
+        DOWN_KEY = controls.getInt("down");
+        LEFT_KEY = controls.getInt("left");
+        RIGHT_KEY = controls.getInt("right");
+        JSONArray taps = controls.getJSONArray("tapKeys");
+        TAP_KEYS.clear();
+        for (int i = 0; i < taps.length(); i++)
+            TAP_KEYS.add(taps.getInt(i));
+
     }
 }
