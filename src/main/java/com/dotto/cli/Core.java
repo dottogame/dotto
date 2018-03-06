@@ -1,16 +1,18 @@
 package com.dotto.cli;
 
+import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import javax.swing.JFrame;
+
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
 import com.dotto.cli.util.manager.Audio;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import javax.swing.JFrame;
 
 /**
  * Entry point of program
@@ -77,6 +79,5 @@ public class Core {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
     }
 }
