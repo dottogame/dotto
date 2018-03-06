@@ -97,7 +97,6 @@ public class Track implements View {
      */
     @Override
     public void keyDown(KeyEvent e) {
-        System.out.println("event");
         if (e.getKeyCode() == Config.UP_KEY) dir = Direction.UP;
         else if (e.getKeyCode() == Config.DOWN_KEY) dir = Direction.DOWN;
         else if (e.getKeyCode() == Config.LEFT_KEY) dir = Direction.LEFT;
