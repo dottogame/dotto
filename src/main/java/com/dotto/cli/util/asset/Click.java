@@ -12,10 +12,10 @@ public class Click extends Beat {
      * Constructs a new {@code Click Beat}.
      *
      * @param InitTimeStamp The time in milliseconds from the start of the map this beat should appear.
-     * @param EndTimeStamp The time in milliseconds from the start of the map this beat should be clicked.
+     * @param ClickTimeStamp The time in milliseconds from the start of the map this beat should be clicked.
      * @param Positions The position this {@code Beat} appears at.
      */
-    public Click(int InitTimeStamp, int EndTimeStamp, List<Integer> Positions) {
-        super(InitTimeStamp, EndTimeStamp, 0, Positions);
+    public Click(int InitTimeStamp, int ClickTimeStamp, List<Integer> Positions) {
+        super(InitTimeStamp, ClickTimeStamp, 0, Positions);
     }
 }

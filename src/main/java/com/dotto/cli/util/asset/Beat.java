@@ -11,7 +11,7 @@ public abstract class Beat {
     /** The initial timestamp of this {@code Beat}. */
     private final int InitTimeStamp;
     /** The click timestamp of this {@code Beat}. */
-    private final int EndTimeStamp;
+    private final int ClickTimeStamp;
     /** The type of {@code beat} this is. */
     private final int Type;
     /**
@@ -26,14 +26,14 @@ public abstract class Beat {
      * Constructs a new instance of {@code Beat}.
      * 
      * @param InitTimeStamp The initial timestamp of this {@code Beat}.
-     * @param EndTimeStamp The click timestamp of this {@code Beat}.
+     * @param ClickTimeStamp The click timestamp of this {@code Beat}.
      * @param Type The type of {@code Beat} this is.
      * @param Positions The list of positions this {@code Beat} is located at.
      *          Type 2 beats use these positions for their curves.
      */
-    protected Beat(int InitTimeStamp, int EndTimeStamp, int Type, List<Integer> Positions) {
+    protected Beat(int InitTimeStamp, int ClickTimeStamp, int Type, List<Integer> Positions) {
         this.InitTimeStamp = InitTimeStamp;
-        this.EndTimeStamp = EndTimeStamp;
+        this.ClickTimeStamp = ClickTimeStamp;
         this.Type = Type;
         this.Positions = Positions;
     }
@@ -53,7 +53,7 @@ public abstract class Beat {
      * @return The second column (column 1) value, a.k.a click timestamp.
      */
     public int GetEndStamp() {
-        return EndTimeStamp;
+        return ClickTimeStamp;
     }
     
     /**

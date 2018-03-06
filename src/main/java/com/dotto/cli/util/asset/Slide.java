@@ -12,10 +12,10 @@ public class Slide extends Beat {
      * Constructs a new {@code Slide Beat}.
      * 
      * @param InitTimeStamp The time in milliseconds from the start of the map this beat should appear.
-     * @param EndTimeStamp The time in milliseconds from the start of the map this beat should be clicked.
+     * @param ClickTimeStamp The time in milliseconds from the start of the map this beat should be clicked.
      * @param Positions The positions this {@code Beat} appears at.
      */
-    public Slide(int InitTimeStamp, int EndTimeStamp, List<Integer> Positions) {
-        super(InitTimeStamp, EndTimeStamp, 1, Positions);
+    public Slide(int InitTimeStamp, int ClickTimeStamp, List<Integer> Positions) {
+        super(InitTimeStamp, ClickTimeStamp, 1, Positions);
     }
 }
