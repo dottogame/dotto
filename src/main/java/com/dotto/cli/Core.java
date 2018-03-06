@@ -64,6 +64,8 @@ public class Core {
             w.setUndecorated(true);
         }
 
+        w.addKeyListener(pane);
+        w.addMouseListener(pane);
         w.pack();
         w.setVisible(true);
 

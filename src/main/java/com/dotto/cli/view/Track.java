@@ -24,8 +24,9 @@ public class Track implements View {
         UP, DOWN, LEFT, RIGHT, STOPPED
     };
 
-    public float xOffset = 0.0f;
-    public float yOffset = 0.0f;
+    public double xOffset = 0;
+    public double yOffset = 0;
+    public double speed = 5;
 
     public Direction dir = Direction.STOPPED;
 
@@ -96,6 +97,7 @@ public class Track implements View {
      */
     @Override
     public void keyDown(KeyEvent e) {
+        System.out.println("event");
         if (e.getKeyCode() == Config.UP_KEY) dir = Direction.UP;
         else if (e.getKeyCode() == Config.DOWN_KEY) dir = Direction.DOWN;
         else if (e.getKeyCode() == Config.LEFT_KEY) dir = Direction.LEFT;
@@ -111,11 +113,35 @@ public class Track implements View {
      * @param e
      */
     @Override
-    public void keyUp(KeyEvent e) {}
+    public void keyUp(KeyEvent e) {
+        if (
+            e.getKeyCode() == Config.UP_KEY || e.getKeyCode() == Config.DOWN_KEY
+                || e.getKeyCode() == Config.LEFT_KEY
+                || e.getKeyCode() == Config.RIGHT_KEY
+        ) dir = Direction.STOPPED;
+    }
 
     @Override
     public void update(double delta) {
-        // TODO Auto-generated method stub
+        switch (dir) {
+        case UP:
+            yOffset += speed * delta;
+            break;
 
+        case DOWN:
+            yOffset -= speed * delta;
+            break;
+
+        case LEFT:
+            xOffset += speed * delta;
+            break;
+
+        case RIGHT:
+            xOffset -= speed * delta;
+            break;
+
+        default:
+            break;
+        }
     }
 }
