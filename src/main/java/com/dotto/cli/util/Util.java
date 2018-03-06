@@ -21,7 +21,7 @@ public class Util {
     public static File getLocalDirectory() throws URISyntaxException {
         String path = Core.class.getProtectionDomain().getCodeSource()
             .getLocation().toURI().getPath();
-        return new File(path).getParentFile();
+        return new File(path).getParentFile().getParentFile();
     }
 
     public static String getAssetPath(String string) {

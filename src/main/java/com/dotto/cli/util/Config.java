@@ -28,7 +28,7 @@ public class Config {
 
     public static void load() throws IOException {
         Path path = Paths
-            .get(Core.rootDirectory.getAbsolutePath() + "/data/config.json");
+            .get(Core.rootDirectory.getAbsolutePath() + "/bin/data/config.json");
         String configContents = new String(Files.readAllBytes(path));
         JSONObject json = new JSONObject(configContents);
         WIDTH = json.getInt("width");
