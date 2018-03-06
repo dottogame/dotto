@@ -51,11 +51,11 @@ public final class MapConfigure {
     private static TrackData TrackDataFrom(JSONObject jo) {
         JSONObject track = jo.getJSONObject("track");
 
-        String trackName, trackAuthor, trackPath, source;
+        String trackName, trackArtist, trackPath, source;
         byte bpm;
 
         trackName = track.getString("name");
-        trackAuthor = track.getString("author");
+        trackArtist = track.getString("artist");
         trackPath = track.getString("file");
         source = track.getString("source");
         bpm = (byte) track.getInt("bpm");
@@ -74,7 +74,7 @@ public final class MapConfigure {
         int[] preview = previewList.stream().mapToInt(i -> i).toArray();
 
         return new TrackData(
-            trackName, trackAuthor, trackPath, source, bpm, preview
+            trackName, trackArtist, trackPath, source, bpm, preview
         );
     }
 

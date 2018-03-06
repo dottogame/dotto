@@ -69,9 +69,11 @@ public class Core {
         w.pack();
         w.setVisible(true);
 
-        Track t = new Track();
-        pane.view = t;
         try {
+            Track t = new Track(
+                "C://Users//Ken//Documents//dotto//bin//maps//heiakim_counting"
+            );
+            pane.view = t;
             t.start();
         } catch (IOException e) {
             // TODO Auto-generated catch block

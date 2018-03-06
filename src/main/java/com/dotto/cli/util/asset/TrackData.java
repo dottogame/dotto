@@ -7,17 +7,17 @@ package com.dotto.cli.util.asset;
  */
 public final class TrackData {
     /** The name of this song. */
-    private final String TrackName;
+    public final String TrackName;
     /** The author of this song. */
-    private final String TrackAuthor;
+    public final String TrackAuthor;
     /** The path to this track. */
-    private final String TrackPath;
+    public final String TrackPath;
     /** The source this song came from, be it a game, show, or movie, etc. */
-    private final String Source;
+    public final String Source;
     /** The speed of this track. */
-    private final byte bpm;
+    public final byte bpm;
     /** The preview times for this track in milliseconds. */
-    private final int[] Preview;
+    public final int[] Preview;
 
     /**
      * Constructs a new instance of the {@code Track} object with the given parameters.

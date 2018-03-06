@@ -7,13 +7,13 @@ package com.dotto.cli.util.asset;
  */
 public final class BeatMap {
     /** The original version of this map. */
-    private final byte Version;
+    public final byte Version;
     /** The updated version of this map. */
-    private final byte Revision;
+    public final byte Revision;
     /** * The {@code TrackData} data for this {@code BeatMap}. */
-    private final TrackData TrackData;
+    public final TrackData TrackData;
     /** The maps that represent this {@code BeatMap}. */
-    private final MapData[] Maps;
+    public final MapData[] Maps;
 
     /**
      * Constructs a new instance of a {@code BeatMap} with the given {@code TrackData} data and the

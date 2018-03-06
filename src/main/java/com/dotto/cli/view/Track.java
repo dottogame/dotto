@@ -8,7 +8,8 @@ import java.io.IOException;
 
 import com.dotto.cli.Core;
 import com.dotto.cli.util.Config;
-import com.dotto.cli.util.Util;
+import com.dotto.cli.util.asset.BeatMap;
+import com.dotto.cli.util.manager.MapConfigure;
 
 /**
  * TODO: write class description.
@@ -32,14 +33,19 @@ public class Track implements View {
     public boolean LEFT = false;
     public boolean RIGHT = false;
 
-    public Track() {
+    private String path;
 
+    public BeatMap map;
+
+    public Track(String path) throws IOException {
+        this.path = path;
+        Core.audioManager.load(path + "/track.ogg");
+        map = MapConfigure.MapFromFolder(path);
+        System.out.println(map.TrackData.TrackName);
     }
 
     public void start() throws IOException {
-        String path = Util.getAssetPath("../assets/dotto.wav");
-        Core.audioManager.load(path);
-        Core.audioManager.play(path);
+        Core.audioManager.play(path + "/track.ogg");
     }
 
     /**
