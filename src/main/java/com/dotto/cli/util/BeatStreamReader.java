@@ -21,6 +21,8 @@ public class BeatStreamReader {
     private final File BeatmapFile;
     /** The scanner for this {@code BeatStreamReader}. */
     private final Scanner scanner;
+    /** Tells if the this reader has reached the end of the file. */
+    private boolean EOF;
 
     /**
      * Constructs a new instance of {@code BeatStreamReader}.
@@ -42,6 +44,12 @@ public class BeatStreamReader {
     public Beat GetNextBeat() {
         Beat result = null;
         List<String> tokens = new ArrayList<>();
+
+        if (!scanner.hasNext()) {
+            EOF = true;
+            return null;
+        }
+
         String line = scanner.nextLine();
         Scanner lineScanner = new Scanner(line);
 
@@ -73,5 +81,14 @@ public class BeatStreamReader {
         }
 
         return result;
+    }
+
+    /**
+     * Tells if there is anything more to get from the {@code BeatmapFile}.
+     * 
+     * @return {@code false} if {@code EOF == true}.
+     */
+    public boolean HasNextBeat() {
+        return !EOF;
     }
 }

@@ -60,18 +60,10 @@ public final class MapConfigure {
         source = track.getString("source");
         bpm = (byte) track.getInt("bpm");
 
-        JSONArray arr = track.getJSONArray("preview");
+        JSONObject previewData = track.getJSONObject("preview");
 
-        List<Integer> previewList = new ArrayList<>();
-
-        arr.toList().forEach(
-            (o) -> {
-                Integer i = (Integer) o;
-                previewList.add(i);
-            }
-        );
-
-        int[] preview = previewList.stream().mapToInt(i -> i).toArray();
+        int[] preview = { previewData.getInt("start"),
+            previewData.getInt("length") };
 
         return new TrackData(
             trackName, trackArtist, trackPath, source, bpm, preview
