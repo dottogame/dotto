@@ -24,7 +24,7 @@ public class Core {
     /** The current window. */
     private static JFrame w;
     /** The current game pane in the window. */
-    private static GamePane pane;
+    public static GamePane pane;
     /** The root directory of the application. */
     public static File rootDirectory;
     /** The graphics manager. */
@@ -64,6 +64,8 @@ public class Core {
             w.setUndecorated(true);
         }
 
+        w.addKeyListener(pane);
+        w.addMouseListener(pane);
         w.pack();
         w.setVisible(true);
 
