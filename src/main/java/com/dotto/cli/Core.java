@@ -1,16 +1,15 @@
 package com.dotto.cli;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.swing.JFrame;
 
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Util;
 import com.dotto.cli.util.manager.Audio;
 import com.dotto.cli.util.manager.Graphics;
+import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import javax.swing.JFrame;
 
 /**
  * Entry point of program
@@ -45,6 +44,7 @@ public class Core {
         w.setPreferredSize(new Dimension(720, 480));
         w.setLocationRelativeTo(null);
         w.add(pane);
+        
         if (Config.FULLSCREEN) {
             w.setExtendedState(JFrame.MAXIMIZED_BOTH);
             w.setUndecorated(true);
