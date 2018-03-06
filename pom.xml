@@ -10,6 +10,11 @@
       <artifactId>json</artifactId>
       <version>20180130</version>
     </dependency>
+    <dependency>
+      <groupId>org.jsfml</groupId>
+      <artifactId>jsfml</artifactId>
+      <version>latest</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -17,8 +22,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
           <version>3.0</version>
           <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
+            <source>1.8</source>
+            <target>1.8</target>
           </configuration>
       </plugin>
     </plugins>
