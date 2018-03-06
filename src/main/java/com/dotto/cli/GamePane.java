@@ -40,8 +40,8 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
 
                 @Override
                 public void call(double delta) {
-
-            }
+                    repaint();
+                }
             }
         );
 
