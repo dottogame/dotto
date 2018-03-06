@@ -68,6 +68,9 @@ public class Track implements View {
                 );
             }
         }
+
+        // draw fps
+        g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
     }
 
     /**

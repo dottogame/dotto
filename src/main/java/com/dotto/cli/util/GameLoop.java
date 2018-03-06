@@ -5,6 +5,9 @@ public class GameLoop implements Runnable {
 
     private GameCall call;
 
+    public int fps = 0;
+    public int staticFps = 0;
+
     public GameLoop(GameCall call) {
         this.call = call;
     }
@@ -14,8 +17,6 @@ public class GameLoop implements Runnable {
         // game render loop
         long lastLoopTime = System.nanoTime();
         long lastFpsTime = 0;
-
-        int fps = 0;
 
         final int TARGET_FPS = 60;
         final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
@@ -36,7 +37,7 @@ public class GameLoop implements Runnable {
             fps++;
 
             if (lastFpsTime >= 1000000000) {
-                System.out.println("(FPS: " + fps + ")");
+                staticFps = fps;
                 lastFpsTime = 0;
                 fps = 0;
             }
