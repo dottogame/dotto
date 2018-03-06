@@ -1,6 +1,7 @@
 package com.dotto.cli.util;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,7 +47,16 @@ public class Config {
     public static void load() throws IOException {
         Path path;
 
-        if (Flagger.DebugMode()) path = Paths.get(
+        if (Flagger.ECLIPSE_IDE) {
+            path = Paths.get(
+                new File(
+                    Core.rootDirectory.getAbsolutePath()
+                        + "/../bin/data/config.json"
+                ).getCanonicalPath()
+            );
+        }
+
+        else if (Flagger.DebugMode()) path = Paths.get(
             Core.rootDirectory.getAbsolutePath() + "/bin/data/config.json"
         );
 

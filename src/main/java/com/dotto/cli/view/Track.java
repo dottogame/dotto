@@ -34,7 +34,7 @@ public class Track implements View {
     }
 
     public void start() throws IOException {
-        String path = Util.getAssetPath("./assets/dotto.wav");
+        String path = Util.getAssetPath("/assets/dotto.wav");
         Core.audioManager.load(path);
         Core.audioManager.play(path);
     }
@@ -61,9 +61,11 @@ public class Track implements View {
 
         // draw grid
         g.setColor(Color.WHITE);
-        for (int y = 0; y < Config.HEIGHT; y += 10) {
-            for (int x = 0; x < Config.WIDTH; x += 10) {
-                g.fillOval(x - 2, y - 2, 4, 4);
+        for (int y = -100; y < Config.HEIGHT + 100; y += 100) {
+            for (int x = -100; x < Config.WIDTH + 100; x += 100) {
+                g.fillOval(
+                    x + (int) (xOffset % 100), y + (int) (yOffset % 100), 2, 2
+                );
             }
         }
     }

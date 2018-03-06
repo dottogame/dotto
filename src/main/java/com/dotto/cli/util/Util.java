@@ -21,14 +21,12 @@ public class Util {
     public static File getLocalDirectory() throws URISyntaxException {
         String path = Core.class.getProtectionDomain().getCodeSource()
             .getLocation().toURI().getPath();
-        
+
         File result;
-        
-        if (Flagger.DebugMode())
-            result = new File(path).getParentFile();
-        else
-            result = new File(path).getParentFile().getParentFile();
-        
+
+        if (Flagger.DebugMode()) result = new File(path).getParentFile();
+        else result = new File(path).getParentFile().getParentFile();
+
         return result;
     }
 

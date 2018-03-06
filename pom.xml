@@ -10,11 +10,6 @@
       <artifactId>json</artifactId>
       <version>20180130</version>
     </dependency>
-    <dependency>
-      <groupId>org.jsfml</groupId>
-      <artifactId>jsfml</artifactId>
-      <version>latest</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

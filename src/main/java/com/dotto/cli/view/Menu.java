@@ -44,8 +44,7 @@ public class Menu implements View {
      * @param e
      */
     @Override
-    public void mouseUp(MouseEvent e) {
-    }
+    public void mouseUp(MouseEvent e) {}
 
     /**
      * Mouse down event handle
@@ -53,8 +52,7 @@ public class Menu implements View {
      * @param e
      */
     @Override
-    public void mouseDown(MouseEvent e) {
-    }
+    public void mouseDown(MouseEvent e) {}
 
     /**
      * Key down event handle
@@ -62,8 +60,7 @@ public class Menu implements View {
      * @param e
      */
     @Override
-    public void keyDown(KeyEvent e) {
-    }
+    public void keyDown(KeyEvent e) {}
 
     /**
      * Key up event handle
@@ -71,6 +68,11 @@ public class Menu implements View {
      * @param e
      */
     @Override
-    public void keyUp(KeyEvent e) {
+    public void keyUp(KeyEvent e) {}
+
+    @Override
+    public void update(double delta) {
+        // TODO Auto-generated method stub
+
     }
 }
