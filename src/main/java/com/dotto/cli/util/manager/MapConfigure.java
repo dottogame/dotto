@@ -1,5 +1,9 @@
 package com.dotto.cli.util.manager;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +26,17 @@ public final class MapConfigure {
      * 
      * @param PathToMapFolder The path to the {@code BeatMap} folder.
      * @return A {@code BeatMap} object representing the contents of the {@code index.json} file.
+     * @throws IOException
      */
-    public static BeatMap MapFromFolder(String PathToMapFolder) {
-        // our Json object that we will read from.
-        JSONObject object = new JSONObject(PathToMapFolder + "/index.json");
-        // the original map version.
+    public static BeatMap MapFromFolder(String PathToMapFolder)
+        throws IOException {
+        Path path = Paths.get(PathToMapFolder + "/index.json");
+        String mapIndex = new String(Files.readAllBytes(path));
+        JSONObject object = new JSONObject(mapIndex);
+
         byte version = (byte) object.getInt("version");
-        // the revised map version.
         byte revision = (byte) object.getInt("revision");
-        // return result
+
         return new BeatMap(
             version, revision, TrackDataFrom(object), MapDataFrom(object)
         );
