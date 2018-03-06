@@ -2,7 +2,7 @@ package com.dotto.cli.util.manager;
 
 import com.dotto.cli.util.asset.BeatMap;
 import com.dotto.cli.util.asset.MapData;
-import com.dotto.cli.util.asset.Track;
+import com.dotto.cli.util.asset.TrackData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +34,12 @@ public final class MapConfigure {
     }
     
     /**
-     * Returns a {@code Track} object containing all the data about a {@code BeatMap}'s track.
+     * Returns a {@code TrackData} object containing all the data about a {@code BeatMap}'s track.
      * 
      * @param jo The json object that we are collecting data from.
-     * @return A {@code Track} object with all the {@code BeatMap}'s track data.
+     * @return A {@code TrackData} object with all the {@code BeatMap}'s track data.
      */
-    private static Track TrackDataFrom(JSONObject jo) {
+    private static TrackData TrackDataFrom(JSONObject jo) {
         JSONObject track = jo.getJSONObject("track");
         
         String trackName, trackAuthor, trackPath, source;
@@ -62,7 +62,7 @@ public final class MapConfigure {
         
         int[] preview = previewList.stream().mapToInt(i -> i).toArray();
         
-        return new Track(trackName, trackAuthor, trackPath, source, bpm, preview);
+        return new TrackData(trackName, trackAuthor, trackPath, source, bpm, preview);
     }
     
     /**

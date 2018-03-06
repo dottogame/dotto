@@ -5,7 +5,7 @@ package com.dotto.cli.util.asset;
  * 
  * @author SoraKatadzuma
  */
-public final class Track {
+public final class TrackData {
     /** The name of this song. */
     private final String TrackName;
     /** The author of this song. */
@@ -30,7 +30,7 @@ public final class Track {
      * @param TrackPath The path to this track.
      * @param Preview The preview times for this track in milliseconds.
      */
-    public Track(String TrackName, String TrackAuthor, String TrackPath, String Source, byte bpm, int[] Preview) {
+    public TrackData(String TrackName, String TrackAuthor, String TrackPath, String Source, byte bpm, int[] Preview) {
         this.TrackName = TrackName;
         this.TrackAuthor = TrackAuthor;
         this.TrackPath = TrackPath;
