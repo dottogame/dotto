@@ -18,7 +18,16 @@ import com.dotto.cli.util.Util;
  */
 public class Track implements View {
     /** A manual serial id, instead of the normal Java serailID. */
-    public static int ID = 0;
+    public static int ID = 3;
+
+    public static enum Direction {
+        UP, DOWN, LEFT, RIGHT, STOPPED
+    };
+
+    public float xOffset = 0.0f;
+    public float yOffset = 0.0f;
+
+    public Direction dir = Direction.STOPPED;
 
     public Track() {
 
@@ -81,7 +90,15 @@ public class Track implements View {
      * @param e
      */
     @Override
-    public void keyDown(KeyEvent e) {}
+    public void keyDown(KeyEvent e) {
+        if (e.getKeyCode() == Config.UP_KEY) dir = Direction.UP;
+        else if (e.getKeyCode() == Config.DOWN_KEY) dir = Direction.DOWN;
+        else if (e.getKeyCode() == Config.LEFT_KEY) dir = Direction.LEFT;
+        else if (e.getKeyCode() == Config.RIGHT_KEY) dir = Direction.RIGHT;
+        else if (Config.TAP_KEYS.contains(e.getKeyCode())) {
+
+        }
+    }
 
     /**
      * Key up event handle

@@ -8,6 +8,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+import com.dotto.cli.util.GameCall;
+import com.dotto.cli.util.GameLoop;
 import com.dotto.cli.view.Boot;
 import com.dotto.cli.view.View;
 
@@ -19,6 +21,12 @@ import com.dotto.cli.view.View;
  */
 @SuppressWarnings("serial")
 public class GamePane extends JPanel implements MouseListener, KeyListener {
+
+    public boolean isRunning = true;
+
+    public GameLoop renderLoop;
+    public GameLoop updateLoop;
+
     /** Current active view in the game pane. */
     public View view;
 
@@ -27,6 +35,29 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      */
     public GamePane() {
         view = new Boot();
+        renderLoop = new GameLoop(
+            new GameCall() {
+
+                @Override
+                public void call(double delta) {
+
+            }
+            }
+        );
+
+        updateLoop = new GameLoop(
+            new GameCall() {
+
+                @Override
+                public void call(double delta) {
+                    view.update(delta);
+                }
+            }
+        );
+
+        new Thread(renderLoop).start();
+        new Thread(updateLoop).start();
+
     }
 
     /**
@@ -86,18 +117,14 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
+    public void keyTyped(KeyEvent e) {}
 
     @Override
-    public void mouseClicked(MouseEvent e) {
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseExited(MouseEvent e) {}
 }

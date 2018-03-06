@@ -11,6 +11,7 @@ import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Util;
 import com.dotto.cli.util.manager.Audio;
 import com.dotto.cli.util.manager.Graphics;
+import com.dotto.cli.view.Track;
 
 /**
  * Entry point of program
@@ -53,6 +54,10 @@ public class Core {
 
         w.pack();
         w.setVisible(true);
+
+        Track t = new Track();
+        pane.view = t;
+        t.start();
 
     }
 }

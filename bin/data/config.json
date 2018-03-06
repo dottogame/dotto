@@ -1,5 +1,12 @@
 {
     "width": 720,
     "height": 480,
-    "fullscreen": false
+    "fullscreen": false,
+    "controls": {
+        "up": 73,
+        "down": 75,
+        "left": 74,
+        "right": 76,
+        "tapKeys": [81, 87, 69, 82]
+    }
 }

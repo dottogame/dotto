@@ -48,4 +48,6 @@ public interface View {
      * @param e
      */
     void keyUp(KeyEvent e);
+
+    void update(double delta);
 }

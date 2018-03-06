@@ -1,9 +1,11 @@
 package com.dotto.cli.util;
 
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.json.JSONObject;
 
@@ -26,9 +28,18 @@ public class Config {
 
     public static boolean FULLSCREEN = false;
 
+    public static int UP_KEY = KeyEvent.VK_UP;
+    public static int DOWN_KEY = KeyEvent.VK_DOWN;
+    public static int LEFT_KEY = KeyEvent.VK_LEFT;
+    public static int RIGHT_KEY = KeyEvent.VK_RIGHT;
+
+    public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
+
     public static void load() throws IOException {
-        Path path = Paths
-            .get(Core.rootDirectory.getAbsolutePath() + "/bin/data/config.json");
+        Path path = Paths.get(
+            Core.rootDirectory.getAbsolutePath() + "/bin/data/config.json"
+        );
+
         String configContents = new String(Files.readAllBytes(path));
         JSONObject json = new JSONObject(configContents);
         WIDTH = json.getInt("width");
