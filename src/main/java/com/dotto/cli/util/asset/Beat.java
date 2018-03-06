@@ -74,4 +74,16 @@ public abstract class Beat {
     public int[] GetPositions() {
         return Positions.stream().mapToInt(i -> i).toArray();
     }
+    
+    /**
+     * Inherited method.
+     * 
+     * @return The string form of a beat.
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "[" + InitTimeStamp + " : " + ClickTimeStamp +
+               " : " + Type + " " + Positions + "]";
+    }
 }
