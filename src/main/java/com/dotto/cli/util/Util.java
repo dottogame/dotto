@@ -6,14 +6,14 @@ import java.net.URISyntaxException;
 import com.dotto.cli.Core;
 
 /**
- * Collection of assorted functions for convenience
+ * Collection of assorted functions for convenience.
  * 
  * @author lite20 (Ephraim Bilson)
- *
+ * @author SoraKatadzuma
  */
 public class Util {
     /**
-     * Gets the root directory of jar file
+     * Gets the root directory of jar file.
      * 
      * @return root directory
      * @throws URISyntaxException
@@ -21,9 +21,23 @@ public class Util {
     public static File getLocalDirectory() throws URISyntaxException {
         String path = Core.class.getProtectionDomain().getCodeSource()
             .getLocation().toURI().getPath();
-        return new File(path).getParentFile().getParentFile();
+        
+        File result;
+        
+        if (Flagger.DebugMode())
+            result = new File(path).getParentFile();
+        else
+            result = new File(path).getParentFile().getParentFile();
+        
+        return result;
     }
 
+    /**
+     * Gets the path to an asset.
+     * 
+     * @param string The asset name.
+     * @return String path to the asset.
+     */
     public static String getAssetPath(String string) {
         return Core.rootDirectory.toPath().resolve(string).toString();
     }

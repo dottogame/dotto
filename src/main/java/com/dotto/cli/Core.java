@@ -2,6 +2,7 @@ package com.dotto.cli;
 
 
 import com.dotto.cli.util.Config;
+import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
 import com.dotto.cli.util.manager.Audio;
 import com.dotto.cli.util.manager.Graphics;
@@ -14,18 +15,29 @@ import javax.swing.JFrame;
 /**
  * Entry point of program
  *
+ * @author lite20 (Ephraim Bilson)
+ * @author SoraKatadzuma
  */
 public class Core {
+    /** The current window. */
     private static JFrame w;
-
+    /** The current game pane in the window. */
     private static GamePane pane;
-
+    /** The root directory of the application. */
     public static File rootDirectory;
-
+    /** The graphics manager. */
     public static Graphics graphicManager;
+    /** The audio manager. */
     public static Audio audioManager;
 
-    public static void main(String[] args) {
+    /**
+     * Entry point of application.
+     * 
+     * @param args The command line arguments.
+     */
+    public static void main(String... args) {
+        Flagger.setFlags(args);
+        
         try {
             rootDirectory = Util.getLocalDirectory();
             Config.load();
