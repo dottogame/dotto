@@ -20,15 +20,17 @@ public class Track implements View {
     /** A manual serial id, instead of the normal Java serailID. */
     public static int ID = 3;
 
-    public static enum Direction {
-        UP, DOWN, LEFT, RIGHT, STOPPED
-    };
-
     public double xOffset = 0;
     public double yOffset = 0;
+    public double xAccel = 0;
+    public double yAccel = 0;
     public double speed = 5;
+    public double glideFactor = 0.5;
 
-    public Direction dir = Direction.STOPPED;
+    public boolean UP = false;
+    public boolean DOWN = false;
+    public boolean LEFT = false;
+    public boolean RIGHT = false;
 
     public Track() {
 
@@ -72,6 +74,9 @@ public class Track implements View {
 
         // draw fps
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
+
+        // draw cursor
+        g.fillOval((Config.WIDTH / 2) - 5, (Config.HEIGHT / 2) - 5, 10, 10);
     }
 
     /**
@@ -97,10 +102,10 @@ public class Track implements View {
      */
     @Override
     public void keyDown(KeyEvent e) {
-        if (e.getKeyCode() == Config.UP_KEY) dir = Direction.UP;
-        else if (e.getKeyCode() == Config.DOWN_KEY) dir = Direction.DOWN;
-        else if (e.getKeyCode() == Config.LEFT_KEY) dir = Direction.LEFT;
-        else if (e.getKeyCode() == Config.RIGHT_KEY) dir = Direction.RIGHT;
+        if (e.getKeyCode() == Config.UP_KEY) UP = true;
+        else if (e.getKeyCode() == Config.DOWN_KEY) DOWN = true;
+        else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = true;
+        else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
         else if (Config.TAP_KEYS.contains(e.getKeyCode())) {
 
         }
@@ -113,34 +118,23 @@ public class Track implements View {
      */
     @Override
     public void keyUp(KeyEvent e) {
-        if (
-            e.getKeyCode() == Config.UP_KEY || e.getKeyCode() == Config.DOWN_KEY
-                || e.getKeyCode() == Config.LEFT_KEY
-                || e.getKeyCode() == Config.RIGHT_KEY
-        ) dir = Direction.STOPPED;
+        if (e.getKeyCode() == Config.UP_KEY) UP = false;
+        else if (e.getKeyCode() == Config.DOWN_KEY) DOWN = false;
+        else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = false;
+        else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = false;
     }
 
     @Override
     public void update(double delta) {
-        switch (dir) {
-        case UP:
-            yOffset += speed * delta;
-            break;
+        yAccel *= glideFactor;
+        xAccel *= glideFactor;
 
-        case DOWN:
-            yOffset -= speed * delta;
-            break;
+        if (UP) yAccel += speed;
+        if (DOWN) yAccel -= speed;
+        if (LEFT) xAccel += speed;
+        if (RIGHT) xAccel -= speed;
 
-        case LEFT:
-            xOffset += speed * delta;
-            break;
-
-        case RIGHT:
-            xOffset -= speed * delta;
-            break;
-
-        default:
-            break;
-        }
+        yOffset += yAccel * delta;
+        xOffset += xAccel * delta;
     }
 }
