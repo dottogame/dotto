@@ -80,27 +80,24 @@ public final class MapConfigure {
         JSONArray maps = jo.getJSONArray("maps");
         List<MapData> mapData = new ArrayList<>();
 
-        maps.toList().forEach(
-            (map) -> {
-                JSONObject jso = (JSONObject) map;
-                String mapName, mapPath;
-                int clicks, slides, hops;
-                byte accelSpeed;
+        for (int i = 0; i < maps.length(); i++) {
+            JSONObject jso = maps.getJSONObject(i);
 
-                mapName = jso.getString("name");
-                clicks = jso.getInt("clicks");
-                slides = jso.getInt("slides");
-                hops = jso.getInt("hops");
-                accelSpeed = (byte) jso.getInt("acceleration");
-                mapPath = jso.getString("file");
+            String mapName, id;
+            int clicks, slides, hops;
+            byte accelSpeed;
 
-                mapData.add(
-                    new MapData(
-                        mapName, clicks, slides, hops, accelSpeed, mapPath
-                    )
-                );
-            }
-        );
+            mapName = jso.getString("name");
+            clicks = jso.getInt("clicks");
+            slides = jso.getInt("slides");
+            hops = jso.getInt("hops");
+            accelSpeed = (byte) jso.getInt("acceleration");
+            id = jso.getString("id");
+
+            mapData.add(
+                new MapData(mapName, clicks, slides, hops, accelSpeed, id)
+            );
+        }
 
         return mapData.toArray(new MapData[0]);
     }

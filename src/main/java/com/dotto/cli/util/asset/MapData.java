@@ -17,7 +17,7 @@ public final class MapData {
     /** The amount of acceleration in this map. */
     private final byte AccelerationSpeed;
     /** The path to this map. */
-    private final String MapPath;
+    private final String MapId;
 
     /**
      * @param MapName
@@ -29,13 +29,13 @@ public final class MapData {
      */
     public MapData(
         String MapName, int ClickCount, int SlideCount, int HopCount,
-        byte AccelerationSpeed, String MapPath
+        byte AccelerationSpeed, String MapId
     ) {
         this.MapName = MapName;
         this.ClickCount = ClickCount;
         this.SlideCount = SlideCount;
         this.HopCount = HopCount;
         this.AccelerationSpeed = AccelerationSpeed;
-        this.MapPath = MapPath;
+        this.MapId = MapId;
     }
 }
