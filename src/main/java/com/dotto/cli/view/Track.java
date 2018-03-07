@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import com.dotto.cli.Core;
 import com.dotto.cli.util.BeatStreamReader;
@@ -46,7 +46,7 @@ public class Track implements View {
 
     private final BeatStreamReader bsr;
 
-    private final ArrayList<Beat> beats;
+    private final Vector<Beat> beats;
 
     private final Audio music;
 
@@ -66,7 +66,7 @@ public class Track implements View {
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
         MapData mapData = map.Maps.get(mapId);
-        beats = new ArrayList<>(mapData.ClickCount + mapData.SlideCount);
+        beats = new Vector<>(mapData.ClickCount + mapData.SlideCount);
         beats.add(bsr.GetNextBeat());
     }
 
