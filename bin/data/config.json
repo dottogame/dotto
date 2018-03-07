@@ -2,6 +2,7 @@
     "width": 720,
     "height": 480,
     "fullscreen": true,
+    "antialias": true,
     "controls": {
         "up": 73,
         "down": 75,

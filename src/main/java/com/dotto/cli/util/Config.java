@@ -26,10 +26,15 @@ import com.dotto.cli.Core;
 public class Config {
     /** The configured width of the screen. */
     public static int WIDTH = 720;
+
     /** The configured height of the screen. */
     public static int HEIGHT = 480;
+
     /** Whether or not the screen should be full. */
     public static boolean FULLSCREEN = false;
+
+    /** Whether or not to antialias **/
+    public static boolean ANTIALIAS = true;
 
     public static int UP_KEY = KeyEvent.VK_UP;
     public static int DOWN_KEY = KeyEvent.VK_DOWN;
@@ -52,6 +57,7 @@ public class Config {
         WIDTH = json.getInt("width");
         HEIGHT = json.getInt("height");
         FULLSCREEN = json.getBoolean("fullscreen");
+        ANTIALIAS = json.getBoolean("antialias");
         JSONObject controls = json.getJSONObject("controls");
         UP_KEY = controls.getInt("up");
         DOWN_KEY = controls.getInt("down");
