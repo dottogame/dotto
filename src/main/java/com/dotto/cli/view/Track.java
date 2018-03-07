@@ -66,6 +66,7 @@ public class Track implements View {
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
         MapData mapData = map.Maps.get(mapId);
+        speed = mapData.acceleration;
         beats = new Vector<>(mapData.ClickCount + mapData.SlideCount);
         beats.add(bsr.GetNextBeat());
     }

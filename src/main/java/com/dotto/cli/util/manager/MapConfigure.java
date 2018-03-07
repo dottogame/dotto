@@ -84,13 +84,14 @@ public final class MapConfigure {
 
             String mapName, id;
             int clicks, slides, hops;
-            byte accelSpeed;
+
+            double accelSpeed;
 
             mapName = jso.getString("name");
             clicks = jso.getInt("clicks");
             slides = jso.getInt("slides");
             hops = jso.getInt("hops");
-            accelSpeed = (byte) jso.getInt("acceleration");
+            accelSpeed = jso.getDouble("acceleration");
             id = jso.getString("id");
 
             mapData.put(

@@ -22,6 +22,7 @@ public class Audio {
                 baseFormat.getChannels(), baseFormat.getChannels() * 2,
                 baseFormat.getSampleRate(), false
             );
+
             AudioInputStream dais = AudioSystem
                 .getAudioInputStream(decodeFormat, ais);
             clip = AudioSystem.getClip();
