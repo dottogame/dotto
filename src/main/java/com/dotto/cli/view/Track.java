@@ -1,9 +1,11 @@
 package com.dotto.cli.view;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class Track implements View {
     public double yOffset = 0;
     public double xAccel = 0;
     public double yAccel = 0;
-    public double speed = 5;
+    public double speed = 4;
     public double glideFactor = 0.5;
 
     public boolean UP = false;
@@ -41,17 +43,24 @@ public class Track implements View {
 
     public BeatMap map;
 
-    private final String path;
-
     private final BeatStreamReader bsr;
 
     private final ArrayList<Beat> beats;
 
     private long startTimestamp;
 
-    public Track(String path, String mapId) throws IOException {
-        this.path = path;
+    final static float dash1[] = { 10.0f };
+    final static float dash2[] = { 1.0f };
 
+    final static BasicStroke solid = new BasicStroke(
+        5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f
+    );
+
+    final static BasicStroke dashed = new BasicStroke(
+        2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f
+    );
+
+    public Track(String path, String mapId) throws IOException {
         Core.audioManager.load(path + "/track.ogg");
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
@@ -81,7 +90,7 @@ public class Track implements View {
      * @param g The {@code Graphics} to draw.
      */
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
 
@@ -100,21 +109,29 @@ public class Track implements View {
         for (Beat beat : beats) {
             if (beat == null) continue;
             pad = ((beat.ClickTimestamp
-                - (System.currentTimeMillis() - startTimestamp)) / 100);
+                - (System.currentTimeMillis() - startTimestamp)) * 0.1f);
             if (pad < 0) pad = 0;
             if (beat.GetType() == Beat.CLICK) {
                 Click click = (Click) beat;
                 if (pad * 100 < 250) g.setColor(Color.RED);
                 if (pad == 0) g.setColor(Color.GRAY);
-                g.drawOval(
-                    (int) (click.x - (pad / 2) + xOffset),
-                    (int) (click.y - (pad / 2) + yOffset), (int) (50 + pad),
-                    (int) (50 + pad)
+
+                g.setStroke(solid);
+                g.draw(
+                    new Ellipse2D.Double(
+                        (int) (click.x - (pad / 2) + xOffset),
+                        (int) (click.y - (pad / 2) + yOffset),
+                        (int) (100 + pad), (int) (100 + pad)
+                    )
                 );
 
                 g.setColor(Color.WHITE);
-                g.fillOval(
-                    (int) (click.x + xOffset), (int) (click.y + yOffset), 50, 50
+                g.setStroke(dashed);
+                g.draw(
+                    new Ellipse2D.Double(
+                        (int) (click.x + xOffset), (int) (click.y + yOffset),
+                        100, 100
+                    )
                 );
             } else {
 
@@ -122,11 +139,12 @@ public class Track implements View {
         }
 
         g.setColor(Color.WHITE);
+
         // draw FPS
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
 
         // draw cursor
-        g.fillOval((Config.WIDTH / 2) - 5, (Config.HEIGHT / 2) - 5, 10, 10);
+        g.fillOval((Config.WIDTH / 2) - 15, (Config.HEIGHT / 2) - 15, 30, 30);
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.dotto.cli.view;
 
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
@@ -33,7 +33,7 @@ public class Menu implements View {
      * @param g The {@code Graphics} to draw.
      */
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
     }
