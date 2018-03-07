@@ -48,10 +48,6 @@ public class Track implements View {
 
     private final ArrayList<Beat> beats;
 
-    private String path;
-
-    private String mapId;
-
     private final Audio music;
 
     final static float dash1[] = { 10.0f };
@@ -66,8 +62,6 @@ public class Track implements View {
     );
 
     public Track(String path, String mapId) throws IOException {
-        this.path = path;
-        this.mapId = mapId;
         music = new Audio(path + "/track.ogg");
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
