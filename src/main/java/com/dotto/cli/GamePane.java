@@ -24,8 +24,6 @@ import com.dotto.cli.view.View;
 @SuppressWarnings("serial")
 public class GamePane extends JPanel implements MouseListener, KeyListener {
 
-    public boolean isRunning = true;
-
     public GameLoop renderLoop;
     public GameLoop updateLoop;
 
@@ -59,7 +57,6 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
 
         new Thread(renderLoop).start();
         new Thread(updateLoop).start();
-
     }
 
     /**

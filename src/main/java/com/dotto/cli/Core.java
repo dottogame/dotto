@@ -88,4 +88,8 @@ public class Core {
             e.printStackTrace();
         }
     }
+
+    public static void shutdown() {
+        System.exit(0);
+    }
 }

@@ -181,6 +181,8 @@ public class Track implements View {
             beats.remove(0);
             System.out.println(tapOff);
             if (Math.abs(tapOff) < 100) System.out.println("nice!");
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            Core.shutdown();
         }
     }
 
