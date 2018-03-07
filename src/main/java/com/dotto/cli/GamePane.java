@@ -42,7 +42,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
                 public void call(double delta) {
                     repaint();
                 }
-            }
+            }, 100
         );
 
         updateLoop = new GameLoop(
@@ -52,7 +52,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
                 public void call(double delta) {
                     view.update(delta);
                 }
-            }
+            }, 10
         );
 
         new Thread(renderLoop).start();

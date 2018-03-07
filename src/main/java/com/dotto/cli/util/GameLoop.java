@@ -8,8 +8,11 @@ public class GameLoop implements Runnable {
     public int fps = 0;
     public int staticFps = 0;
 
-    public GameLoop(GameCall call) {
+    private final int targetFps;
+
+    public GameLoop(GameCall call, int fps) {
         this.call = call;
+        this.targetFps = fps;
     }
 
     @Override
@@ -18,8 +21,7 @@ public class GameLoop implements Runnable {
         long lastLoopTime = System.nanoTime();
         long lastFpsTime = 0;
 
-        final int TARGET_FPS = 60;
-        final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+        final long OPTIMAL_TIME = 1000000000 / targetFps;
 
         while (isRunning) {
             // work out how long its been since the last update, this
@@ -44,9 +46,12 @@ public class GameLoop implements Runnable {
 
             // sleep t'ill next frame
             try {
-                Thread.sleep(
-                    (lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000
-                );
+                if ((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) > 0)
+                    Thread
+                        .sleep(
+                            (lastLoopTime - System.nanoTime() + OPTIMAL_TIME)
+                                / 1000000
+                        );
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

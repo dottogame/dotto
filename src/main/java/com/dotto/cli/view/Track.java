@@ -46,6 +46,8 @@ public class Track implements View {
 
     private final ArrayList<Beat> beats;
 
+    private long startTimestamp;
+
     public Track(String path, String mapId) throws IOException {
         this.path = path;
 
@@ -58,7 +60,8 @@ public class Track implements View {
     }
 
     public void start() throws IOException {
-        Core.audioManager.play(path + "/track.ogg");
+        Core.audioManager.track.play();
+        startTimestamp = System.currentTimeMillis();
     }
 
     /**
@@ -157,12 +160,12 @@ public class Track implements View {
         xOffset += xAccel * delta;
 
         // load more beats
-        long offset = Core.audioManager.getCurrent().getPlayingOffset()
-            .asMilliseconds();
+        long offset = System.currentTimeMillis() - startTimestamp;
         Beat new_beat = beats.get(beats.size() - 1);
-        while (new_beat.InitTimestamp < offset) {
+        while (new_beat != null && new_beat.InitTimestamp < offset) {
             new_beat = bsr.GetNextBeat();
             beats.add(new_beat);
+            if (new_beat != null) System.out.println(new_beat.toString());
         }
     }
 }

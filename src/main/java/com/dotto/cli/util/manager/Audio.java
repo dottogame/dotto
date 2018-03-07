@@ -15,7 +15,7 @@ import org.jsfml.audio.Music;
 public class Audio {
     public final HashMap<String, Music> tracks;
 
-    private String current;
+    public Music track;
 
     /**
      * Initialize the Audio manager
@@ -31,56 +31,8 @@ public class Audio {
      * @throws IOException
      */
     public void load(String path) throws IOException {
-        current = path;
-        Music track = new Music();
+        track = new Music();
         track.openFromFile(new File(path).toPath());
         tracks.put(path, track);
-    }
-
-    /**
-     * Unloads a track
-     * 
-     * @param path
-     */
-    public void unload(String path) {
-        tracks.remove(path);
-    }
-
-    /**
-     * Plays audio track. Only one can be played at a time (makes management easier as SFML has
-     * limit of 256 tracks loaded at the same time)
-     * 
-     * @param path
-     */
-    public void play(String path) {
-        if (current != null) tracks.get(current).stop();
-        tracks.get(path).play();
-    }
-
-    /**
-     * Stop currently playing track
-     */
-    public void stop() {
-        tracks.get(current).stop();
-    }
-
-    /**
-     * Pauses currently playing track
-     */
-    public void pause() {
-        tracks.get(current).pause();
-    }
-
-    /**
-     * Sets whether currently playing track should loop or not
-     * 
-     * @param shouldLoop
-     */
-    public void loop(boolean shouldLoop) {
-        tracks.get(current).setLoop(shouldLoop);
-    }
-
-    public Music getCurrent() {
-        return tracks.get(current);
     }
 }
