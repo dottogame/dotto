@@ -3,6 +3,11 @@ package com.dotto.cli.ui;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+/**
+ * 
+ * @author lite20 (Ephraim Bilson)
+ *
+ */
 public class Element {
 
     private final Rectangle rect;

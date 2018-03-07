@@ -7,7 +7,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * 
+ * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
  */
 public class Graphic {

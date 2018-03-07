@@ -1,5 +1,10 @@
 package com.dotto.cli.ui;
 
+/**
+ * 
+ * @author lite20 (Ephraim Bilson)
+ *
+ */
 public class Generator {
 
     public Element buildButton(
