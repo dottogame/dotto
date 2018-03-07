@@ -8,6 +8,9 @@ import java.util.List;
  * @author SoraKatadzuma
  */
 public abstract class Beat {
+    public static final int CLICK = 0;
+    public static final int SLIDE = 1;
+
     /** The initial timestamp of this {@code Beat}. */
     public final long InitTimestamp;
 
@@ -16,6 +19,7 @@ public abstract class Beat {
 
     /** The type of {@code beat} this is. */
     public final int Type;
+
     /**
      * The position of this {@code Beat}. If this is a type 2 beat then it will have many positions.
      * Specifically type 1 beats will only have 2 values for position [x, y] where as a type 2 will

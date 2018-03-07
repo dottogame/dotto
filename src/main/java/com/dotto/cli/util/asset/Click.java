@@ -8,14 +8,24 @@ import java.util.List;
  * @author SoraKatadzuma
  */
 public class Click extends Beat {
+
+    public final int x;
+    public final int y;
+
     /**
      * Constructs a new {@code Click Beat}.
      *
-     * @param InitTimeStamp The time in milliseconds from the start of the map this beat should appear.
-     * @param ClickTimeStamp The time in milliseconds from the start of the map this beat should be clicked.
+     * @param InitTimeStamp The time in milliseconds from the start of the map this beat should
+     *        appear.
+     * @param ClickTimeStamp The time in milliseconds from the start of the map this beat should be
+     *        clicked.
      * @param Positions The position this {@code Beat} appears at.
      */
-    public Click(int InitTimeStamp, int ClickTimeStamp, List<Integer> Positions) {
+    public Click(
+        int InitTimeStamp, int ClickTimeStamp, List<Integer> Positions
+    ) {
         super(InitTimeStamp, ClickTimeStamp, 0, Positions);
+        x = Positions.get(0);
+        y = Positions.get(1);
     }
 }

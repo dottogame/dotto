@@ -52,7 +52,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
                 public void call(double delta) {
                     view.update(delta);
                 }
-            }, 10
+            }, 60
         );
 
         new Thread(renderLoop).start();

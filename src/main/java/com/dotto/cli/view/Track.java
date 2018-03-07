@@ -13,6 +13,7 @@ import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
+import com.dotto.cli.util.asset.Click;
 import com.dotto.cli.util.asset.MapData;
 import com.dotto.cli.util.manager.MapConfigure;
 
@@ -94,6 +95,33 @@ public class Track implements View {
             }
         }
 
+        // draw notes
+        float pad;
+        for (Beat beat : beats) {
+            if (beat == null) continue;
+            pad = ((beat.ClickTimestamp
+                - (System.currentTimeMillis() - startTimestamp)) / 100);
+            if (pad < 0) pad = 0;
+            if (beat.GetType() == Beat.CLICK) {
+                Click click = (Click) beat;
+                if (pad * 100 < 250) g.setColor(Color.RED);
+                if (pad == 0) g.setColor(Color.GRAY);
+                g.drawOval(
+                    (int) (click.x - (pad / 2) + xOffset),
+                    (int) (click.y - (pad / 2) + yOffset), (int) (50 + pad),
+                    (int) (50 + pad)
+                );
+
+                g.setColor(Color.WHITE);
+                g.fillOval(
+                    (int) (click.x + xOffset), (int) (click.y + yOffset), 50, 50
+                );
+            } else {
+
+            }
+        }
+
+        g.setColor(Color.WHITE);
         // draw FPS
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
 
@@ -129,7 +157,11 @@ public class Track implements View {
         else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = true;
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
         else if (Config.TAP_KEYS.contains(e.getKeyCode())) {
-
+            Beat tapped = beats.get(0);
+            long tapOff = tapped.ClickTimestamp
+                - (System.currentTimeMillis() - startTimestamp);
+            System.out.println(tapOff);
+            if (Math.abs(tapOff) < 100) System.out.println("nice!");
         }
     }
 
