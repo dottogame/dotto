@@ -120,7 +120,8 @@ public class Track implements View {
         for (int y = -100; y < Config.HEIGHT + 100; y += 100) {
             for (int x = -100; x < Config.WIDTH + 100; x += 100) {
                 g.fillOval(
-                    x + (int) (xOffset % 100), y + (int) (yOffset % 100), 2, 2
+                    x + (int) ((xOffset % 200) * 0.5),
+                    y + (int) ((yOffset % 200) * 0.5), 2, 2
                 );
             }
         }
