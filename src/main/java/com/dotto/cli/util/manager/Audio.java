@@ -13,7 +13,7 @@ import org.jsfml.audio.Music;
  *
  */
 public class Audio {
-    private final HashMap<String, Music> tracks;
+    public final HashMap<String, Music> tracks;
 
     private String current;
 
@@ -31,6 +31,7 @@ public class Audio {
      * @throws IOException
      */
     public void load(String path) throws IOException {
+        current = path;
         Music track = new Music();
         track.openFromFile(new File(path).toPath());
         tracks.put(path, track);
@@ -77,5 +78,9 @@ public class Audio {
      */
     public void loop(boolean shouldLoop) {
         tracks.get(current).setLoop(shouldLoop);
+    }
+
+    public Music getCurrent() {
+        return tracks.get(current);
     }
 }

@@ -71,8 +71,10 @@ public class Core {
 
         try {
             Track t = new Track(
-                rootDirectory.getPath() + "/maps/heiakim_counting"
+                rootDirectory.getPath() + "/maps/heiakim_counting",
+                "1520351143651"
             );
+
             pane.view = t;
             t.start();
         } catch (IOException e) {

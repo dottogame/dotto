@@ -7,17 +7,17 @@ package com.dotto.cli.util.asset;
  */
 public final class MapData {
     /** The name of this {@code BeatMap} edit. */
-    private final String MapName;
+    public final String MapName;
     /** The number of click objects in this map. */
-    private final int ClickCount;
+    public final int ClickCount;
     /** The number of slide objects in this map. */
-    private final int SlideCount;
+    public final int SlideCount;
     /** The number of hops in this map. */
-    private final int HopCount;
+    public final int HopCount;
     /** The amount of acceleration in this map. */
-    private final byte AccelerationSpeed;
+    public final byte AccelerationSpeed;
     /** The path to this map. */
-    private final String MapId;
+    public final String MapId;
 
     /**
      * @param MapName

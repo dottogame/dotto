@@ -4,11 +4,16 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.dotto.cli.Core;
+import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
+import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
+import com.dotto.cli.util.asset.MapData;
 import com.dotto.cli.util.manager.MapConfigure;
 
 /**
@@ -33,15 +38,23 @@ public class Track implements View {
     public boolean LEFT = false;
     public boolean RIGHT = false;
 
-    private String path;
-
     public BeatMap map;
 
-    public Track(String path) throws IOException {
+    private final String path;
+
+    private final BeatStreamReader bsr;
+
+    private final ArrayList<Beat> beats;
+
+    public Track(String path, String mapId) throws IOException {
         this.path = path;
+
         Core.audioManager.load(path + "/track.ogg");
         map = MapConfigure.MapFromFolder(path);
-        System.out.println(map.TrackData.TrackName);
+        bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
+        MapData mapData = map.Maps.get(mapId);
+        beats = new ArrayList<>(mapData.ClickCount + mapData.SlideCount);
+        beats.add(bsr.GetNextBeat());
     }
 
     public void start() throws IOException {
@@ -78,7 +91,7 @@ public class Track implements View {
             }
         }
 
-        // draw fps
+        // draw FPS
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
 
         // draw cursor
@@ -142,5 +155,14 @@ public class Track implements View {
 
         yOffset += yAccel * delta;
         xOffset += xAccel * delta;
+
+        // load more beats
+        long offset = Core.audioManager.getCurrent().getPlayingOffset()
+            .asMilliseconds();
+        Beat new_beat = beats.get(beats.size() - 1);
+        while (new_beat.InitTimestamp < offset) {
+            new_beat = bsr.GetNextBeat();
+            beats.add(new_beat);
+        }
     }
 }

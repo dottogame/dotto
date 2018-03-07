@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,9 +75,9 @@ public final class MapConfigure {
      * @param jo The json object that we are collecting data from.
      * @return A {@code MapData[]} object with all the {@code BeatMap}'s map data.
      */
-    private static MapData[] MapDataFrom(JSONObject jo) {
+    private static HashMap<String, MapData> MapDataFrom(JSONObject jo) {
         JSONArray maps = jo.getJSONArray("maps");
-        List<MapData> mapData = new ArrayList<>();
+        HashMap<String, MapData> mapData = new HashMap<>();
 
         for (int i = 0; i < maps.length(); i++) {
             JSONObject jso = maps.getJSONObject(i);
@@ -94,11 +93,11 @@ public final class MapConfigure {
             accelSpeed = (byte) jso.getInt("acceleration");
             id = jso.getString("id");
 
-            mapData.add(
-                new MapData(mapName, clicks, slides, hops, accelSpeed, id)
+            mapData.put(
+                id, new MapData(mapName, clicks, slides, hops, accelSpeed, id)
             );
         }
 
-        return mapData.toArray(new MapData[0]);
+        return mapData;
     }
 }
