@@ -24,7 +24,10 @@ public class Util {
 
         File result;
 
-        if (Flagger.DebugMode()) result = new File(path).getParentFile();
+        if (Flagger.DebugMode()) result = new File(
+            new File(path).getParentFile().getParentFile().getPath() + "/bin/"
+        );
+
         else result = new File(path).getParentFile().getParentFile();
 
         return result;

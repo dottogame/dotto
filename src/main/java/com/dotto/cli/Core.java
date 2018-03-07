@@ -71,7 +71,7 @@ public class Core {
 
         try {
             Track t = new Track(
-                "C://Users//Ken//Documents//dotto//bin//maps//heiakim_counting"
+                rootDirectory.getPath() + "/maps/heiakim_counting"
             );
             pane.view = t;
             t.start();

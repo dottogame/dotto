@@ -8,7 +8,6 @@ package com.dotto.cli.util;
 public final class Flagger {
     /** Tells whether the application should run in debug mode. */
     private static boolean DEBUG = true;
-    public static boolean ECLIPSE_IDE = true;
 
     /**
      * Takes in the command line arguments and sets flags that correspond to their names.

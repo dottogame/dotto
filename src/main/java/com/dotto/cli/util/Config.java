@@ -1,7 +1,6 @@
 package com.dotto.cli.util;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,22 +44,7 @@ public class Config {
      * @throws IOException If the config.json file cannot be found.
      */
     public static void load() throws IOException {
-        Path path;
-
-        if (Flagger.ECLIPSE_IDE) {
-            path = Paths.get(
-                new File(
-                    Core.rootDirectory.getAbsolutePath()
-                        + "/../bin/data/config.json"
-                ).getCanonicalPath()
-            );
-        }
-
-        else if (Flagger.DebugMode()) path = Paths.get(
-            Core.rootDirectory.getAbsolutePath() + "/bin/data/config.json"
-        );
-
-        else path = Paths
+        Path path = Paths
             .get(Core.rootDirectory.getAbsolutePath() + "/data/config.json");
 
         String configContents = new String(Files.readAllBytes(path));

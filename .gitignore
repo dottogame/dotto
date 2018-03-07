@@ -23,3 +23,5 @@ hs_err_pid*
 /target/
 /.settings/
 /pom.xml
+/bin/maps/
+/bin/dotstrap.exe
