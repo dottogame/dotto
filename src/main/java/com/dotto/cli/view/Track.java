@@ -178,6 +178,7 @@ public class Track implements View {
             Beat tapped = beats.get(0);
             long tapOff = tapped.ClickTimestamp
                 - (System.currentTimeMillis() - startTimestamp);
+            beats.remove(0);
             System.out.println(tapOff);
             if (Math.abs(tapOff) < 100) System.out.println("nice!");
         }
@@ -216,6 +217,22 @@ public class Track implements View {
             new_beat = bsr.GetNextBeat();
             beats.add(new_beat);
             if (new_beat != null) System.out.println(new_beat.toString());
+        }
+
+        // expire passed notes
+        float pad;
+        int i = 0;
+        for (Beat beat : beats) {
+            if (beat == null) continue;
+            pad = (beat.ClickTimestamp
+                - (System.currentTimeMillis() - startTimestamp));
+
+            if (pad < -250) {
+                // it's a miss! D:
+                beats.remove(i);
+            }
+
+            i++;
         }
     }
 }
