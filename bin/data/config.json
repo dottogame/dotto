@@ -1,7 +1,7 @@
 {
     "width": 720,
     "height": 480,
-    "fullscreen": false,
+    "fullscreen": true,
     "controls": {
         "up": 73,
         "down": 75,

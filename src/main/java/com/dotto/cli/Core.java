@@ -55,19 +55,25 @@ public class Core {
         pane = new GamePane();
         w = new JFrame("Dotto");
         w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        w.setPreferredSize(new Dimension(720, 480));
-        w.setLocationRelativeTo(null);
-        w.add(pane);
+        w.setResizable(false);
 
         if (Config.FULLSCREEN) {
             w.setExtendedState(JFrame.MAXIMIZED_BOTH);
             w.setUndecorated(true);
+        } else {
+            w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
+            w.setLocationRelativeTo(null);
         }
 
+        w.add(pane);
         w.addKeyListener(pane);
         w.addMouseListener(pane);
         w.pack();
         w.setVisible(true);
+        if (Config.FULLSCREEN) {
+            Config.WIDTH = w.getWidth();
+            Config.HEIGHT = w.getHeight();
+        }
 
         try {
             Track t = new Track(
