@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
-import com.dotto.cli.util.manager.Audio;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
 
@@ -29,8 +28,6 @@ public class Core {
     public static File rootDirectory;
     /** The graphics manager. */
     public static Graphics graphicManager;
-    /** The audio manager. */
-    public static Audio audioManager;
 
     /**
      * Entry point of application.
@@ -50,7 +47,6 @@ public class Core {
 
         // instantiate managers
         graphicManager = new Graphics();
-        audioManager = new Audio();
 
         pane = new GamePane();
         w = new JFrame("Dotto");
@@ -83,8 +79,7 @@ public class Core {
 
             pane.view = t;
             t.start();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException e) { // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

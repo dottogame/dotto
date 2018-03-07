@@ -18,9 +18,11 @@ import com.dotto.cli.util.asset.Slide;
  */
 public class BeatStreamReader {
     /** The scanner for this {@code BeatStreamReader}. */
-    private final Scanner scanner;
+    private Scanner scanner;
+
     /** Tells if the this reader has reached the end of the file. */
     private boolean EOF;
+    private File beatmapFile;
 
     /**
      * Constructs a new instance of {@code BeatStreamReader}.
@@ -29,6 +31,7 @@ public class BeatStreamReader {
      * @throws java.io.FileNotFoundException If the reader is unable to find the file.
      */
     public BeatStreamReader(File BeatmapFile) throws FileNotFoundException {
+        this.beatmapFile = BeatmapFile;
         scanner = new Scanner(BeatmapFile);
     }
 
@@ -89,5 +92,10 @@ public class BeatStreamReader {
      */
     public boolean HasNextBeat() {
         return !EOF;
+    }
+
+    public void reset() throws FileNotFoundException {
+        scanner.close();
+        scanner = new Scanner(beatmapFile);
     }
 }

@@ -46,12 +46,10 @@ public class GameLoop implements Runnable {
 
             // sleep t'ill next frame
             try {
-                if ((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) > 0)
-                    Thread
-                        .sleep(
-                            (lastLoopTime - System.nanoTime() + OPTIMAL_TIME)
-                                / 1000000
-                        );
+                if((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) > 0)
+                Thread.sleep(
+                    (lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000
+                );
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

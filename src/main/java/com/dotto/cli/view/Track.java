@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import com.dotto.cli.Core;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
+import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
 import com.dotto.cli.util.asset.Click;
@@ -47,7 +48,11 @@ public class Track implements View {
 
     private final ArrayList<Beat> beats;
 
-    private long startTimestamp;
+    private String path;
+
+    private String mapId;
+
+    private final Audio music;
 
     final static float dash1[] = { 10.0f };
     final static float dash2[] = { 1.0f };
@@ -61,7 +66,9 @@ public class Track implements View {
     );
 
     public Track(String path, String mapId) throws IOException {
-        Core.audioManager.load(path + "/track.ogg");
+        this.path = path;
+        this.mapId = mapId;
+        music = new Audio(path + "/track.ogg");
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
         MapData mapData = map.Maps.get(mapId);
@@ -70,8 +77,11 @@ public class Track implements View {
     }
 
     public void start() throws IOException {
-        Core.audioManager.track.play();
-        startTimestamp = System.currentTimeMillis();
+        music.play();
+    }
+
+    public void reset() {
+
     }
 
     /**
@@ -109,7 +119,7 @@ public class Track implements View {
         for (Beat beat : beats) {
             if (beat == null) continue;
             pad = ((beat.ClickTimestamp
-                - (System.currentTimeMillis() - startTimestamp)) * 0.1f);
+                - (music.clip.getMicrosecondPosition() / 1000)) * 0.1f);
             if (pad < 0) pad = 0;
             if (beat.GetType() == Beat.CLICK) {
                 Click click = (Click) beat;
@@ -176,13 +186,16 @@ public class Track implements View {
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
         else if (Config.TAP_KEYS.contains(e.getKeyCode())) {
             Beat tapped = beats.get(0);
+            if (tapped == null) return;
             long tapOff = tapped.ClickTimestamp
-                - (System.currentTimeMillis() - startTimestamp);
+                - (music.clip.getMicrosecondPosition() / 1000);
             beats.remove(0);
             System.out.println(tapOff);
             if (Math.abs(tapOff) < 100) System.out.println("nice!");
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             Core.shutdown();
+        } else if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
+            reset();
         }
     }
 
@@ -213,12 +226,14 @@ public class Track implements View {
         xOffset += xAccel * delta;
 
         // load more beats
-        long offset = System.currentTimeMillis() - startTimestamp;
-        Beat new_beat = beats.get(beats.size() - 1);
-        while (new_beat != null && new_beat.InitTimestamp < offset) {
-            new_beat = bsr.GetNextBeat();
-            beats.add(new_beat);
-            if (new_beat != null) System.out.println(new_beat.toString());
+        if (beats.size() > 0) {
+            long offset = music.clip.getMicrosecondPosition() / 1000;
+            Beat new_beat = beats.get(beats.size() - 1);
+            while (new_beat != null && new_beat.InitTimestamp < offset) {
+                new_beat = bsr.GetNextBeat();
+                beats.add(new_beat);
+                if (new_beat != null) System.out.println(new_beat.toString());
+            }
         }
 
         // expire passed notes
@@ -227,7 +242,7 @@ public class Track implements View {
         for (Beat beat : beats) {
             if (beat == null) continue;
             pad = (beat.ClickTimestamp
-                - (System.currentTimeMillis() - startTimestamp));
+                - (music.clip.getMicrosecondPosition() / 1000));
 
             if (pad < -250) {
                 // it's a miss! D:
