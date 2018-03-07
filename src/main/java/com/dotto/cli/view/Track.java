@@ -44,11 +44,15 @@ public class Track implements View {
 
     public BeatMap map;
 
-    private final BeatStreamReader bsr;
+    private BeatStreamReader bsr;
 
     private final Vector<Beat> beats;
 
     private final Audio music;
+
+    private String path;
+
+    private String mapId;
 
     final static float dash1[] = { 10.0f };
     final static float dash2[] = { 1.0f };
@@ -62,6 +66,8 @@ public class Track implements View {
     );
 
     public Track(String path, String mapId) throws IOException {
+        this.path = path;
+        this.mapId = mapId;
         music = new Audio(path + "/track.ogg");
         map = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
@@ -72,11 +78,21 @@ public class Track implements View {
     }
 
     public void start() throws IOException {
+        // align at center of note 0
+        Click click = (Click) beats.get(0);
+        xOffset = (Config.WIDTH / 2) - click.x - 50;
+        yOffset = (Config.HEIGHT / 2) - click.y - 50;
+
         music.play();
     }
 
-    public void reset() {
+    public void reset() throws IOException {
+        beats.clear();
+        bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
 
+        music.stop();
+        music.clip.setFramePosition(0);
+        start();
     }
 
     /**
@@ -177,7 +193,13 @@ public class Track implements View {
      */
     @Override
     public void keyDown(KeyEvent e) {
-        if (e.getKeyCode() == Config.UP_KEY) UP = true;
+        if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
+            try {
+                reset();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } else if (e.getKeyCode() == Config.UP_KEY) UP = true;
         else if (e.getKeyCode() == Config.DOWN_KEY) DOWN = true;
         else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = true;
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
@@ -191,8 +213,6 @@ public class Track implements View {
             if (Math.abs(tapOff) < 100) System.out.println("nice!");
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             Core.shutdown();
-        } else if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
-            reset();
         }
     }
 
