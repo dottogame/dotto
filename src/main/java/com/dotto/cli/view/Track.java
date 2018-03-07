@@ -110,7 +110,9 @@ public class Track implements View {
 
         // draw notes
         float pad;
-        for (Beat beat : beats) {
+        Beat beat;
+        for (int i = 0; i < beats.size(); i++) {
+            beat = beats.get(i);
             if (beat == null) continue;
             pad = ((beat.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000)) * 0.1f);
@@ -220,20 +222,20 @@ public class Track implements View {
         xOffset += xAccel * delta;
 
         // load more beats
-        if (beats.size() > 0) {
-            long offset = music.clip.getMicrosecondPosition() / 1000;
-            Beat new_beat = beats.get(beats.size() - 1);
-            while (new_beat != null && new_beat.InitTimestamp < offset) {
-                new_beat = bsr.GetNextBeat();
-                beats.add(new_beat);
-                if (new_beat != null) System.out.println(new_beat.toString());
-            }
+        if (beats.size() == 0) beats.add(bsr.GetNextBeat());
+        long offset = music.clip.getMicrosecondPosition() / 1000;
+        Beat new_beat = beats.get(beats.size() - 1);
+        while (new_beat != null && new_beat.InitTimestamp < offset) {
+            new_beat = bsr.GetNextBeat();
+            beats.add(new_beat);
         }
 
         // expire passed notes
         float pad;
         int i = 0;
-        for (Beat beat : beats) {
+        Beat beat;
+        for (int z = 0; z < beats.size(); z++) {
+            beat = beats.get(z);
             if (beat == null) continue;
             pad = (beat.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000));
