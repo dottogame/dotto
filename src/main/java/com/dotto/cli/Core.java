@@ -1,6 +1,7 @@
 package com.dotto.cli;
 
-import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,7 @@ import com.dotto.cli.view.Track;
  */
 public class Core {
     /** The current window. */
-    private static JFrame w;
+    public static JFrame w;
     /** The current game pane in the window. */
     public static GamePane pane;
     /** The root directory of the application. */
@@ -50,22 +51,19 @@ public class Core {
 
         pane = new GamePane();
         w = new JFrame("Dotto");
-        w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        w.setResizable(false);
-
-        if (Config.FULLSCREEN) {
-            w.setExtendedState(JFrame.MAXIMIZED_BOTH);
-            w.setUndecorated(true);
-        } else {
-            w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
-            w.setLocationRelativeTo(null);
-        }
-
         w.add(pane);
         w.addKeyListener(pane);
         w.addMouseListener(pane);
-        w.pack();
-        w.setVisible(true);
+        w.setUndecorated(true);
+        GraphicsDevice vc = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getDefaultScreenDevice();
+        if (
+            !vc.isFullScreenSupported()
+        ) { throw new UnsupportedOperationException(
+            "Fullscreen mode is unsupported."
+        ); }
+
+        vc.setFullScreenWindow(w);
         if (Config.FULLSCREEN) {
             Config.WIDTH = w.getWidth();
             Config.HEIGHT = w.getHeight();

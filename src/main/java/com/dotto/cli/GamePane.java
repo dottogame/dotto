@@ -35,6 +35,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      * Constructs a new {@code GamePane} object.
      */
     public GamePane() {
+        System.setProperty("sun.java2d.opengl", "true");
         view = new Boot();
         renderLoop = new GameLoop(
             new GameCall() {
@@ -42,6 +43,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
                 @Override
                 public void call(double delta) {
                     repaint();
+
                 }
             }, 100
         );
@@ -84,6 +86,11 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
 
         g2.setRenderingHint(
             RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE
+        );
+
+        g2.setRenderingHint(
+            RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
         );
 
         view.draw(g2);
