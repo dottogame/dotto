@@ -1,5 +1,9 @@
 package com.dotto.cli;
 
+import com.dotto.cli.util.Config;
+import com.dotto.cli.util.GameLoop;
+import com.dotto.cli.view.Boot;
+import com.dotto.cli.view.View;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -7,27 +11,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.JPanel;
 
-import com.dotto.cli.util.Config;
-import com.dotto.cli.util.GameCall;
-import com.dotto.cli.util.GameLoop;
-import com.dotto.cli.view.Boot;
-import com.dotto.cli.view.View;
-
 /**
- * Drawing surface for views and view manager
+ * Drawing surface for views and view manager.
  * 
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
  */
 @SuppressWarnings("serial")
 public class GamePane extends JPanel implements MouseListener, KeyListener {
-
+    /** Dedicated object for running rendering calls. */
     public GameLoop renderLoop;
+    /** Dedicated object for running update calls. */
     public GameLoop updateLoop;
-
     /** Current active view in the game pane. */
     public View view;
 
@@ -35,29 +32,16 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      * Constructs a new {@code GamePane} object.
      */
     public GamePane() {
+        // The starting view of the game.
         view = new Boot();
-        renderLoop = new GameLoop(
-            new GameCall() {
+        
+        // Assigning the graphics rendering loop for this Pane.
+        renderLoop = new GameLoop(delta -> {
+                repaint();
+        }, 100);
 
-                @Override
-                public void call(double delta) {
-                    repaint();
-                }
-            }, 100
-        );
-
-        updateLoop = new GameLoop(
-            new GameCall() {
-
-                @Override
-                public void call(double delta) {
-                    view.update(delta);
-                }
-            }, 60
-        );
-
-        new Thread(renderLoop).start();
-        new Thread(updateLoop).start();
+        // Assigning the game's updating loop this Pane.
+        updateLoop = new GameLoop(view::update, 60);
     }
 
     /**
@@ -69,11 +53,12 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
         Graphics2D g2 = (Graphics2D) g;
         // / g2.scale(0.5, 0.5);
         System.out.println(this.getWidth());
+        
         if (Config.ANTIALIAS) {
-
             RenderingHints rh = new RenderingHints(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON
@@ -133,15 +118,39 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         view.keyUp(e);
     }
 
+    /**
+     * Inherited method.
+     * 
+     * @param e The event being performed.
+     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+     */
     @Override
     public void keyTyped(KeyEvent e) {}
 
+    /**
+     * Inherited method.
+     * 
+     * @param e The event being performed.
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseClicked(MouseEvent e) {}
 
+    /**
+     * Inherited method.
+     * 
+     * @param e The event being performed.
+     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
+    /**
+     * Inherited method.
+     * 
+     * @param e The event being performed.
+     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseExited(MouseEvent e) {}
 }

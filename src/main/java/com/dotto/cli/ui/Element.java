@@ -4,18 +4,15 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 /**
+ * /// Class Description ///
  * 
  * @author lite20 (Ephraim Bilson)
- *
  */
 public class Element {
-
     private final Rectangle rect;
-
-    private Graphic graph;
-
-    private int x;
-    private int y;
+    private final Graphic graph;
+    private final int x;
+    private final int y;
 
     public Element(Graphic graph, int x, int y, int width, int height) {
         this.graph = graph;

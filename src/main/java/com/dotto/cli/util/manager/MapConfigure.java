@@ -1,18 +1,16 @@
 package com.dotto.cli.util.manager;
 
+import com.dotto.cli.util.asset.BeatMap;
+import com.dotto.cli.util.asset.MapData;
+import com.dotto.cli.util.asset.TrackData;
 import java.awt.Point;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.dotto.cli.util.asset.BeatMap;
-import com.dotto.cli.util.asset.MapData;
-import com.dotto.cli.util.asset.TrackData;
 
 /**
  * Parses and loads data about a beat map.
@@ -51,7 +49,7 @@ public final class MapConfigure {
     private static TrackData TrackDataFrom(JSONObject jo) {
         JSONObject track = jo.getJSONObject("track");
 
-        String trackName, trackArtist, trackPath, source;
+        String trackName, trackArtist, source;
         byte bpm;
 
         trackName = track.getString("name");

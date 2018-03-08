@@ -8,8 +8,9 @@ import java.util.List;
  * @author SoraKatadzuma
  */
 public class Click extends Beat {
-
+    /** The x coordinate of this {@code Click Beat}. */
     public final int x;
+    /** The y coordinate of this {@code Click Beat}. */
     public final int y;
 
     /**

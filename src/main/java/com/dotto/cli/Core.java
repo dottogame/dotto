@@ -1,20 +1,20 @@
 package com.dotto.cli;
 
-import java.awt.Dimension;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import javax.swing.JFrame;
-
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
+import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
- * Entry point of program
+ * Entry point of program.
  *
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
@@ -35,24 +35,33 @@ public class Core {
      * @param args The command line arguments.
      */
     public static void main(String... args) {
+        // Sets flags that the game will use to adjust how it runs.
         Flagger.setFlags(args);
 
         try {
             rootDirectory = Util.getLocalDirectory();
             Config.load();
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-            System.exit(0);
+        } catch (URISyntaxException | IOException ex) {
+            Logger.getLogger(Core.class.getName())
+                    .log(Level.WARNING, ex.getMessage(), ex);
+            
+            shutdown();
         }
 
         // instantiate managers
         graphicManager = new Graphics();
 
+        // Building the game window.
         pane = new GamePane();
+        new Thread(pane.renderLoop).start();
+        new Thread(pane.updateLoop).start();
+        
+        // Building the game frame.
         w = new JFrame("Dotto");
         w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         w.setResizable(false);
 
+        // Checks for Fullscreen and adjusts the game screen.
         if (Config.FULLSCREEN) {
             w.setExtendedState(JFrame.MAXIMIZED_BOTH);
             w.setUndecorated(true);
@@ -61,11 +70,14 @@ public class Core {
             w.setLocationRelativeTo(null);
         }
 
+        // Adding the actual game window to the screen.
         w.add(pane);
         w.addKeyListener(pane);
         w.addMouseListener(pane);
         w.pack();
         w.setVisible(true);
+        
+        // Setting the game window to fit the screen if Fullscreen is enabled.
         if (Config.FULLSCREEN) {
             Config.WIDTH = w.getWidth();
             Config.HEIGHT = w.getHeight();
@@ -78,11 +90,17 @@ public class Core {
 
             pane.view = t;
             t.start();
-        } catch (IOException e) { // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (IOException ex) { // TODO Auto-generated catch block
+            Logger.getLogger(Core.class.getName())
+                    .log(Level.WARNING, ex.getMessage(), ex);
+            
+            shutdown();
         }
     }
 
+    /**
+     * Closes the game upon request.
+     */
     public static void shutdown() {
         System.exit(0);
     }

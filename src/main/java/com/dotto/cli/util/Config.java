@@ -1,16 +1,14 @@
 package com.dotto.cli.util;
 
+import com.dotto.cli.Core;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.dotto.cli.Core;
 
 /**
  * Class responsible for loading game settings. Stores commonly accessed values in their own
@@ -26,23 +24,23 @@ import com.dotto.cli.Core;
 public class Config {
     /** The configured width of the screen. */
     public static int WIDTH = 720;
-
     /** The configured height of the screen. */
     public static int HEIGHT = 480;
-
     /** Whether or not the screen should be full. */
     public static boolean FULLSCREEN = false;
-
-    /** Whether or not to antialias **/
+    /** Whether or not to antialias. **/
     public static boolean ANTIALIAS = true;
-
+    /** Represents the when the up key for the game is pressed. */
     public static int UP_KEY = KeyEvent.VK_UP;
+    /** Represents the when the down key for the game is pressed. */
     public static int DOWN_KEY = KeyEvent.VK_DOWN;
+    /** Represents the when the left key for the game is pressed. */
     public static int LEFT_KEY = KeyEvent.VK_LEFT;
+    /** Represents the when the right key for the game is pressed. */
     public static int RIGHT_KEY = KeyEvent.VK_RIGHT;
-
+    /** A list of clicking keys. */
     public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
-
+    /** The amount of back light that should be applied to the game. */
     public static float BACK_DIM;
 
     /**
@@ -68,6 +66,7 @@ public class Config {
         RIGHT_KEY = controls.getInt("right");
         JSONArray taps = controls.getJSONArray("tapKeys");
         TAP_KEYS.clear();
+        
         for (int i = 0; i < taps.length(); i++)
             TAP_KEYS.add(taps.getInt(i));
 

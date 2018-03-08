@@ -24,7 +24,6 @@ public final class TrackData {
      * @param TrackAuthor The name of the author of this track.
      * @param bpm The speed of this track.
      * @param Source The origination of this track.
-     * @param TrackPath The path to this track.
      * @param Preview The preview times for this track in milliseconds.
      */
     public TrackData(

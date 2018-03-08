@@ -25,13 +25,15 @@ public final class MapData {
     public final Point bound;
 
     /**
-     * @param MapName
-     * @param ClickCount
-     * @param SlideCount
-     * @param HopCount
-     * @param bound
-     * @param AccelerationSpeed
-     * @param MapPath
+     * Constructs a new {@code MapData}.
+     * 
+     * @param MapName The name of the map.
+     * @param ClickCount The number of clicks in this map.
+     * @param SlideCount The number of slides in this map.
+     * @param HopCount The number of hops in this map.
+     * @param bound The position of this map in space.
+     * @param acceleration The acceleration of this map.
+     * @param MapId The map id.
      */
     public MapData(
         String MapName, int ClickCount, int SlideCount, int HopCount,

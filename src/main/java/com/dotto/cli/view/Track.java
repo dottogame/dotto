@@ -1,15 +1,5 @@
 package com.dotto.cli.view;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.io.File;
-import java.io.IOException;
-import java.util.Vector;
-
 import com.dotto.cli.Core;
 import com.dotto.cli.ui.Graphic;
 import com.dotto.cli.util.BeatStreamReader;
@@ -21,6 +11,19 @@ import com.dotto.cli.util.asset.Click;
 import com.dotto.cli.util.asset.MapData;
 import com.dotto.cli.util.manager.MapConfigure;
 import com.dotto.cli.util.manager.Score;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * TODO: write class description.
@@ -31,55 +34,72 @@ import com.dotto.cli.util.manager.Score;
 public class Track implements View {
     /** A manual serial id, instead of the normal Java serailID. */
     public static int ID = 3;
-
+    /** The x offset of a beat. */
     public double xOffset = 0;
+    /** The y offset of a beat. */
     public double yOffset = 0;
+    /** The graphical x offset of a beat. */
     public double gxOffset = 0;
+    /** The graphical y offset of a beat. */
     public double gyOffset = 0;
+    /** The x acceleration of the map. */
     public double xAccel = 0;
+    /** The y acceleration of the map. */
     public double yAccel = 0;
+    /** The speed of the acceleration. */
     public double speed = 4;
+    /** How much the cursor slides when moving. */
     public double glideFactor = 0.5;
-
+    /***/
     public boolean UP = false;
     public boolean DOWN = false;
     public boolean LEFT = false;
     public boolean RIGHT = false;
 
+    /** The {@code BeatMap} that will be played. */
     public BeatMap beatMap;
-
+    /** The beatMap's data. */
     public MapData map;
-
+    /** A reader for the map. */
     private BeatStreamReader bsr;
-
-    private final Vector<Beat> beats;
-
+    /** The beats that will be loaded and placed on the screen. */
+    private final List<Beat> beats;
+    /** The music to play during this game round. */
     private final Audio music;
-
-    private String path;
-
-    private String mapId;
-
+    /** The track path. */
+    private final String path;
+    /** The track map id. */
+    private final String mapId;
+    /** First dash values. */
     final static float dash1[] = { 10.0f };
+    /** Second dash values. */
     final static float dash2[] = { 1.0f };
-
+    /** Approach circle drawing. */
     final static BasicStroke solid = new BasicStroke(
         5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f
     );
-
+    /** Hit circle drawing. */
     final static BasicStroke dashed = new BasicStroke(
         2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f
     );
+    /** Current game round score. */
+    private final Score score;
+    /** The current background image. */
+    private final Graphic back;
+    /** The background dim color. */
+    private final Color tint;
+    /** The ratio of the background. */
+    private final float backRatio;
+    /** The width of the background. */
+    private final int backWidth;
 
-    private Score score;
-    private Graphic back;
-
-    private Color tint;
-
-    private float backRatio;
-
-    private int backWidth;
-
+    /**
+     * Constructs a new {@code Track View}.
+     * 
+     * @param path The path to the song for this map.
+     * @param mapId The BeatMap to play.
+     * @throws java.io.IOException If a file cannot be read.
+     */
     public Track(String path, String mapId) throws IOException {
         this.path = path;
         this.mapId = mapId;
@@ -88,16 +108,20 @@ public class Track implements View {
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
         map = beatMap.Maps.get(mapId);
         speed = map.acceleration;
-        beats = new Vector<>(map.ClickCount + map.SlideCount);
+        beats = Collections.synchronizedList(new ArrayList<>(map.ClickCount + map.SlideCount));
         beats.add(bsr.GetNextBeat());
         score = new Score();
         back = new Graphic(path + "/back");
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
-
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
     }
 
+    /**
+     * Starts a game round.
+     * 
+     * @throws java.io.IOException
+     */
     public void start() throws IOException {
         // align at center of note 0
         Click click = (Click) beats.get(0);
@@ -107,6 +131,11 @@ public class Track implements View {
         music.play();
     }
 
+    /**
+     * Rests the game round.
+     * 
+     * @throws java.io.IOException
+     */
     public void reset() throws IOException {
         score.reset();
         beats.clear();
@@ -166,15 +195,22 @@ public class Track implements View {
         Beat beat;
         double noteOffX = Config.WIDTH / 2 - 50;
         double noteOffY = Config.HEIGHT / 2 - 50;
+        
         for (int i = 0; i < beats.size(); i++) {
             beat = beats.get(i);
+            
             if (beat == null) continue;
+            
             pad = ((beat.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000)) * 0.1f);
+            
             if (pad < 0) pad = 0;
+            
             if (beat.GetType() == Beat.CLICK) {
                 Click click = (Click) beat;
+                
                 if (pad * 100 < 250) g.setColor(Color.RED);
+                
                 if (pad == 0) g.setColor(Color.GRAY);
 
                 g.setStroke(solid);
@@ -239,22 +275,28 @@ public class Track implements View {
         if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
             try {
                 reset();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ex) {
+                Logger.getLogger(Track.class.getName())
+                        .log(Level.SEVERE, ex.getMessage(), ex);
             }
-        } else if (e.getKeyCode() == Config.UP_KEY) UP = true;
+        }
+        else if (e.getKeyCode() == Config.UP_KEY) UP = true;
         else if (e.getKeyCode() == Config.DOWN_KEY) DOWN = true;
         else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = true;
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
         else if (Config.TAP_KEYS.contains(e.getKeyCode())) {
             Beat tapped = beats.get(0);
+            
             if (tapped == null) return;
+            
             long tapOff = tapped.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000);
-            // ignore if too early. Eventually give some visual feedback
+            
+            // ignore if too early. Eventually give some visual feedback            
             if (tapOff < 500) {
                 beats.remove(0);
                 score.adjustAccuracy(score.calculateAccuracy(tapOff));
+                
                 if (Math.abs(tapOff) < 100) System.out.println("nice!");
             }
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -263,7 +305,7 @@ public class Track implements View {
     }
 
     /**
-     * Key up event handle
+     * Key up event handle.
      * 
      * @param e
      */
@@ -275,6 +317,12 @@ public class Track implements View {
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = false;
     }
 
+    /**
+     * Inherited method.
+     * 
+     * @param delta The gradient at which things should move.
+     * @see com.dotto.cli.view.View#update(double)
+     */
     @Override
     public void update(double delta) {
         yAccel *= glideFactor;
@@ -290,14 +338,17 @@ public class Track implements View {
 
         gxOffset = xOffset;
         gyOffset = yOffset;
+        
         if (gxOffset > 0) gxOffset = 0;
         if (gxOffset < -map.bound.x) gxOffset = -map.bound.x;
         if (gyOffset > 0) gyOffset = 0;
         if (gyOffset < -map.bound.y) gyOffset = -map.bound.y;
 
         // load more beats
-        if (beats.size() == 0) beats.add(bsr.GetNextBeat());
+        if (beats.isEmpty()) beats.add(bsr.GetNextBeat());
+        
         long offset = music.clip.getMicrosecondPosition() / 1000;
+        
         // notes can be deleted in this window (if game is reset)
         if (beats.size() > 0) {
             Beat new_beat = beats.get(beats.size() - 1);
@@ -311,6 +362,7 @@ public class Track implements View {
         float pad;
         int i = 0;
         Beat beat;
+        
         for (int z = 0; z < beats.size(); z++) {
             beat = beats.get(z);
             if (beat == null) continue;

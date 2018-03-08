@@ -8,15 +8,14 @@ import java.util.List;
  * @author SoraKatadzuma
  */
 public abstract class Beat {
+    /** Easy use of Comparison. */
     public static final int CLICK = 0;
+    /** Easy use of Comparison. */
     public static final int SLIDE = 1;
-
     /** The initial timestamp of this {@code Beat}. */
     public final long InitTimestamp;
-
     /** The click timestamp of this {@code Beat}. */
     public final long ClickTimestamp;
-
     /** The type of {@code beat} this is. */
     public final int Type;
 

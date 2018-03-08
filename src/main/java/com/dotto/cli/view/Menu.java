@@ -1,11 +1,10 @@
 package com.dotto.cli.view;
 
+import com.dotto.cli.util.Config;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-
-import com.dotto.cli.util.Config;
 
 /**
  * TODO: write class description.

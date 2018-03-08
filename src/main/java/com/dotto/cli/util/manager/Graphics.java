@@ -1,8 +1,7 @@
 package com.dotto.cli.util.manager;
 
-import java.util.HashMap;
-
 import com.dotto.cli.ui.Graphic;
+import java.util.HashMap;
 
 /**
  * The {@code GraphicLoader} class is responsible for loading all assets with graphics and store

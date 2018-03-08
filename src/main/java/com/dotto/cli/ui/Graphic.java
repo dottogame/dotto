@@ -4,10 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 
 /**
+ * This class represents the single, and/or array, of image(s) that
+ * create a single graphic in the game.
  * 
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
@@ -15,23 +16,25 @@ import javax.imageio.ImageIO;
 public class Graphic {
     /** The image that represents this {@code Graphic}. */
     private final ArrayList<BufferedImage> frame;
-
+    /** The name of this {@code Graphic}. */
     public final String name;
 
     /**
      * Constructs a new {@code Graphic} class object with a {@code BufferedImage} as it's
      * representation.
      * 
-     * @param Image The image that represents this {@code Graphic}.
+     * @param path The path to an image that will be stored.
      * @throws java.io.IOException If the {@code Image} could not be read.
      */
     public Graphic(String path) throws IOException {
         String[] parts = path.split("/");
         this.name = parts[parts.length - 1];
         File imgFile = new File(path + '/');
+        
         if (imgFile.isDirectory()) {
             int x = imgFile.list().length;
             frame = new ArrayList<>(x);
+            
             for (int i = 0; i < x; i++) {
                 frame.add(ImageIO.read(new File(path + '/' + i + ".png")));
             }
@@ -52,10 +55,16 @@ public class Graphic {
         return frame.get(0);
     }
 
+    /**
+     * @return The height of the first frame.
+     */
     public int getHeight() {
         return frame.get(0).getHeight();
     }
 
+    /**
+     * @return The width of the first frame.
+     */
     public int getWidth() {
         return frame.get(0).getWidth();
     }

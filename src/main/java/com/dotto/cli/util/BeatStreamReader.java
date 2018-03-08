@@ -1,14 +1,13 @@
 package com.dotto.cli.util;
 
+import com.dotto.cli.util.asset.Beat;
+import com.dotto.cli.util.asset.Click;
+import com.dotto.cli.util.asset.Slide;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import com.dotto.cli.util.asset.Beat;
-import com.dotto.cli.util.asset.Click;
-import com.dotto.cli.util.asset.Slide;
 
 /**
  * Reads a single {@code *.to} file for beats in it and returns them for as long as the caller
@@ -19,10 +18,10 @@ import com.dotto.cli.util.asset.Slide;
 public class BeatStreamReader {
     /** The scanner for this {@code BeatStreamReader}. */
     private Scanner scanner;
-
     /** Tells if the this reader has reached the end of the file. */
     private boolean EOF;
-    private File beatmapFile;
+    /** The file that this reader will be reading. */
+    private final File BeatmapFile;
 
     /**
      * Constructs a new instance of {@code BeatStreamReader}.
@@ -31,7 +30,7 @@ public class BeatStreamReader {
      * @throws java.io.FileNotFoundException If the reader is unable to find the file.
      */
     public BeatStreamReader(File BeatmapFile) throws FileNotFoundException {
-        this.beatmapFile = BeatmapFile;
+        this.BeatmapFile = BeatmapFile;
         scanner = new Scanner(BeatmapFile);
     }
 
@@ -51,35 +50,36 @@ public class BeatStreamReader {
         }
 
         String line = scanner.nextLine();
-        Scanner lineScanner = new Scanner(line);
+        
+        // Safety percaution
+        try (Scanner lineScanner = new Scanner(line)) {
+            while (lineScanner.hasNext())
+                tokens.add(lineScanner.next());
+        }
 
-        while (lineScanner.hasNext())
-            tokens.add(lineScanner.next());
-
-        lineScanner.close();
-
+        // Collecting timestamp data.
         int initTimeStamp = Integer.parseInt(tokens.get(0));
         int clickTimeStamp = Integer.parseInt(tokens.get(1));
         List<Integer> positions = new ArrayList<>();
 
         switch (tokens.get(2)) {
-        // Click
-        case "0":
-            positions.add(Integer.parseInt(tokens.get(3)));
-            positions.add(Integer.parseInt(tokens.get(4)));
+            // Click
+            case "0":
+                positions.add(Integer.parseInt(tokens.get(3)));
+                positions.add(Integer.parseInt(tokens.get(4)));
 
-            result = new Click(initTimeStamp, clickTimeStamp, positions);
-            break;
-        // Slider
-        case "1":
-            tokens.subList(3, tokens.size()).forEach(
-                (token) -> {
-                    positions.add(Integer.parseInt(token));
-                }
-            );
+                result = new Click(initTimeStamp, clickTimeStamp, positions);
+                break;
+            // Slider
+            case "1":
+                tokens.subList(3, tokens.size()).forEach(
+                    (token) -> {
+                        positions.add(Integer.parseInt(token));
+                    }
+                );
 
-            result = new Slide(initTimeStamp, clickTimeStamp, positions);
-            break;
+                result = new Slide(initTimeStamp, clickTimeStamp, positions);
+                break;
         }
 
         return result;
@@ -94,8 +94,13 @@ public class BeatStreamReader {
         return !EOF;
     }
 
+    /**
+     * Resets the file {@code Scanner}'s position in the file if necessary.
+     * 
+     * @throws java.io.FileNotFoundException If the file does not exists or cannot be found.
+     */
     public void reset() throws FileNotFoundException {
         scanner.close();
-        scanner = new Scanner(beatmapFile);
+        scanner = new Scanner(BeatmapFile);
     }
 }

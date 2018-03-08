@@ -1,9 +1,8 @@
 package com.dotto.cli.util;
 
+import com.dotto.cli.Core;
 import java.io.File;
 import java.net.URISyntaxException;
-
-import com.dotto.cli.Core;
 
 /**
  * Collection of assorted functions for convenience.

@@ -49,5 +49,10 @@ public interface View {
      */
     void keyUp(KeyEvent e);
 
+    /**
+     * Updates the game every frame.
+     * 
+     * @param delta
+     */
     void update(double delta);
 }

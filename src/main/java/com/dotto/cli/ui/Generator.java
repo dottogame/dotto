@@ -1,9 +1,9 @@
 package com.dotto.cli.ui;
 
 /**
+ * /// Class Description ///
  * 
  * @author lite20 (Ephraim Bilson)
- *
  */
 public class Generator {
 
