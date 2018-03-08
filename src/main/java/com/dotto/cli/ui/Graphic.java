@@ -3,6 +3,7 @@ package com.dotto.cli.ui;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -13,9 +14,9 @@ import javax.imageio.ImageIO;
  */
 public class Graphic {
     /** The image that represents this {@code Graphic}. */
-    private final BufferedImage[] Image;
-    /** The name of this {@code Graphic}. */
-    private final String GraphicName;
+    private final ArrayList<BufferedImage> frame;
+
+    public final String name;
 
     /**
      * Constructs a new {@code Graphic} class object with a {@code BufferedImage} as it's
@@ -24,9 +25,21 @@ public class Graphic {
      * @param Image The image that represents this {@code Graphic}.
      * @throws java.io.IOException If the {@code Image} could not be read.
      */
-    public Graphic(File Image) throws IOException {
-        BufferedImage buff = ImageIO.read(Image);
-        GraphicName = Image.getName();
+    public Graphic(String path) throws IOException {
+        String[] parts = path.split("/");
+        this.name = parts[parts.length - 1];
+        File imgFile = new File(path + '/');
+        if (imgFile.isDirectory()) {
+            int x = imgFile.list().length;
+            frame = new ArrayList<>(x);
+            for (int i = 0; i < x; i++) {
+                frame.add(ImageIO.read(new File(path + '/' + i + ".png")));
+            }
+        } else {
+            frame = new ArrayList<>(1);
+            imgFile = new File(path + ".png");
+            frame.add(ImageIO.read(imgFile));
+        }
     }
 
     /**
@@ -35,21 +48,15 @@ public class Graphic {
      * @return The {@code BufferedImage} that represents this {@code Graphic}.
      */
     public BufferedImage getBuffer() {
-        return Image;
-    }
-
-    /**
-     * Inherited method.
-     * 
-     * @return The name of this {@code Graphic}.
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return GraphicName;
+        // TODO support animation
+        return frame.get(0);
     }
 
     public int getHeight() {
-        return Image.getHeight();
+        return frame.get(0).getHeight();
+    }
+
+    public int getWidth() {
+        return frame.get(0).getWidth();
     }
 }
