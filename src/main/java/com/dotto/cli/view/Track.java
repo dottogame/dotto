@@ -174,7 +174,7 @@ public class Track implements View {
 
         // draw tint
         g.setColor(tint);
-        // g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
+        g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
 
         // draw grid
         g.setColor(Color.WHITE);
