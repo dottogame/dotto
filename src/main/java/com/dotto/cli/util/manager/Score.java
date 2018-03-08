@@ -7,13 +7,13 @@ package com.dotto.cli.util.manager;
  * @author SoraKatadzuma
  */
 public final class Score {
-    public int noteCount;
+    public double noteCount = 0;
 
     /** The player's current combo. */
     public int Combo;
 
     /** The player's current score. */
-    public int CurrentScore;
+    public double currentScore;
 
     /** The player's current accuracy. */
     public double currentAccuracy;
@@ -21,6 +21,7 @@ public final class Score {
     public Score() {
         noteCount = 0;
         currentAccuracy = 100.0;
+        currentScore = 0;
     }
 
     /**
@@ -29,9 +30,8 @@ public final class Score {
      * 
      * @return The score based on the timing of the current {@code Beat}, combo, and current score.
      */
-    public int CalculateScore() {
-        int result;
-        return 0;
+    public void adjustScore(double acc) {
+        // TODO
     }
 
     /**
@@ -49,16 +49,18 @@ public final class Score {
     /**
      * Adjust the player's accuracy after clicking a {@code Beat}.
      * 
-     * @param ms the miliseconds the click was off by
+     * @param acc the accuracy of the click to adjust to
      * @return The calculated accuracy the player currently has.
      */
-    public void adjust(double acc) {
-        // new_acc = x * (n / (n - 1)) + acc / n
-        currentAccuracy = currentAccuracy * (noteCount / (noteCount + 1))
-            + acc / noteCount;
+    public void adjustAccuracy(double acc) {
+        if (noteCount == 0) currentAccuracy = acc;
+        else currentAccuracy += ((acc - currentAccuracy) / noteCount);
         noteCount++;
     }
 
+    /**
+     * Reset the score manager (for recyling)
+     */
     public void reset() {
         noteCount = 0;
         currentAccuracy = 100.0f;

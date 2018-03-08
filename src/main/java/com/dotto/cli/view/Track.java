@@ -222,7 +222,7 @@ public class Track implements View {
             // ignore if too early. Eventually give some visual feedback
             if (tapOff < 500) {
                 beats.remove(0);
-                score.adjust(score.calculateAccuracy(tapOff));
+                score.adjustAccuracy(score.calculateAccuracy(tapOff));
                 if (Math.abs(tapOff) < 100) System.out.println("nice!");
             }
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -259,10 +259,13 @@ public class Track implements View {
         // load more beats
         if (beats.size() == 0) beats.add(bsr.GetNextBeat());
         long offset = music.clip.getMicrosecondPosition() / 1000;
-        Beat new_beat = beats.get(beats.size() - 1);
-        while (new_beat != null && new_beat.InitTimestamp < offset) {
-            new_beat = bsr.GetNextBeat();
-            beats.add(new_beat);
+        // notes can be deleted in this window (if game is reset)
+        if (beats.size() > 0) {
+            Beat new_beat = beats.get(beats.size() - 1);
+            while (new_beat != null && new_beat.InitTimestamp < offset) {
+                new_beat = bsr.GetNextBeat();
+                beats.add(new_beat);
+            }
         }
 
         // expire passed notes
@@ -278,7 +281,7 @@ public class Track implements View {
             if (pad < -250) {
                 // it's a miss! D:
                 beats.remove(i);
-                score.adjust(0);
+                score.adjustAccuracy(0);
             }
 
             i++;
