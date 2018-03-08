@@ -19,6 +19,7 @@ import com.dotto.cli.util.asset.BeatMap;
 import com.dotto.cli.util.asset.Click;
 import com.dotto.cli.util.asset.MapData;
 import com.dotto.cli.util.manager.MapConfigure;
+import com.dotto.cli.util.manager.Score;
 
 /**
  * TODO: write class description.
@@ -65,6 +66,8 @@ public class Track implements View {
         2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f
     );
 
+    private Score score;
+
     public Track(String path, String mapId) throws IOException {
         this.path = path;
         this.mapId = mapId;
@@ -75,6 +78,7 @@ public class Track implements View {
         speed = mapData.acceleration;
         beats = new Vector<>(mapData.ClickCount + mapData.SlideCount);
         beats.add(bsr.GetNextBeat());
+        score = new Score();
     }
 
     public void start() throws IOException {
@@ -87,6 +91,7 @@ public class Track implements View {
     }
 
     public void reset() throws IOException {
+        score.reset();
         beats.clear();
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
 
@@ -167,6 +172,11 @@ public class Track implements View {
         // draw FPS
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
 
+        // draw Accuracy
+        g.drawString(
+            score.currentAccuracy + "%", (int) (Config.WIDTH * 0.9f), 20
+        );
+
         // draw cursor
         g.fillOval((Config.WIDTH / 2) - 15, (Config.HEIGHT / 2) - 15, 30, 30);
     }
@@ -212,6 +222,7 @@ public class Track implements View {
             // ignore if too early. Eventually give some visual feedback
             if (tapOff < 500) {
                 beats.remove(0);
+                score.adjust(score.calculateAccuracy(tapOff));
                 if (Math.abs(tapOff) < 100) System.out.println("nice!");
             }
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -267,6 +278,7 @@ public class Track implements View {
             if (pad < -250) {
                 // it's a miss! D:
                 beats.remove(i);
+                score.adjust(0);
             }
 
             i++;

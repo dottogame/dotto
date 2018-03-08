@@ -7,15 +7,21 @@ package com.dotto.cli.util.manager;
  * @author SoraKatadzuma
  */
 public final class Score {
-    public int noteCount = 0;
-    /** The accuracy score the player achieved. */
-    public float ScoreAccuracy;
+    public int noteCount;
+
     /** The player's current combo. */
     public int Combo;
+
     /** The player's current score. */
     public int CurrentScore;
+
     /** The player's current accuracy. */
-    private double CurrentAccuracy = 100.0;
+    public double currentAccuracy;
+
+    public Score() {
+        noteCount = 0;
+        currentAccuracy = 100.0;
+    }
 
     /**
      * Calculates the score based on the timing of the current {@code Beat}, combo, and current
@@ -34,7 +40,7 @@ public final class Score {
      * @param ms
      * @return
      */
-    public double calculateAccuracy(int ms) {
+    public double calculateAccuracy(long ms) {
         // acc = 1.01^(-0.33 * x + 460) + 3
         double result = Math.pow(1.01, -0.33 * Math.abs(ms) + 460.0) + 3.0;
         return result <= 100.0 ? result : 100.0;
@@ -46,10 +52,15 @@ public final class Score {
      * @param ms the miliseconds the click was off by
      * @return The calculated accuracy the player currently has.
      */
-    public void adjust(int ms) {
+    public void adjust(double acc) {
         // new_acc = x * (n / (n - 1)) + acc / n
-        CurrentAccuracy = CurrentAccuracy * (noteCount / (noteCount + 1))
-            + calculateAccuracy(ms) / noteCount;
+        currentAccuracy = currentAccuracy * (noteCount / (noteCount + 1))
+            + acc / noteCount;
         noteCount++;
+    }
+
+    public void reset() {
+        noteCount = 0;
+        currentAccuracy = 100.0f;
     }
 }
