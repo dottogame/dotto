@@ -1,8 +1,5 @@
 package com.dotto.cli.util;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * 
  * @author lite20 (Ephraim Bilson)
@@ -17,7 +14,7 @@ public class GameLoop implements Runnable {
     /** The static frames per second. */
     public int staticFps = 0;
     /** The target frames per second. */
-    private final int targetFps;
+    public final int targetFps;
 
     /**
      * Constructs a new instance of {@code GameLoop}.
@@ -38,16 +35,16 @@ public class GameLoop implements Runnable {
     @Override
     public void run() {
         // game render loop
-        long lastLoopTime = System.nanoTime();
+        long lastLoopTime = System.currentTimeMillis();
         long lastFpsTime = 0;
 
-        final long OPTIMAL_TIME = 1000000000 / targetFps;
+        final long OPTIMAL_TIME = 1000 / targetFps;
 
         while (isRunning) {
             // work out how long its been since the last update, this
             // will be used to calculate how far the entities should
             // move this loop
-            long now = System.nanoTime();
+            long now = System.currentTimeMillis();
             long updateLength = now - lastLoopTime;
             lastLoopTime = now;
             double delta = updateLength / ((double) OPTIMAL_TIME);
@@ -58,22 +55,10 @@ public class GameLoop implements Runnable {
             lastFpsTime += updateLength;
             fps++;
 
-            if (lastFpsTime >= 1000000000) {
+            if (lastFpsTime >= 1000) {
                 staticFps = fps;
                 lastFpsTime = 0;
                 fps = 0;
-            }
-
-            // sleep t'ill next frame
-            try {
-                if((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) > 0)
-                    Thread.sleep(
-                        (lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000
-                    );
-            } catch (InterruptedException ex) {
-                // TODO Auto-generated catch block
-                Logger.getLogger(GameLoop.class.getName())
-                        .log(Level.SEVERE, ex.getMessage(), ex);
             }
         }
     }

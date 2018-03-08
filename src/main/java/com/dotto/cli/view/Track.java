@@ -296,7 +296,7 @@ public class Track implements View {
             if (tapOff < 500) {
                 beats.remove(0);
                 score.adjustAccuracy(score.calculateAccuracy(tapOff));
-                
+               
                 if (Math.abs(tapOff) < 100) System.out.println("nice!");
             }
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -352,6 +352,7 @@ public class Track implements View {
         // notes can be deleted in this window (if game is reset)
         if (beats.size() > 0) {
             Beat new_beat = beats.get(beats.size() - 1);
+            
             while (new_beat != null && new_beat.InitTimestamp < offset) {
                 new_beat = bsr.GetNextBeat();
                 beats.add(new_beat);
@@ -365,7 +366,9 @@ public class Track implements View {
         
         for (int z = 0; z < beats.size(); z++) {
             beat = beats.get(z);
+            
             if (beat == null) continue;
+            
             pad = (beat.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000));
 

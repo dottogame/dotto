@@ -9,6 +9,9 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -28,6 +31,9 @@ public class Core {
     public static File rootDirectory;
     /** The graphics manager. */
     public static Graphics graphicManager;
+    /** A thread factory for the game to use to schedule events. */
+    public static final ScheduledThreadPoolExecutor THREAD_FACTORY =
+            new ScheduledThreadPoolExecutor(2, Executors.defaultThreadFactory());
 
     /**
      * Entry point of application.
@@ -53,8 +59,13 @@ public class Core {
 
         // Building the game window.
         pane = new GamePane();
-        new Thread(pane.renderLoop).start();
-        new Thread(pane.updateLoop).start();
+        
+        THREAD_FACTORY.schedule(
+            pane.renderLoop, 1000 / pane.renderLoop.targetFps, TimeUnit.MILLISECONDS
+        );
+        THREAD_FACTORY.schedule(
+            pane.updateLoop, 1000 / pane.updateLoop.targetFps, TimeUnit.MILLISECONDS
+        );
         
         // Building the game frame.
         w = new JFrame("Dotto");
@@ -85,7 +96,7 @@ public class Core {
 
         try {
             Track t = new Track(
-                rootDirectory.getPath() + "/maps/still_snow", "tom_easy"
+                rootDirectory.getPath() + "/maps/heiakim_counting", "1520351143651"
             );
 
             pane.view = t;
@@ -102,6 +113,7 @@ public class Core {
      * Closes the game upon request.
      */
     public static void shutdown() {
+        THREAD_FACTORY.shutdown();
         System.exit(0);
     }
 }
