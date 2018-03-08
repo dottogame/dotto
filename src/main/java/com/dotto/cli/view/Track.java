@@ -210,9 +210,8 @@ public class Track implements View {
             long tapOff = tapped.ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000);
             // ignore if too early. Eventually give some visual feedback
-            if (tapOff > 500) {
+            if (tapOff < 500) {
                 beats.remove(0);
-                System.out.println(tapOff);
                 if (Math.abs(tapOff) < 100) System.out.println("nice!");
             }
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
