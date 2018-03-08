@@ -34,6 +34,8 @@ public class Track implements View {
 
     public double xOffset = 0;
     public double yOffset = 0;
+    public double gxOffset = 0;
+    public double gyOffset = 0;
     public double xAccel = 0;
     public double yAccel = 0;
     public double speed = 4;
@@ -44,7 +46,9 @@ public class Track implements View {
     public boolean LEFT = false;
     public boolean RIGHT = false;
 
-    public BeatMap map;
+    public BeatMap beatMap;
+
+    public MapData map;
 
     private BeatStreamReader bsr;
 
@@ -70,31 +74,35 @@ public class Track implements View {
     private Score score;
     private Graphic back;
 
-    private float backScaleFactor = 0;
-
     private Color tint;
+
+    private float backRatio;
+
+    private int backWidth;
 
     public Track(String path, String mapId) throws IOException {
         this.path = path;
         this.mapId = mapId;
         music = new Audio(path + "/track.ogg");
-        map = MapConfigure.MapFromFolder(path);
+        beatMap = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
-        MapData mapData = map.Maps.get(mapId);
-        speed = mapData.acceleration;
-        beats = new Vector<>(mapData.ClickCount + mapData.SlideCount);
+        map = beatMap.Maps.get(mapId);
+        speed = map.acceleration;
+        beats = new Vector<>(map.ClickCount + map.SlideCount);
         beats.add(bsr.GetNextBeat());
         score = new Score();
         back = new Graphic(path + "/back");
-        backScaleFactor = (Config.HEIGHT / back.getBuffer().getHeight());
+        backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
+        backRatio = (float) back.getHeight() / (float) back.getWidth();
+
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
     }
 
     public void start() throws IOException {
         // align at center of note 0
         Click click = (Click) beats.get(0);
-        xOffset = (Config.WIDTH / 2) - click.x - 50;
-        yOffset = (Config.HEIGHT / 2) - click.y - 50;
+        xOffset = click.x;
+        yOffset = click.y;
 
         music.play();
     }
@@ -126,10 +134,16 @@ public class Track implements View {
      */
     @Override
     public void draw(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
+
         // draw back
+        /*
+         * back.getBuffer(), 0, 0, Config.WIDTH, (int) (Config.HEIGHT / backScaleFactor), null );
+         */
         g.drawImage(
-            back.getBuffer(), 0, 0, (int) (backScaleFactor * Config.WIDTH),
-            Config.HEIGHT, null
+            back.getBuffer(), (int) (gxOffset * 0.25), (int) (gyOffset * 0.25),
+            backWidth, (int) (backWidth * backRatio), null
         );
 
         // draw tint
@@ -142,7 +156,7 @@ public class Track implements View {
             for (int x = -100; x < Config.WIDTH + 100; x += 100) {
                 g.fillOval(
                     x + (int) ((xOffset % 200) * 0.5),
-                    y + (int) ((yOffset % 200) * 0.5), 2, 2
+                    y + (int) ((yOffset % 200) * 0.5), 3, 3
                 );
             }
         }
@@ -150,6 +164,8 @@ public class Track implements View {
         // draw notes
         float pad;
         Beat beat;
+        double noteOffX = Config.WIDTH / 2 - 50;
+        double noteOffY = Config.HEIGHT / 2 - 50;
         for (int i = 0; i < beats.size(); i++) {
             beat = beats.get(i);
             if (beat == null) continue;
@@ -164,8 +180,8 @@ public class Track implements View {
                 g.setStroke(solid);
                 g.draw(
                     new Ellipse2D.Double(
-                        (int) (click.x - (pad / 2) + xOffset),
-                        (int) (click.y - (pad / 2) + yOffset),
+                        (int) (click.x - pad / 2 + xOffset + noteOffX),
+                        (int) (click.y - pad / 2 + yOffset + noteOffY),
                         (int) (100 + pad), (int) (100 + pad)
                     )
                 );
@@ -174,8 +190,8 @@ public class Track implements View {
                 g.setStroke(dashed);
                 g.draw(
                     new Ellipse2D.Double(
-                        (int) (click.x + xOffset), (int) (click.y + yOffset),
-                        100, 100
+                        (int) (click.x + xOffset + noteOffX),
+                        (int) (click.y + yOffset + noteOffY), 100, 100
                     )
                 );
             } else {
@@ -271,6 +287,13 @@ public class Track implements View {
 
         yOffset += yAccel * delta;
         xOffset += xAccel * delta;
+
+        gxOffset = xOffset;
+        gyOffset = yOffset;
+        if (gxOffset > 0) gxOffset = 0;
+        if (gxOffset < -map.bound.x) gxOffset = -map.bound.x;
+        if (gyOffset > 0) gyOffset = 0;
+        if (gyOffset < -map.bound.y) gyOffset = -map.bound.y;
 
         // load more beats
         if (beats.size() == 0) beats.add(bsr.GetNextBeat());

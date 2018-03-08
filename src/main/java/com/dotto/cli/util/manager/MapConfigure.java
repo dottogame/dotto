@@ -1,5 +1,6 @@
 package com.dotto.cli.util.manager;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,7 +56,6 @@ public final class MapConfigure {
 
         trackName = track.getString("name");
         trackArtist = track.getString("artist");
-        trackPath = track.getString("file");
         source = track.getString("source");
         bpm = (byte) track.getInt("bpm");
 
@@ -64,9 +64,7 @@ public final class MapConfigure {
         int[] preview = { previewData.getInt("start"),
             previewData.getInt("length") };
 
-        return new TrackData(
-            trackName, trackArtist, trackPath, source, bpm, preview
-        );
+        return new TrackData(trackName, trackArtist, source, bpm, preview);
     }
 
     /**
@@ -91,11 +89,14 @@ public final class MapConfigure {
             clicks = jso.getInt("clicks");
             slides = jso.getInt("slides");
             hops = jso.getInt("hops");
+            JSONObject bjson = jso.getJSONObject("bound");
+            Point bound = new Point(bjson.getInt("x"), bjson.getInt("y"));
             accelSpeed = jso.getDouble("acceleration");
             id = jso.getString("id");
-
             mapData.put(
-                id, new MapData(mapName, clicks, slides, hops, accelSpeed, id)
+                id, new MapData(
+                    mapName, clicks, slides, hops, bound, accelSpeed, id
+                )
             );
         }
 

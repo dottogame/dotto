@@ -10,8 +10,6 @@ public final class TrackData {
     public final String TrackName;
     /** The author of this song. */
     public final String TrackAuthor;
-    /** The path to this track. */
-    public final String TrackPath;
     /** The source this song came from, be it a game, show, or movie, etc. */
     public final String Source;
     /** The speed of this track. */
@@ -30,12 +28,11 @@ public final class TrackData {
      * @param Preview The preview times for this track in milliseconds.
      */
     public TrackData(
-        String TrackName, String TrackAuthor, String TrackPath, String Source,
-        byte bpm, int[] Preview
+        String TrackName, String TrackAuthor, String Source, byte bpm,
+        int[] Preview
     ) {
         this.TrackName = TrackName;
         this.TrackAuthor = TrackAuthor;
-        this.TrackPath = TrackPath;
         this.Source = Source;
         this.bpm = bpm;
         this.Preview = Preview;

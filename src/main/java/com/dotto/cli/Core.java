@@ -73,8 +73,7 @@ public class Core {
 
         try {
             Track t = new Track(
-                rootDirectory.getPath() + "/maps/heiakim_counting",
-                "1520351143651"
+                rootDirectory.getPath() + "/maps/still_snow", "tom_easy"
             );
 
             pane.view = t;

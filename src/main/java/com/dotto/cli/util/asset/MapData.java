@@ -1,8 +1,11 @@
 package com.dotto.cli.util.asset;
 
+import java.awt.Point;
+
 /**
  * Contains all the important map data for a {@code BeatMap}.
  * 
+ * @author lite20 (Ephraim BilsON)
  * @author SoraKatadzuma
  */
 public final class MapData {
@@ -18,18 +21,21 @@ public final class MapData {
     public final double acceleration;
     /** The path to this map. */
     public final String MapId;
+    /** The distance in pixels from the leftmost note to the right most note **/
+    public final Point bound;
 
     /**
      * @param MapName
      * @param ClickCount
      * @param SlideCount
      * @param HopCount
+     * @param bound
      * @param AccelerationSpeed
      * @param MapPath
      */
     public MapData(
         String MapName, int ClickCount, int SlideCount, int HopCount,
-        double acceleration, String MapId
+        Point bound, double acceleration, String MapId
     ) {
         this.MapName = MapName;
         this.ClickCount = ClickCount;
@@ -37,5 +43,6 @@ public final class MapData {
         this.HopCount = HopCount;
         this.acceleration = acceleration;
         this.MapId = MapId;
+        this.bound = bound;
     }
 }

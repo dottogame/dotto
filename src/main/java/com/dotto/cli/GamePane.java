@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+import com.dotto.cli.util.Config;
 import com.dotto.cli.util.GameCall;
 import com.dotto.cli.util.GameLoop;
 import com.dotto.cli.view.Boot;
@@ -69,12 +70,22 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        RenderingHints rh = new RenderingHints(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+        // / g2.scale(0.5, 0.5);
+        System.out.println(this.getWidth());
+        if (Config.ANTIALIAS) {
+
+            RenderingHints rh = new RenderingHints(
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+            );
+
+            g2.setRenderingHints(rh);
+        }
+
+        g2.setRenderingHint(
+            RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE
         );
 
-        g2.setRenderingHints(rh);
         view.draw(g2);
     }
 
