@@ -50,8 +50,7 @@ public final class Score {
      * @param acc The accuracy of the click to adjust to.
      */
     public void adjustAccuracy(double acc) {
-        currentAccuracy += (acc - currentAccuracy) / noteCount;
-        noteCount++;
+        currentAccuracy += (acc - currentAccuracy) / ++noteCount;
     }
 
     /**
