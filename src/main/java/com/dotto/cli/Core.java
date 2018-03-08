@@ -1,7 +1,12 @@
 package com.dotto.cli;
 
+import java.awt.Cursor;
+import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,12 +35,18 @@ public class Core {
     /** The graphics manager. */
     public static Graphics graphicManager;
 
+    public static DisplayMode originalMode;
+
+    public static GraphicsDevice vc;
+
     /**
      * Entry point of application.
      * 
      * @param args The command line arguments.
      */
     public static void main(String... args) {
+        // needed to allow the game to draw in fullscreen mode
+        System.setProperty("sun.java2d.noddraw", "true");
         Flagger.setFlags(args);
 
         try {
@@ -46,27 +57,59 @@ public class Core {
             System.exit(0);
         }
 
-        // instantiate managers
+        // instantiate graphic manager
         graphicManager = new Graphics();
 
+        // build game pane and window
         pane = new GamePane();
         w = new JFrame("Dotto");
         w.add(pane);
         w.addKeyListener(pane);
         w.addMouseListener(pane);
-        w.setUndecorated(true);
-        GraphicsDevice vc = GraphicsEnvironment.getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-        if (
-            !vc.isFullScreenSupported()
-        ) { throw new UnsupportedOperationException(
-            "Fullscreen mode is unsupported."
-        ); }
 
-        vc.setFullScreenWindow(w);
+        // Create a new blank cursor.
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+            new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
+            new Point(0, 0), "blank cursor"
+        );
+
+        // Set the blank cursor to the JFrame.
+        Core.w.getContentPane().setCursor(blankCursor);
+
+        // launch in either fullscreen mode or normal mode
         if (Config.FULLSCREEN) {
-            Config.WIDTH = w.getWidth();
-            Config.HEIGHT = w.getHeight();
+            w.setUndecorated(true);
+            vc = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                .getDefaultScreenDevice();
+            if (
+                !vc.isFullScreenSupported()
+            ) { throw new UnsupportedOperationException(
+                "Fullscreen mode is unsupported."
+            ); }
+
+            originalMode = vc.getDisplayMode();
+            DisplayMode[] dm = vc.getDisplayModes();
+            DisplayMode finalDM = dm[0];
+            for (int i = 0; i < dm.length; i++) {
+                if (dm[i].getRefreshRate() >= finalDM.getRefreshRate())
+                    if (dm[i].getWidth() <= Config.WIDTH) finalDM = dm[i];
+            }
+
+            System.out.println(
+                finalDM.getWidth() + ":" + finalDM.getHeight() + ":"
+                    + finalDM.getRefreshRate()
+            );
+
+            vc.setFullScreenWindow(w);
+            vc.setDisplayMode(finalDM);
+            if (Config.FULLSCREEN) {
+                Config.WIDTH = w.getWidth();
+                Config.HEIGHT = w.getHeight();
+            }
+        }
+
+        else {
+            w.setVisible(true);
         }
 
         try {
@@ -82,6 +125,7 @@ public class Core {
     }
 
     public static void shutdown() {
+        vc.setDisplayMode(originalMode);
         System.exit(0);
     }
 }

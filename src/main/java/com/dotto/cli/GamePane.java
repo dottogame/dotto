@@ -35,7 +35,8 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      * Constructs a new {@code GamePane} object.
      */
     public GamePane() {
-        System.setProperty("sun.java2d.opengl", "true");
+        setOpaque(true);
+
         view = new Boot();
         renderLoop = new GameLoop(
             new GameCall() {
@@ -72,8 +73,6 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        // / g2.scale(0.5, 0.5);
-        System.out.println(this.getWidth());
         if (Config.ANTIALIAS) {
 
             RenderingHints rh = new RenderingHints(
