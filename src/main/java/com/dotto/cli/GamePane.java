@@ -1,9 +1,5 @@
 package com.dotto.cli;
 
-import com.dotto.cli.util.Config;
-import com.dotto.cli.util.GameLoop;
-import com.dotto.cli.view.Boot;
-import com.dotto.cli.view.View;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,7 +7,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+
 import javax.swing.JPanel;
+
+import com.dotto.cli.util.Config;
+import com.dotto.cli.util.GameLoop;
+import com.dotto.cli.view.Boot;
+import com.dotto.cli.view.View;
 
 /**
  * Drawing surface for views and view manager.
@@ -32,18 +34,23 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      * Constructs a new {@code GamePane} object.
      */
     public GamePane() {
+        setOpaque(true);
         // The starting view of the game.
         view = new Boot();
-        
+
         // Assigning the graphics rendering loop for this Pane.
-        renderLoop = new GameLoop(delta -> {
-            repaint();
-        }, 100);
+        renderLoop = new GameLoop(
+            delta -> {
+                repaint();
+            }, 100
+        );
 
         // Assigning the game's updating loop this Pane.
-        updateLoop = new GameLoop(delta -> {
-            view.update(delta);
-        }, 60);
+        updateLoop = new GameLoop(
+            delta -> {
+                view.update(delta);
+            }, 60
+        );
     }
 
     /**
@@ -55,11 +62,8 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         Graphics2D g2 = (Graphics2D) g;
-        // / g2.scale(0.5, 0.5);
-        // System.out.println(this.getWidth());
-        
         if (Config.ANTIALIAS) {
             RenderingHints rh = new RenderingHints(
                 RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -71,6 +75,11 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
 
         g2.setRenderingHint(
             RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE
+        );
+
+        g2.setRenderingHint(
+            RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR
         );
 
         view.draw(g2);

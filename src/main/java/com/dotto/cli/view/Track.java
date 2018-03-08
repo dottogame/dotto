@@ -163,13 +163,8 @@ public class Track implements View {
      */
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
 
         // draw back
-        /*
-         * back.getBuffer(), 0, 0, Config.WIDTH, (int) (Config.HEIGHT / backScaleFactor), null );
-         */
         g.drawImage(
             back.getBuffer(), (int) (gxOffset * 0.25), (int) (gyOffset * 0.25),
             backWidth, (int) (backWidth * backRatio), null
@@ -177,7 +172,7 @@ public class Track implements View {
 
         // draw tint
         g.setColor(tint);
-        g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
+        // g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
 
         // draw grid
         g.setColor(Color.WHITE);
