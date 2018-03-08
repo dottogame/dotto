@@ -3,6 +3,7 @@
     "height": 480,
     "fullscreen": true,
     "antialias": true,
+    "backDim": 0.25,
     "controls": {
         "up": 73,
         "down": 75,

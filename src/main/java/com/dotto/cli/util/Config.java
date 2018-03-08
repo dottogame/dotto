@@ -43,6 +43,8 @@ public class Config {
 
     public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
 
+    public static float BACK_DIM;
+
     /**
      * Loads in the configuration file.
      * 
@@ -58,6 +60,7 @@ public class Config {
         HEIGHT = json.getInt("height");
         FULLSCREEN = json.getBoolean("fullscreen");
         ANTIALIAS = json.getBoolean("antialias");
+        BACK_DIM = json.getFloat("backDim");
         JSONObject controls = json.getJSONObject("controls");
         UP_KEY = controls.getInt("up");
         DOWN_KEY = controls.getInt("down");

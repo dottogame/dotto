@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import com.dotto.cli.Core;
+import com.dotto.cli.ui.Graphic;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.asset.Audio;
@@ -67,6 +68,11 @@ public class Track implements View {
     );
 
     private Score score;
+    private Graphic back;
+
+    private float backScaleFactor = 0;
+
+    private Color tint;
 
     public Track(String path, String mapId) throws IOException {
         this.path = path;
@@ -79,6 +85,9 @@ public class Track implements View {
         beats = new Vector<>(mapData.ClickCount + mapData.SlideCount);
         beats.add(bsr.GetNextBeat());
         score = new Score();
+        back = new Graphic(path + "/back");
+        backScaleFactor = (Config.HEIGHT / back.getBuffer().getHeight());
+        tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
     }
 
     public void start() throws IOException {
@@ -117,7 +126,14 @@ public class Track implements View {
      */
     @Override
     public void draw(Graphics2D g) {
-        g.setColor(Color.BLACK);
+        // draw back
+        g.drawImage(
+            back.getBuffer(), 0, 0, (int) (backScaleFactor * Config.WIDTH),
+            Config.HEIGHT, null
+        );
+
+        // draw tint
+        g.setColor(tint);
         g.fillRect(0, 0, Config.WIDTH, Config.HEIGHT);
 
         // draw grid
