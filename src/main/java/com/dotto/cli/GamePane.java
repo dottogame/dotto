@@ -37,11 +37,13 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         
         // Assigning the graphics rendering loop for this Pane.
         renderLoop = new GameLoop(delta -> {
-                repaint();
+            repaint();
         }, 100);
 
         // Assigning the game's updating loop this Pane.
-        updateLoop = new GameLoop(view::update, 60);
+        updateLoop = new GameLoop(delta -> {
+            view.update(delta);
+        }, 60);
     }
 
     /**
@@ -56,7 +58,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         
         Graphics2D g2 = (Graphics2D) g;
         // / g2.scale(0.5, 0.5);
-        System.out.println(this.getWidth());
+        // System.out.println(this.getWidth());
         
         if (Config.ANTIALIAS) {
             RenderingHints rh = new RenderingHints(
