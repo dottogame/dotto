@@ -1,6 +1,7 @@
 package com.dotto.cli;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -56,6 +57,7 @@ public class Core {
     public static void main(String... args) {
         // needed to allow the game to draw in fullscreen mode
         System.setProperty("sun.java2d.noddraw", "true");
+
         // Sets flags that the game will use to adjust how it runs.
         Flagger.setFlags(args);
 
@@ -114,7 +116,7 @@ public class Core {
             originalMode = vc.getDisplayMode();
             DisplayMode[] dm = vc.getDisplayModes();
             DisplayMode finalDM = dm[0];
-            
+
             for (DisplayMode dm1 : dm) {
                 if (dm1.getRefreshRate() >= finalDM.getRefreshRate()) {
                     if (dm1.getWidth() <= Config.WIDTH) {
@@ -134,6 +136,12 @@ public class Core {
                 Config.WIDTH = w.getWidth();
                 Config.HEIGHT = w.getHeight();
             }
+        } else {
+            w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            w.setLocationRelativeTo(null);
+            w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
+            w.pack();
+            w.setVisible(true);
         }
 
         try {
@@ -143,7 +151,7 @@ public class Core {
 
             pane.view = t;
             t.start();
-        } catch (IOException ex) { // TODO Auto-generated catch block
+        } catch (IOException ex) {
             Logger.getLogger(Core.class.getName()).log(
                 Level.WARNING, ex.getMessage(), ex
             );
