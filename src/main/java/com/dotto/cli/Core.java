@@ -59,10 +59,13 @@ public class Core {
         // needed to allow the game to draw in fullscreen mode
         System.setProperty("sun.java2d.noddraw", "true");
 
-        // Sets flags that the game will use to adjust how it runs.
-        Flagger.setFlags(args);
-
         try {
+            // Protects the game from creating multiple instances of itself.
+            GameLock.lockGame();
+            
+            // Sets flags that the game will use to adjust how it runs.
+            Flagger.setFlags(args);
+            
             rootDirectory = Util.getLocalDirectory();
             Config.load();
         } catch (URISyntaxException | IOException ex) {
@@ -72,7 +75,7 @@ public class Core {
 
             shutdown();
         }
-
+        
         // instantiate graphic manager
         graphicManager = new Graphics();
 
@@ -170,6 +173,7 @@ public class Core {
      * Closes the game upon request.
      */
     public static void shutdown() {
+        GameLock.unlockFile();
         THREAD_FACTORY.shutdown();
         vc.setDisplayMode(originalMode);
         System.exit(0);
