@@ -141,7 +141,7 @@ public class Track implements View {
     public void reset() throws IOException {
         score.reset();
         beats.clear();
-        bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
+        bsr.reset();
         beats.add(bsr.GetNextBeat());
         music.stop();
         music.clip.setFramePosition(0);

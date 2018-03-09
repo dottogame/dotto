@@ -114,9 +114,13 @@ public class Core {
             originalMode = vc.getDisplayMode();
             DisplayMode[] dm = vc.getDisplayModes();
             DisplayMode finalDM = dm[0];
-            for (int i = 0; i < dm.length; i++) {
-                if (dm[i].getRefreshRate() >= finalDM.getRefreshRate())
-                    if (dm[i].getWidth() <= Config.WIDTH) finalDM = dm[i];
+            
+            for (DisplayMode dm1 : dm) {
+                if (dm1.getRefreshRate() >= finalDM.getRefreshRate()) {
+                    if (dm1.getWidth() <= Config.WIDTH) {
+                        finalDM = dm1;
+                    }
+                }
             }
 
             System.out.println(
