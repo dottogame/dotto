@@ -141,6 +141,7 @@ public class Core {
             w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             w.setLocationRelativeTo(null);
             w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
+            w.setResizable(false);
             w.pack();
             w.setVisible(true);
         }
