@@ -93,6 +93,8 @@ public class Track implements View {
     private final float backRatio;
     /** The width of the background. */
     private final int backWidth;
+    /** A check to see if the track should reset. */
+    private boolean shouldReset;
 
     /**
      * Constructs a new {@code Track View}.
@@ -139,6 +141,7 @@ public class Track implements View {
      * @throws java.io.IOException
      */
     public void reset() throws IOException {
+        xAccel = yAccel = 0;
         score.reset();
         beats.clear();
         bsr.reset();
@@ -269,15 +272,9 @@ public class Track implements View {
      */
     @Override
     public void keyDown(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown()) {
-            try {
-                reset();
-            } catch (IOException ex) {
-                Logger.getLogger(Track.class.getName()).log(
-                    Level.SEVERE, ex.getMessage(), ex
-                );
-            }
-        } else if (e.getKeyCode() == Config.UP_KEY) UP = true;
+        if (e.getKeyCode() == KeyEvent.VK_R && e.isControlDown())
+            shouldReset = true;
+        else if (e.getKeyCode() == Config.UP_KEY) UP = true;
         else if (e.getKeyCode() == Config.DOWN_KEY) DOWN = true;
         else if (e.getKeyCode() == Config.LEFT_KEY) LEFT = true;
         else if (e.getKeyCode() == Config.RIGHT_KEY) RIGHT = true;
@@ -322,6 +319,16 @@ public class Track implements View {
      */
     @Override
     public void update(double delta) {
+        if (shouldReset) {
+            try {
+                reset();
+            } catch (IOException ex) {
+                Logger.getLogger(Track.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            shouldReset = false;
+        }
+        
         yAccel *= glideFactor;
         xAccel *= glideFactor;
 
