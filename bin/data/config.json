@@ -1,7 +1,7 @@
 {
     "width": 1080,
     "height": 720,
-    "fullscreen": true,
+    "fullscreen": false,
     "antialias": false,
     "backDim": 0.25,
     "controls": {

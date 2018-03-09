@@ -349,7 +349,6 @@ public class Track implements View {
         // notes can be deleted in this window (if game is reset)
         if (beats.size() > 0) {
             Beat new_beat = beats.get(beats.size() - 1);
-
             while (new_beat != null && new_beat.InitTimestamp < offset) {
                 new_beat = bsr.GetNextBeat();
                 beats.add(new_beat);
