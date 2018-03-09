@@ -194,14 +194,19 @@ public class Track implements View {
         }
 
         g.setPaint(Color.RED);
-        g.setStroke(new BasicStroke(10.0f));
+        g.setStroke(new BasicStroke(5.0f));
         GeneralPath pathz = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+        /*
+         * float[] point = Generator.CalculateBezierPoint(0, p0, p1, p2, p3); for(int t = 10; t <
+         * 100; t += 10) { point = Generator.CalculateBezierPoint(t, p0, p1, p2, p3);
+         * pathz.lineTo(point[0], point[1]); }
+         */
+
         pathz.moveTo(200, 50);
         pathz.lineTo(270, 300);
         pathz.lineTo(100, 120);
         pathz.lineTo(300, 120);
         pathz.lineTo(130, 300);
-        pathz.closePath();
         g.draw(pathz);
 
         // draw notes

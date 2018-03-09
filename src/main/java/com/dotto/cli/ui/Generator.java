@@ -7,7 +7,7 @@ package com.dotto.cli.ui;
  */
 public class Generator {
 
-    public Element buildButton(
+    public static Element buildButton(
         String text, Graphic parts[], int x, int y, int w
     ) {
         // TODO create functions to stretch and combine graphics
@@ -16,7 +16,7 @@ public class Generator {
         return new Element(graph, x, y, w, graph.getHeight());
     }
 
-    public float[] CalculateBezierPoint(
+    public static float[] CalculateBezierPoint(
         float t, int[] p0, int[] p1, int[] p2, int[] p3
     ) {
         float u = 1.0f - t;
