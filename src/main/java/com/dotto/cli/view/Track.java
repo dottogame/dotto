@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.GeneralPath;
+import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.dotto.cli.Core;
+import com.dotto.cli.ui.Casteljau;
 import com.dotto.cli.ui.Graphic;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
@@ -68,10 +69,6 @@ public class Track implements View {
     private final List<Beat> beats;
     /** The music to play during this game round. */
     private final Audio music;
-    /** The track path. */
-    private final String path;
-    /** The track map id. */
-    private final String mapId;
     /** Current game round score. */
     private final Score score;
     /** The current background image. */
@@ -98,8 +95,6 @@ public class Track implements View {
      * @throws java.io.IOException If a file cannot be read.
      */
     public Track(String path, String mapId) throws IOException {
-        this.path = path;
-        this.mapId = mapId;
         music = new Audio(path + "/track.ogg");
         beatMap = MapConfigure.MapFromFolder(path);
         bsr = new BeatStreamReader(new File(path + "/" + mapId + ".to"));
@@ -195,19 +190,21 @@ public class Track implements View {
 
         g.setPaint(Color.RED);
         g.setStroke(new BasicStroke(5.0f));
-        GeneralPath pathz = new GeneralPath(GeneralPath.WIND_NON_ZERO);
-        /*
-         * float[] point = Generator.CalculateBezierPoint(0, p0, p1, p2, p3); for(int t = 10; t <
-         * 100; t += 10) { point = Generator.CalculateBezierPoint(t, p0, p1, p2, p3);
-         * pathz.lineTo(point[0], point[1]); }
-         */
+        float[] a = { 40, 100 };
+        float[] b = { 80, 20 };
+        float[] c = { 150, 180 };
+        float[] d = { 260, 100 };
 
-        pathz.moveTo(200, 50);
-        pathz.lineTo(270, 300);
-        pathz.lineTo(100, 120);
-        pathz.lineTo(300, 120);
-        pathz.lineTo(130, 300);
-        g.draw(pathz);
+        for (int i = 0; i < 1000; i++) {
+            float[] p;
+            float t = (float) i / 999.0f;
+            p = Casteljau.bezier(a, b, c, d, t);
+            g.draw(
+                new Ellipse2D.Double(
+                    250 + p[0] + xOffset, 250 + p[1] + yOffset, 2.0, 2.0
+                )
+            );
+        }
 
         // draw notes
         float pad;
