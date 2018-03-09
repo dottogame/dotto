@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
+import com.dotto.cli.util.asset.Visualization;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
 
@@ -149,6 +150,9 @@ public class Core {
                 rootDirectory.getPath() + "/maps/still_snow", "tom_easy"
             );
 
+            new Visualization(
+                rootDirectory.getPath() + "/maps/still_snow/track.ogg"
+            );
             pane.view = t;
             t.start();
         } catch (IOException ex) {

@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import com.dotto.cli.Core;
 import com.dotto.cli.ui.Graphic;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
+import com.dotto.cli.util.Util;
 import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
@@ -71,18 +72,6 @@ public class Track implements View {
     private final String path;
     /** The track map id. */
     private final String mapId;
-    /** First dash values. */
-    final static float dash1[] = { 10.0f };
-    /** Second dash values. */
-    final static float dash2[] = { 1.0f };
-    /** Approach circle drawing. */
-    final static BasicStroke solid = new BasicStroke(
-        5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash2, 0.0f
-    );
-    /** Hit circle drawing. */
-    final static BasicStroke dashed = new BasicStroke(
-        2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, dash1, 0.0f
-    );
     /** Current game round score. */
     private final Score score;
     /** The current background image. */
@@ -95,6 +84,11 @@ public class Track implements View {
     private final int backWidth;
     /** A check to see if the track should reset. */
     private boolean shouldReset;
+
+    private Graphic cursor;
+    private Graphic gridPoint;
+    private Graphic hitCircle;
+    private Graphic approachCircle;
 
     /**
      * Constructs a new {@code Track View}.
@@ -115,7 +109,12 @@ public class Track implements View {
             .synchronizedList(new ArrayList<>(map.ClickCount + map.SlideCount));
         beats.add(bsr.GetNextBeat());
         score = new Score();
+        // load graphics
         back = new Graphic(path + "/back");
+        cursor = new Graphic(Util.getSkinPath("cursor"));
+        gridPoint = new Graphic(Util.getSkinPath("grid_plus"));
+        hitCircle = new Graphic(Util.getSkinPath("hit_circle"));
+        approachCircle = new Graphic(Util.getSkinPath("approach_circle"));
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
@@ -183,12 +182,27 @@ public class Track implements View {
         g.setColor(Color.WHITE);
         for (int y = -100; y < Config.HEIGHT + 100; y += 100) {
             for (int x = -100; x < Config.WIDTH + 100; x += 100) {
-                g.fillOval(
-                    x + (int) ((xOffset % 200) * 0.5),
-                    y + (int) ((yOffset % 200) * 0.5), 3, 3
+                g.drawImage(
+                    gridPoint.getBuffer(),
+                    x + (int) ((xOffset % 200) * 0.5)
+                        - (int) (gridPoint.getWidth() / 2),
+                    y + (int) ((yOffset % 200) * 0.5)
+                        - (int) (gridPoint.getHeight() / 2),
+                    null
                 );
             }
         }
+
+        g.setPaint(Color.RED);
+        g.setStroke(new BasicStroke(10.0f));
+        GeneralPath pathz = new GeneralPath(GeneralPath.WIND_NON_ZERO);
+        pathz.moveTo(200, 50);
+        pathz.lineTo(270, 300);
+        pathz.lineTo(100, 120);
+        pathz.lineTo(300, 120);
+        pathz.lineTo(130, 300);
+        pathz.closePath();
+        g.draw(pathz);
 
         // draw notes
         float pad;
@@ -209,26 +223,16 @@ public class Track implements View {
             if (beat.GetType() == Beat.CLICK) {
                 Click click = (Click) beat;
 
-                if (pad * 100 < 250) g.setColor(Color.RED);
-
-                if (pad == 0) g.setColor(Color.GRAY);
-
-                g.setStroke(solid);
-                g.draw(
-                    new Ellipse2D.Double(
-                        (int) (click.x - pad / 2 + xOffset + noteOffX),
-                        (int) (click.y - pad / 2 + yOffset + noteOffY),
-                        (int) (100 + pad), (int) (100 + pad)
-                    )
+                g.drawImage(
+                    approachCircle.getBuffer(),
+                    (int) (click.x - pad / 2 + xOffset + noteOffX),
+                    (int) (click.y - pad / 2 + yOffset + noteOffY),
+                    (int) (100.0f + pad), (int) (100.0f + pad), null
                 );
 
-                g.setColor(Color.WHITE);
-                g.setStroke(dashed);
-                g.draw(
-                    new Ellipse2D.Double(
-                        (int) (click.x + xOffset + noteOffX),
-                        (int) (click.y + yOffset + noteOffY), 100, 100
-                    )
+                g.drawImage(
+                    hitCircle.getBuffer(), (int) (click.x + xOffset + noteOffX),
+                    (int) (click.y + yOffset + noteOffY), 100, 100, null
                 );
             } else {
 
@@ -246,7 +250,10 @@ public class Track implements View {
         );
 
         // draw cursor
-        g.fillOval((Config.WIDTH / 2) - 15, (Config.HEIGHT / 2) - 15, 30, 30);
+        g.drawImage(
+            cursor.getBuffer(), (Config.WIDTH / 2) - 15,
+            (Config.HEIGHT / 2) - 15, 30, 30, null
+        );
     }
 
     /**
@@ -323,12 +330,14 @@ public class Track implements View {
             try {
                 reset();
             } catch (IOException ex) {
-                Logger.getLogger(Track.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Track.class.getName()).log(
+                    Level.SEVERE, null, ex
+                );
             }
-            
+
             shouldReset = false;
         }
-        
+
         yAccel *= glideFactor;
         xAccel *= glideFactor;
 

@@ -1,14 +1,16 @@
 package com.dotto.cli.util;
 
-import com.dotto.cli.Core;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.dotto.cli.Core;
 
 /**
  * Class responsible for loading game settings. Stores commonly accessed values in their own
@@ -42,6 +44,8 @@ public class Config {
     public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
     /** The amount of back light that should be applied to the game. */
     public static float BACK_DIM;
+    /** The current skin name **/
+    public static String SKIN;
 
     /**
      * Loads in the configuration file.
@@ -59,6 +63,7 @@ public class Config {
         FULLSCREEN = json.getBoolean("fullscreen");
         ANTIALIAS = json.getBoolean("antialias");
         BACK_DIM = json.getFloat("backDim");
+        SKIN = json.getString("skin");
         JSONObject controls = json.getJSONObject("controls");
         UP_KEY = controls.getInt("up");
         DOWN_KEY = controls.getInt("down");
@@ -66,7 +71,7 @@ public class Config {
         RIGHT_KEY = controls.getInt("right");
         JSONArray taps = controls.getJSONArray("tapKeys");
         TAP_KEYS.clear();
-        
+
         for (int i = 0; i < taps.length(); i++)
             TAP_KEYS.add(taps.getInt(i));
 

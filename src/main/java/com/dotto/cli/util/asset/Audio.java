@@ -2,8 +2,7 @@ package com.dotto.cli.util.asset;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -29,9 +28,9 @@ public class Audio {
         try {
             AudioInputStream ais = AudioSystem
                 .getAudioInputStream(new File(path));
-            
+
             AudioFormat baseFormat = ais.getFormat();
-            
+
             AudioFormat decodeFormat = new AudioFormat(
                 AudioFormat.Encoding.PCM_SIGNED, baseFormat.getSampleRate(), 16,
                 baseFormat.getChannels(), baseFormat.getChannels() * 2,
@@ -40,12 +39,14 @@ public class Audio {
 
             AudioInputStream dais = AudioSystem
                 .getAudioInputStream(decodeFormat, ais);
-            
+
             clip = AudioSystem.getClip();
             clip.open(dais);
-        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException ex) {
-            Logger.getLogger(Audio.class.getName())
-                    .log(Level.SEVERE, ex.getMessage(), ex);
+        } catch (
+            IOException | LineUnavailableException
+            | UnsupportedAudioFileException ex
+        ) {
+            ex.printStackTrace();
         }
     }
 

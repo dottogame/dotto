@@ -1,8 +1,9 @@
 package com.dotto.cli.util;
 
-import com.dotto.cli.Core;
 import java.io.File;
 import java.net.URISyntaxException;
+
+import com.dotto.cli.Core;
 
 /**
  * Collection of assorted functions for convenience.
@@ -40,5 +41,10 @@ public class Util {
      */
     public static String getAssetPath(String string) {
         return Core.rootDirectory.toPath().resolve(string).toString();
+    }
+
+    public static String getSkinPath(String item) {
+        return Core.rootDirectory.getAbsolutePath() + "/skins/" + Config.SKIN
+            + "/" + item;
     }
 }
