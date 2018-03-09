@@ -1,13 +1,12 @@
 package com.dotto.cli.util;
 
-import com.dotto.cli.util.asset.Beat;
-import com.dotto.cli.util.asset.Click;
-import com.dotto.cli.util.asset.Slide;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.dotto.cli.util.asset.Beat;
 
 /**
  * Reads a single {@code *.to} file for beats in it and returns them for as long as the caller
@@ -50,7 +49,7 @@ public class BeatStreamReader {
         }
 
         String line = scanner.nextLine();
-        
+
         // Safety percaution
         try (Scanner lineScanner = new Scanner(line)) {
             while (lineScanner.hasNext())
@@ -63,23 +62,27 @@ public class BeatStreamReader {
         List<Integer> positions = new ArrayList<>();
 
         switch (tokens.get(2)) {
-            // Click
-            case "0":
-                positions.add(Integer.parseInt(tokens.get(3)));
-                positions.add(Integer.parseInt(tokens.get(4)));
+        // Click
+        case "0":
+            positions.add(Integer.parseInt(tokens.get(3)));
+            positions.add(Integer.parseInt(tokens.get(4)));
 
-                result = new Click(initTimeStamp, clickTimeStamp, positions);
-                break;
-            // Slider
-            case "1":
-                tokens.subList(3, tokens.size()).forEach(
-                    (token) -> {
-                        positions.add(Integer.parseInt(token));
-                    }
-                );
+            result = new Beat(
+                initTimeStamp, clickTimeStamp, Beat.CLICK, positions
+            );
+            break;
+        // Slider
+        case "1":
+            tokens.subList(3, tokens.size()).forEach(
+                (token) -> {
+                    positions.add(Integer.parseInt(token));
+                }
+            );
 
-                result = new Slide(initTimeStamp, clickTimeStamp, positions);
-                break;
+            result = new Beat(
+                initTimeStamp, clickTimeStamp, Beat.SLIDE, positions
+            );
+            break;
         }
 
         return result;

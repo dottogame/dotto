@@ -139,10 +139,10 @@ public class Core {
             }
         } else {
             w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            w.setLocationRelativeTo(null);
             w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
-            w.setResizable(false);
             w.pack();
+            w.setLocationRelativeTo(null);
+            w.setResizable(false);
             w.setVisible(true);
         }
 
@@ -154,6 +154,7 @@ public class Core {
             new Visualization(
                 rootDirectory.getPath() + "/maps/still_snow/track.ogg"
             );
+
             pane.view = t;
             t.start();
         } catch (IOException ex) {

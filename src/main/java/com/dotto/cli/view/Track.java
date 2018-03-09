@@ -1,6 +1,5 @@
 package com.dotto.cli.view;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -15,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.dotto.cli.Core;
-import com.dotto.cli.ui.Casteljau;
 import com.dotto.cli.ui.Graphic;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
@@ -23,7 +21,6 @@ import com.dotto.cli.util.Util;
 import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
-import com.dotto.cli.util.asset.Click;
 import com.dotto.cli.util.asset.MapData;
 import com.dotto.cli.util.manager.MapConfigure;
 import com.dotto.cli.util.manager.Score;
@@ -122,9 +119,8 @@ public class Track implements View {
      */
     public void start() throws IOException {
         // align at center of note 0
-        Click click = (Click) beats.get(0);
-        xOffset = click.x;
-        yOffset = click.y;
+        xOffset = beats.get(0).x;
+        yOffset = beats.get(0).y;
 
         music.play();
     }
@@ -188,24 +184,6 @@ public class Track implements View {
             }
         }
 
-        g.setPaint(Color.RED);
-        g.setStroke(new BasicStroke(5.0f));
-        float[] a = { 40, 100 };
-        float[] b = { 80, 20 };
-        float[] c = { 150, 180 };
-        float[] d = { 260, 100 };
-
-        for (int i = 0; i < 1000; i++) {
-            float[] p;
-            float t = (float) i / 999.0f;
-            p = Casteljau.bezier(a, b, c, d, t);
-            g.draw(
-                new Ellipse2D.Double(
-                    250 + p[0] + xOffset, 250 + p[1] + yOffset, 2.0, 2.0
-                )
-            );
-        }
-
         // draw notes
         float pad;
         Beat beat;
@@ -222,22 +200,42 @@ public class Track implements View {
 
             if (pad < 0) pad = 0;
 
+            g.drawImage(
+                approachCircle.getBuffer(),
+                (int) (beat.x - pad / 2 + xOffset + noteOffX),
+                (int) (beat.y - pad / 2 + yOffset + noteOffY),
+                (int) (100.0f + pad), (int) (100.0f + pad), null
+            );
+
             if (beat.GetType() == Beat.CLICK) {
-                Click click = (Click) beat;
-
                 g.drawImage(
-                    approachCircle.getBuffer(),
-                    (int) (click.x - pad / 2 + xOffset + noteOffX),
-                    (int) (click.y - pad / 2 + yOffset + noteOffY),
-                    (int) (100.0f + pad), (int) (100.0f + pad), null
-                );
-
-                g.drawImage(
-                    hitCircle.getBuffer(), (int) (click.x + xOffset + noteOffX),
-                    (int) (click.y + yOffset + noteOffY), 100, 100, null
+                    hitCircle.getBuffer(), (int) (beat.x + xOffset + noteOffX),
+                    (int) (beat.y + yOffset + noteOffY), 100, 100, null
                 );
             } else {
+                // draw hit points at first and last point of slider
+                float[] beatE = beat.sliderPoints
+                    .get(beat.sliderPoints.size() - 1);
+                g.drawImage(
+                    hitCircle.getBuffer(), (int) (beat.x + xOffset + noteOffX),
+                    (int) (beat.y + yOffset + noteOffY), 100, 100, null
+                );
 
+                g.drawImage(
+                    hitCircle.getBuffer(),
+                    (int) (beatE[0] + xOffset + noteOffX),
+                    (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
+                );
+
+                // draw midpoints
+                for (int z = 0; z < beat.sliderPoints.size(); z++) {
+                    g.draw(
+                        new Ellipse2D.Double(
+                            beat.sliderPoints.get(z)[0] + xOffset + 10,
+                            beat.sliderPoints.get(z)[1] + yOffset + 10, 20, 20
+                        )
+                    );
+                }
             }
         }
 
@@ -256,6 +254,7 @@ public class Track implements View {
             cursor.getBuffer(), (Config.WIDTH / 2) - 15,
             (Config.HEIGHT / 2) - 15, 30, 30, null
         );
+
     }
 
     /**

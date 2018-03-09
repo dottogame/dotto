@@ -7,7 +7,7 @@ import java.util.List;
  * 
  * @author SoraKatadzuma
  */
-public abstract class Beat {
+public class Beat {
     /** Easy use of Comparison. */
     public static final int CLICK = 0;
     /** Easy use of Comparison. */
@@ -25,7 +25,12 @@ public abstract class Beat {
      * have as little as 8 values for a position [sx, sy, ex, ey, c1x, c1y, c2x, c2y] and type 2
      * beats could have many of these.
      */
-    public final List<Integer> Positions;
+    private final List<Integer> Positions;
+
+    public List<float[]> sliderPoints;
+
+    public final int x;
+    public final int y;
 
     /**
      * Constructs a new instance of {@code Beat}.
@@ -36,7 +41,7 @@ public abstract class Beat {
      * @param Positions The list of positions this {@code Beat} is located at. Type 2 beats use
      *        these positions for their curves.
      */
-    protected Beat(
+    public Beat(
         long InitTimeStamp, long ClickTimeStamp, int Type,
         List<Integer> Positions
     ) {
@@ -44,6 +49,38 @@ public abstract class Beat {
         this.ClickTimestamp = ClickTimeStamp;
         this.Type = Type;
         this.Positions = Positions;
+        this.x = Positions.get(0);
+        this.y = Positions.get(1);
+        // bake slider points if slider
+        if (Type == SLIDE) bakeSlide();
+    }
+
+    private void bakeSlide() {
+        int curveCount = (Positions.size() - 2) / 6;
+        float[] start = new float[2];
+        float[] startc = new float[2];
+        float[] endc = new float[2];
+        float[] end = new float[2];
+        for (int z = 0; z < curveCount; z++) {
+            start[0] = Positions.get(z * 3);
+            start[1] = Positions.get((z * 3) + 1);
+
+            startc[0] = Positions.get((z * 3) + 2);
+            startc[1] = Positions.get((z * 3) + 3);
+
+            endc[0] = Positions.get((z * 3) + 4);
+            endc[1] = Positions.get((z * 3) + 5);
+
+            end[0] = Positions.get((z * 3) + 6);
+            end[1] = Positions.get((z * 3) + 7);
+
+            for (int t = 0; t < 1000; t += 10) {
+                /*
+                 * System.out.println(x); sliderPoints.add( Casteljau.bezier(start, startc, endc,
+                 * end, t / 999.0f) );
+                 */
+            }
+        }
     }
 
     /**
@@ -68,7 +105,7 @@ public abstract class Beat {
     /**
      * Inherited method.
      * 
-     * @return The string form of a beat.
+     * @return The string form of a
      * @see java.lang.Object#toString()
      */
     @Override
