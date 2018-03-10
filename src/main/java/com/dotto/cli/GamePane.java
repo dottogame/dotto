@@ -101,10 +101,6 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
             RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED
         );
 
-        g2.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
-        );
-
         view.draw(g2);
     }
 

@@ -25,16 +25,14 @@ import org.json.JSONObject;
  */
 public class Graphic implements AutoCloseable {
     /** The image(s) that represents this {@code Graphic}. */
-    private final ArrayList<BufferedImage> frame;
-    /** A map of all tints for this graphic **/
-    private final HashMap<String, ArrayList<BufferedImage>> tintMap;
+    private final HashMap<String, ArrayList<BufferedImage>> frames;
     /** The name of this {@code Graphic}. */
     public final String name;
     /** Tells if this {@code Graphic} is animated. */
     private final boolean animated;
     /** The amount of frames per second an animation should be played. */
-    public final int frameTick;
-    /** The current game frame count. */
+    public final int framesTick;
+    /** The current game frames count. */
     private static int currentFrame = 0;
 
     /**
@@ -45,29 +43,29 @@ public class Graphic implements AutoCloseable {
      * @throws java.io.IOException If the {@code Image} could not be read.
      */
     public Graphic(String path) throws IOException {
-        tintMap = new HashMap<>();
         String[] parts = path.split("/");
         this.name = parts[parts.length - 1];
         File imgFile = new File(path);
-        boolean isDirectory = false;
 
+        ArrayList<BufferedImage> framesRaw;
         if (imgFile.isDirectory()) {
             int x = imgFile.list().length;
-            frame = new ArrayList<>(x);
-
+            framesRaw = new ArrayList<>(x);
             for (int i = 0; i < x - 1; i++) {
-                frame.add(ImageIO.read(new File(imgFile, i + ".png")));
+                framesRaw.add(ImageIO.read(new File(imgFile, i + ".png")));
             }
 
-            isDirectory = true;
+            animated = true;
         } else {
-            frame = new ArrayList<>(1);
+            framesRaw = new ArrayList<>(1);
             imgFile = new File(path + ".png");
-            frame.add(ImageIO.read(imgFile));
+            framesRaw.add(ImageIO.read(imgFile));
+            animated = false;
         }
 
-        animated = isDirectory;
-        frameTick = animated ? getFrameTick(path) : 0;
+        frames = new HashMap<>();
+        frames.put("raw", framesRaw);
+        framesTick = animated ? getFrameTick(path) : 0;
     }
 
     /**
@@ -76,26 +74,49 @@ public class Graphic implements AutoCloseable {
      * @return The {@code BufferedImage} that represents this {@code Graphic}.
      */
     public BufferedImage getBuffer() {
-        return frame.get(0);
+        return getBuffer("raw");
     }
 
     /**
-     * @return The height of the first frame.
+     * Returns the {@code BufferedImage} that represents this {@code Graphic}.
+     * 
+     * @return The {@code BufferedImage} that represents this {@code Graphic}.
+     */
+    public BufferedImage getBuffer(String edition) {
+        return frames.get(edition).get(0);
+    }
+
+    /**
+     * @return The height of the first frames.
      */
     public int getHeight() {
-        return frame.get(0).getHeight();
+        return getHeight("raw");
+    }
+
+    /**
+     * @return The height of the first frames.
+     */
+    public int getHeight(String edition) {
+        return frames.get(edition).get(0).getHeight();
     }
 
     /**
      * @return The width of the first frame.
      */
     public int getWidth() {
-        return frame.get(0).getWidth();
+        return getWidth("raw");
+    }
+
+    /**
+     * @return The width of the first frame of specific edition
+     */
+    public int getWidth(String edition) {
+        return frames.get(edition).get(0).getWidth();
     }
 
     /**
      * @param path The path to the animation.
-     * @return The frame tick speed as assigned by the {@code anim.json} file.
+     * @return The frames tick speed as assigned by the {@code anim.json} file.
      */
     public final int getFrameTick(String path) {
         int result = 0;
@@ -105,7 +126,7 @@ public class Graphic implements AutoCloseable {
             String contents = new String(Files.readAllBytes(anim));
             JSONObject jo = new JSONObject(contents);
 
-            result = jo.getInt("frameTick");
+            result = jo.getInt("framesTick");
         } catch (IOException ex) {
             Logger.getLogger(Graphic.class.getName()).log(
                 Level.SEVERE, null, ex
@@ -113,6 +134,10 @@ public class Graphic implements AutoCloseable {
         }
 
         return result;
+    }
+
+    public void rescale() {
+
     }
 
     /**
@@ -131,24 +156,63 @@ public class Graphic implements AutoCloseable {
     public void close() throws Exception {}
 
     /**
-     * Clears all the tints stored for this Graphic to save memory
+     * Clears all the editions stored to save memory
      */
-    public void clearTints() {
-        tintMap.clear();
+    public void clean() {
+        ArrayList<BufferedImage> raw = frames.get("raw");
+        frames.clear();
+        frames.put("raw", raw);
     }
 
-    public BufferedImage getTint(String color) {
-        // TODO use frame index
-        if (tintMap.containsKey(color)) return tintMap.get(color).get(0);
-        else {
-            ArrayList<BufferedImage> tintFrames = new ArrayList<>();
-            Color clr = Color.decode(color);
-            for (int i = 0; i < frame.size(); i++)
-                tintFrames.add(GraphKit.tintGrayMap(getBuffer(), clr));
+    /**
+     * Creates a tinted edition derived from the raw edition
+     * 
+     * @param color
+     * @return returns self for function chaining
+     */
+    public Graphic tint(String color, String edition_id) {
+        return tint("raw", color, edition_id);
+    }
 
-            tintMap.put(color, tintFrames);
-            // TODO use frame index
-            return tintFrames.get(0);
-        }
+    /**
+     * Crates a tinted edition derived from a base edition
+     * 
+     * @param base_edition
+     * @param color
+     * @return returns self for function chaining
+     */
+    public Graphic tint(String base_edition, String color, String edition_id) {
+        // clone the base edition
+        ArrayList<BufferedImage> tintFrames = new ArrayList<>();
+
+        // tint
+        Color clr = Color.decode(color);
+        for (int i = 0; i < frames.get(base_edition).size(); i++)
+            tintFrames.add(
+                GraphKit.tintGrayMap(frames.get(base_edition).get(i), clr)
+            );
+
+        frames.put(edition_id, tintFrames);
+        return this;
+    }
+
+    public Graphic rescale(int w, int h, String edition_id) {
+        return rescale("raw", w, h, edition_id);
+    }
+
+    public Graphic rescale(
+        String base_edition, int w, int h, String edition_id
+    ) {
+        // clone the base edition
+        ArrayList<BufferedImage> scaledFrames = new ArrayList<>();
+
+        // rescale
+        for (int i = 0; i < frames.get(base_edition).size(); i++)
+            scaledFrames.add(
+                GraphKit.qualityScale(frames.get(base_edition).get(i), w, h)
+            );
+
+        frames.put(edition_id, scaledFrames);
+        return this;
     }
 }

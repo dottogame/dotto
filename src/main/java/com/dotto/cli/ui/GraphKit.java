@@ -1,6 +1,8 @@
 package com.dotto.cli.ui;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -12,6 +14,24 @@ import java.util.HashMap;
 public class GraphKit {
 
     public static HashMap<String, BufferedImage> tintMap = new HashMap<>();
+
+    public static RenderingHints qualityRescaleHints;
+
+    public static void init() {
+        qualityRescaleHints = new RenderingHints(
+            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
+        );
+
+        qualityRescaleHints.put(
+            RenderingHints.KEY_ALPHA_INTERPOLATION,
+            RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY
+        );
+
+        qualityRescaleHints.put(
+            RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BICUBIC
+        );
+    }
 
     public static Element buildButton(
         String text, Graphic parts[], int x, int y, int w
@@ -66,6 +86,18 @@ public class GraphKit {
             }
         }
 
+        return target;
+    }
+
+    public static BufferedImage qualityScale(BufferedImage src, int w, int h) {
+        BufferedImage target = new BufferedImage(
+            w, h, BufferedImage.TYPE_INT_ARGB
+        );
+
+        Graphics2D g = (Graphics2D) target.getGraphics();
+        g.setRenderingHints(qualityRescaleHints);
+        g.drawImage(src, 0, 0, w, h, null);
+        g.dispose();
         return target;
     }
 }

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import com.dotto.cli.ui.GraphKit;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
@@ -85,6 +86,9 @@ public class Core {
 
         // instantiate discord rpc manager
         dcord = new Discord();
+
+        // init the graphic kit
+        GraphKit.init();
 
         // Building the game window.
         pane = new GamePane();
