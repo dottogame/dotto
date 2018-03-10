@@ -1,6 +1,9 @@
 package com.dotto.cli.util.asset;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.dotto.cli.util.Casteljau;
 
 /**
  * Defines a single beat of any type.
@@ -56,6 +59,7 @@ public class Beat {
     }
 
     private void bakeSlide() {
+        this.sliderPoints = new ArrayList<>();
         int curveCount = (Positions.size() - 2) / 6;
         float[] start = new float[2];
         float[] startc = new float[2];
@@ -74,11 +78,10 @@ public class Beat {
             end[0] = Positions.get((z * 3) + 6);
             end[1] = Positions.get((z * 3) + 7);
 
-            for (int t = 0; t < 1000; t += 10) {
-                /*
-                 * System.out.println(x); sliderPoints.add( Casteljau.bezier(start, startc, endc,
-                 * end, t / 999.0f) );
-                 */
+            for (int t = 0; t < 1000; t += 100) {
+                sliderPoints.add(
+                    Casteljau.bezier(start, startc, endc, end, t / 999.0f)
+                );
             }
         }
     }

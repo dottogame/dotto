@@ -141,17 +141,7 @@ public class Track implements View {
         start();
     }
 
-    /**
-     * Gets the serial id of this object.
-     * 
-     * @return The serial id of this object.
-     */
-    @Override
-    public int getId() {
-        return ID;
-    }
-
-    /**
+    /***
      * Draws the current {@code Graphics g} to the screen.
      * 
      * @param g The {@code Graphics} to draw.
@@ -231,8 +221,11 @@ public class Track implements View {
                 for (int z = 0; z < beat.sliderPoints.size(); z++) {
                     g.draw(
                         new Ellipse2D.Double(
-                            beat.sliderPoints.get(z)[0] + xOffset + 10,
-                            beat.sliderPoints.get(z)[1] + yOffset + 10, 20, 20
+                            beat.sliderPoints.get(z)[0] + xOffset
+                                + (Config.WIDTH / 2) - 4,
+                            beat.sliderPoints.get(z)[1] + yOffset
+                                + (Config.HEIGHT / 2) - 4,
+                            8, 8
                         )
                     );
                 }
@@ -393,5 +386,10 @@ public class Track implements View {
 
             i++;
         }
+    }
+
+    @Override
+    public int getId() {
+        return ID;
     }
 }

@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
-import com.dotto.cli.util.asset.Visualization;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
 
@@ -62,10 +61,10 @@ public class Core {
         try {
             // Protects the game from creating multiple instances of itself.
             GameLock.lockGame();
-            
+
             // Sets flags that the game will use to adjust how it runs.
             Flagger.setFlags(args);
-            
+
             rootDirectory = Util.getLocalDirectory();
             Config.load();
         } catch (URISyntaxException | IOException ex) {
@@ -75,7 +74,7 @@ public class Core {
 
             shutdown();
         }
-        
+
         // instantiate graphic manager
         graphicManager = new Graphics();
 
@@ -109,6 +108,7 @@ public class Core {
         // launch in either fullscreen mode or normal mode
         if (Config.FULLSCREEN) {
             w.setUndecorated(true);
+
             vc = GraphicsEnvironment.getLocalGraphicsEnvironment()
                 .getDefaultScreenDevice();
             if (
@@ -154,10 +154,6 @@ public class Core {
                 rootDirectory.getPath() + "/maps/still_snow", "tom_easy"
             );
 
-            new Visualization(
-                rootDirectory.getPath() + "/maps/still_snow/track.ogg"
-            );
-
             pane.view = t;
             t.start();
         } catch (IOException ex) {
@@ -175,7 +171,7 @@ public class Core {
     public static void shutdown() {
         GameLock.unlockFile();
         THREAD_FACTORY.shutdown();
-        vc.setDisplayMode(originalMode);
+        if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
         System.exit(0);
     }
 }
