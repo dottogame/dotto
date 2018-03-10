@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import com.dotto.cli.util.Config;
@@ -59,13 +60,13 @@ public class Core {
         System.setProperty("sun.java2d.noddraw", "true");
 
         try {
-           // Sets flags that the game will use to adjust how it runs.
+            // Sets flags that the game will use to adjust how it runs.
             Flagger.setFlags(args);
 
             if (!Flagger.DebugMode())
                 // Protects the game from creating multiple instances of itself.
                 GameLock.lockGame();
-            
+
             rootDirectory = Util.getLocalDirectory();
             Config.load();
         } catch (URISyntaxException | IOException ex) {
@@ -81,7 +82,7 @@ public class Core {
 
         // Building the game window.
         pane = new GamePane();
-        
+
         THREAD_FACTORY.schedule(
             pane.renderLoop, 1000 / pane.renderLoop.targetFps,
             TimeUnit.MILLISECONDS
@@ -105,6 +106,13 @@ public class Core {
 
         // Set the blank cursor to the JFrame.
         Core.w.getContentPane().setCursor(blankCursor);
+
+        // load and set icon
+        ImageIcon img = new ImageIcon(
+            rootDirectory.getAbsolutePath() + "/data/dotto_logo.png"
+        );
+
+        w.setIconImage(img.getImage());
 
         // launch in either fullscreen mode or normal mode
         if (Config.FULLSCREEN) {
@@ -171,12 +179,11 @@ public class Core {
      */
     public static void shutdown() {
         THREAD_FACTORY.shutdown();
-        
+
         if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
-        
-        if (!Flagger.DebugMode())
-            GameLock.unlockFile();
-        
+
+        if (!Flagger.DebugMode()) GameLock.unlockFile();
+
         System.exit(0);
     }
 }
