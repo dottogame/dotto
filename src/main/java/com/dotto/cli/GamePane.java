@@ -35,6 +35,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
      */
     public GamePane() {
         setOpaque(true);
+        
         // The starting view of the game.
         view = new Boot();
 

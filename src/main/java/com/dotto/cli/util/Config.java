@@ -44,7 +44,7 @@ public class Config {
     public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
     /** The amount of back light that should be applied to the game. */
     public static float BACK_DIM;
-    /** The current skin name **/
+    /** The current skin name. */
     public static String SKIN;
 
     /**

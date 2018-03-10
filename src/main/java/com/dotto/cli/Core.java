@@ -44,9 +44,9 @@ public class Core {
     public static final ScheduledThreadPoolExecutor THREAD_FACTORY = new ScheduledThreadPoolExecutor(
         2, Executors.defaultThreadFactory()
     );
-
+    /** The user's original display mode before optimization. */
     public static DisplayMode originalMode;
-
+    /** The graphic device of the user's original display. */
     public static GraphicsDevice vc;
 
     /**
@@ -81,7 +81,7 @@ public class Core {
 
         // Building the game window.
         pane = new GamePane();
-
+        
         THREAD_FACTORY.schedule(
             pane.renderLoop, 1000 / pane.renderLoop.targetFps,
             TimeUnit.MILLISECONDS
