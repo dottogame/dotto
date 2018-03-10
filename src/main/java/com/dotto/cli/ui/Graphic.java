@@ -3,8 +3,14 @@ package com.dotto.cli.ui;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import org.json.JSONObject;
 
 /**
  * This class represents the single, and/or array, of image(s) that
@@ -18,6 +24,12 @@ public class Graphic implements AutoCloseable {
     private final ArrayList<BufferedImage> frame;
     /** The name of this {@code Graphic}. */
     public final String name;
+    /** Tells if this {@code Graphic} is animated. */
+    private final boolean animated;
+    /** The amount of frames per second an animation should be played. */
+    public final int frameTick;
+    /** The current game frame count. */
+    private static int currentFrame = 0;
 
     /**
      * Constructs a new {@code Graphic} class object with a {@code BufferedImage} as it's
@@ -29,29 +41,34 @@ public class Graphic implements AutoCloseable {
     public Graphic(String path) throws IOException {
         String[] parts = path.split("/");
         this.name = parts[parts.length - 1];
-        File imgFile = new File(path + '/');
+        File imgFile = new File(path);
+        boolean isDirectory = false;
         
         if (imgFile.isDirectory()) {
             int x = imgFile.list().length;
             frame = new ArrayList<>(x);
             
-            for (int i = 0; i < x; i++) {
-                frame.add(ImageIO.read(new File(path + '/' + i + ".png")));
+            for (int i = 0; i < x - 1; i++) {
+                frame.add(ImageIO.read(new File(imgFile, i + ".png")));
             }
+            
+            isDirectory = true;
         } else {
             frame = new ArrayList<>(1);
             imgFile = new File(path + ".png");
             frame.add(ImageIO.read(imgFile));
         }
+        
+        animated = isDirectory;
+        frameTick = animated ? getFrameTick(path) : 0;
     }
-
+    
     /**
      * Returns the {@code BufferedImage} that represents this {@code Graphic}.
      * 
      * @return The {@code BufferedImage} that represents this {@code Graphic}.
      */
     public BufferedImage getBuffer() {
-        // TODO support animation
         return frame.get(0);
     }
 
@@ -67,6 +84,33 @@ public class Graphic implements AutoCloseable {
      */
     public int getWidth() {
         return frame.get(0).getWidth();
+    }
+
+    /**
+     * @param path The path to the animation.
+     * @return The frame tick speed as assigned by the {@code anim.json} file.
+     */
+    public final int getFrameTick(String path) {
+        int result = 0;
+        
+        try {
+            Path anim = Paths.get(path, "anim.json");
+            String contents = new String(Files.readAllBytes(anim));
+            JSONObject jo = new JSONObject(contents);
+            
+            result = jo.getInt("frameTick");
+        } catch (IOException ex) {
+            Logger.getLogger(Graphic.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @return Whether or not this {@code Graphic} is animated.
+     */
+    public boolean isAnimated() {
+        return animated;
     }
 
     /**

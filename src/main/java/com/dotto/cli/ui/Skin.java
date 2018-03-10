@@ -42,8 +42,8 @@ public final class Skin {
     }
     
     /**
-     * @param path
-     * @return
+     * @param path The absolute path of the {@code Graphic} image we are trying to load.
+     * @return The Graphic image that ended up loaded.
      */
     public static Graphic load(String path) {
         Graphic result = null;
@@ -51,12 +51,15 @@ public final class Skin {
         try (Graphic g = new Graphic(path)) {
             result = g;
         } catch (IOException ioe) {
+            Logger.getLogger(Skin.class.getName())
+                .log(Level.WARNING, "Unable to load skin image: \"" + path + "\"", ioe);
+            
             String[] filePath = path.split("/");
             String file = filePath[filePath.length - 1];
             
             try (
                 Graphic gStandard = new Graphic(
-                    Core.rootDirectory.getAbsolutePath() + "\\data\\skins\\standard\\" + file
+                    Core.rootDirectory.getAbsolutePath() + "/skins/standard/" + file
                 )
             ) {
                 result = gStandard;
@@ -67,9 +70,6 @@ public final class Skin {
                 Logger.getLogger(Skin.class.getName())
                     .log(Level.SEVERE, "Resource improperly released.", ex);
             }
-            
-            Logger.getLogger(Skin.class.getName())
-                    .log(Level.WARNING, "Unable to load skin image: \"" + path + "\"", ioe);
         } catch (Exception e) {
             Logger.getLogger(Skin.class.getName())
                 .log(Level.SEVERE, "Resource improperly released.", e);
