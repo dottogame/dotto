@@ -59,12 +59,13 @@ public class Core {
         System.setProperty("sun.java2d.noddraw", "true");
 
         try {
-            // Protects the game from creating multiple instances of itself.
-            GameLock.lockGame();
-
-            // Sets flags that the game will use to adjust how it runs.
+           // Sets flags that the game will use to adjust how it runs.
             Flagger.setFlags(args);
 
+            if (!Flagger.DebugMode())
+                // Protects the game from creating multiple instances of itself.
+                GameLock.lockGame();
+            
             rootDirectory = Util.getLocalDirectory();
             Config.load();
         } catch (URISyntaxException | IOException ex) {
@@ -170,8 +171,12 @@ public class Core {
      */
     public static void shutdown() {
         THREAD_FACTORY.shutdown();
+        
         if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
-        GameLock.unlockFile();
+        
+        if (!Flagger.DebugMode())
+            GameLock.unlockFile();
+        
         System.exit(0);
     }
 }

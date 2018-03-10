@@ -7,8 +7,6 @@ import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
