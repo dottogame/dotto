@@ -59,28 +59,29 @@ public class BeatStreamReader {
         // Collecting timestamp data.
         int initTimeStamp = Integer.parseInt(tokens.get(0));
         int clickTimeStamp = Integer.parseInt(tokens.get(1));
+        String color = tokens.get(2);
         List<Integer> positions = new ArrayList<>();
 
-        switch (tokens.get(2)) {
+        switch (tokens.get(3)) {
         // Click
         case "0":
-            positions.add(Integer.parseInt(tokens.get(3)));
             positions.add(Integer.parseInt(tokens.get(4)));
+            positions.add(Integer.parseInt(tokens.get(5)));
 
             result = new Beat(
-                initTimeStamp, clickTimeStamp, Beat.CLICK, positions
+                initTimeStamp, clickTimeStamp, color, Beat.CLICK, positions
             );
             break;
         // Slider
         case "1":
-            tokens.subList(3, tokens.size()).forEach(
+            tokens.subList(4, tokens.size()).forEach(
                 (token) -> {
                     positions.add(Integer.parseInt(token));
                 }
             );
 
             result = new Beat(
-                initTimeStamp, clickTimeStamp, Beat.SLIDE, positions
+                initTimeStamp, clickTimeStamp, color, Beat.SLIDE, positions
             );
             break;
         }

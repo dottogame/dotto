@@ -22,10 +22,8 @@ import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
 import com.dotto.cli.util.asset.MapData;
-import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.util.manager.MapConfigure;
 import com.dotto.cli.util.manager.Score;
-import java.util.concurrent.TimeUnit;
 
 /**
  * TODO: write class description.
@@ -189,24 +187,42 @@ public class Track implements View {
                 (int) (100.0f + pad), (int) (100.0f + pad), null
             );
 
-            if (beat.GetType() == Beat.CLICK) {
-                g.drawImage(
-                    Skin.getHitCircle().getBuffer(), (int) (beat.x + xOffset + noteOffX),
-                    (int) (beat.y + yOffset + noteOffY), 100, 100, null
-                );
-            } else {
-                // draw hit points at first and last point of slider
+            // draw sub circle
+            g.drawImage(
+                Skin.getHitCircle().getTint(beat.color),
+                (int) (beat.x + xOffset + noteOffX),
+                (int) (beat.y + yOffset + noteOffY), 100, 100, null
+            );
+            // draw top circle
+            g.drawImage(
+                Skin.getHitCircleOverlay().getBuffer(),
+                (int) (beat.x + xOffset + noteOffX),
+                (int) (beat.y + yOffset + noteOffY), 100, 100, null
+            );
+
+            if (beat.GetType() == Beat.SLIDE) {
+                // draw hit point last point of slider
                 float[] beatE = beat.sliderPoints
                     .get(beat.sliderPoints.size() - 1);
-                g.drawImage(
-                    Skin.getHitCircle().getBuffer(), (int) (beat.x + xOffset + noteOffX),
-                    (int) (beat.y + yOffset + noteOffY), 100, 100, null
-                );
 
+                // draw sub circle
                 g.drawImage(
-                    Skin.getHitCircle().getBuffer(),
+                    Skin.getHitCircle().getTint(beat.color),
                     (int) (beatE[0] + xOffset + noteOffX),
                     (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
+                );
+
+                // draw top circle
+                g.drawImage(
+                    Skin.getHitCircleOverlay().getBuffer(),
+                    (int) (beatE[0] + xOffset + noteOffX),
+                    (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
+                );
+
+                // get tint color
+                Color clr = Color.decode(beat.color);
+                g.setColor(
+                    new Color(clr.getRed(), clr.getGreen(), clr.getBlue(), 200)
                 );
 
                 // draw midpoints
@@ -351,7 +367,7 @@ public class Track implements View {
         // notes can be deleted in this window (if game is reset)
         if (beats.size() > 0) {
             Beat new_beat = beats.get(beats.size() - 1);
-            
+
             while (new_beat != null && new_beat.InitTimestamp < offset) {
                 new_beat = bsr.GetNextBeat();
                 beats.add(new_beat);

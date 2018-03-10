@@ -1,5 +1,6 @@
 package com.dotto.cli.ui;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -7,21 +8,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.imageio.ImageIO;
+
 import org.json.JSONObject;
 
 /**
- * This class represents the single, and/or array, of image(s) that
- * create a single graphic in the game.
+ * This class represents the single, and/or array, of image(s) that create a single graphic in the
+ * game.
  * 
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
  */
 public class Graphic implements AutoCloseable {
-    /** The image that represents this {@code Graphic}. */
+    /** The image(s) that represents this {@code Graphic}. */
     private final ArrayList<BufferedImage> frame;
+    /** A map of all tints for this graphic **/
+    private final HashMap<String, ArrayList<BufferedImage>> tintMap;
     /** The name of this {@code Graphic}. */
     public final String name;
     /** Tells if this {@code Graphic} is animated. */
@@ -39,30 +45,31 @@ public class Graphic implements AutoCloseable {
      * @throws java.io.IOException If the {@code Image} could not be read.
      */
     public Graphic(String path) throws IOException {
+        tintMap = new HashMap<>();
         String[] parts = path.split("/");
         this.name = parts[parts.length - 1];
         File imgFile = new File(path);
         boolean isDirectory = false;
-        
+
         if (imgFile.isDirectory()) {
             int x = imgFile.list().length;
             frame = new ArrayList<>(x);
-            
+
             for (int i = 0; i < x - 1; i++) {
                 frame.add(ImageIO.read(new File(imgFile, i + ".png")));
             }
-            
+
             isDirectory = true;
         } else {
             frame = new ArrayList<>(1);
             imgFile = new File(path + ".png");
             frame.add(ImageIO.read(imgFile));
         }
-        
+
         animated = isDirectory;
         frameTick = animated ? getFrameTick(path) : 0;
     }
-    
+
     /**
      * Returns the {@code BufferedImage} that represents this {@code Graphic}.
      * 
@@ -92,20 +99,22 @@ public class Graphic implements AutoCloseable {
      */
     public final int getFrameTick(String path) {
         int result = 0;
-        
+
         try {
             Path anim = Paths.get(path, "anim.json");
             String contents = new String(Files.readAllBytes(anim));
             JSONObject jo = new JSONObject(contents);
-            
+
             result = jo.getInt("frameTick");
         } catch (IOException ex) {
-            Logger.getLogger(Graphic.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Graphic.class.getName()).log(
+                Level.SEVERE, null, ex
+            );
         }
-        
+
         return result;
     }
-    
+
     /**
      * @return Whether or not this {@code Graphic} is animated.
      */
@@ -120,4 +129,26 @@ public class Graphic implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {}
+
+    /**
+     * Clears all the tints stored for this Graphic to save memory
+     */
+    public void clearTints() {
+        tintMap.clear();
+    }
+
+    public BufferedImage getTint(String color) {
+        // TODO use frame index
+        if (tintMap.containsKey(color)) return tintMap.get(color).get(0);
+        else {
+            ArrayList<BufferedImage> tintFrames = new ArrayList<>();
+            Color clr = Color.decode(color);
+            for (int i = 0; i < frame.size(); i++)
+                tintFrames.add(GraphKit.tintGrayMap(getBuffer(), clr));
+
+            tintMap.put(color, tintFrames);
+            // TODO use frame index
+            return tintFrames.get(0);
+        }
+    }
 }

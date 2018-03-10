@@ -35,6 +35,8 @@ public class Beat {
     public final int x;
     public final int y;
 
+    public final String color;
+
     /**
      * Constructs a new instance of {@code Beat}.
      * 
@@ -45,11 +47,12 @@ public class Beat {
      *        these positions for their curves.
      */
     public Beat(
-        long InitTimeStamp, long ClickTimeStamp, int Type,
+        long InitTimeStamp, long ClickTimeStamp, String color, int Type,
         List<Integer> Positions
     ) {
         this.InitTimestamp = InitTimeStamp;
         this.ClickTimestamp = ClickTimeStamp;
+        this.color = color;
         this.Type = Type;
         this.Positions = Positions;
         this.x = Positions.get(0);
@@ -113,7 +116,7 @@ public class Beat {
      */
     @Override
     public String toString() {
-        return "[" + InitTimestamp + " : " + ClickTimestamp + " : " + Type + " "
-            + Positions + "]";
+        return "[" + InitTimestamp + " : " + ClickTimestamp + " : " + color
+            + ":" + Type + ":" + x + "x" + y + "]";
     }
 }
