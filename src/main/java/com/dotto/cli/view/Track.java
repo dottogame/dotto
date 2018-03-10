@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 
 import com.dotto.cli.Core;
 import com.dotto.cli.ui.Graphic;
+import com.dotto.cli.ui.Skin;
 import com.dotto.cli.util.BeatStreamReader;
 import com.dotto.cli.util.Config;
-import com.dotto.cli.util.Util;
 import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
@@ -55,7 +55,6 @@ public class Track implements View {
     public boolean DOWN = false;
     public boolean LEFT = false;
     public boolean RIGHT = false;
-
     /** The {@code BeatMap} that will be played. */
     public BeatMap beatMap;
     /** The beatMap's data. */
@@ -79,11 +78,6 @@ public class Track implements View {
     /** A check to see if the track should reset. */
     private boolean shouldReset;
 
-    private Graphic cursor;
-    private Graphic gridPoint;
-    private Graphic hitCircle;
-    private Graphic approachCircle;
-
     /**
      * Constructs a new {@code Track View}.
      * 
@@ -103,10 +97,6 @@ public class Track implements View {
         score = new Score();
         // load graphics
         back = new Graphic(path + "/back");
-        cursor = new Graphic(Util.getSkinPath("cursor"));
-        gridPoint = new Graphic(Util.getSkinPath("grid_plus"));
-        hitCircle = new Graphic(Util.getSkinPath("hit_circle"));
-        approachCircle = new Graphic(Util.getSkinPath("approach_circle"));
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
@@ -164,11 +154,11 @@ public class Track implements View {
         for (int y = -100; y < Config.HEIGHT + 100; y += 100) {
             for (int x = -100; x < Config.WIDTH + 100; x += 100) {
                 g.drawImage(
-                    gridPoint.getBuffer(),
+                    Skin.getGridPoint().getBuffer(),
                     x + (int) ((xOffset % 200) * 0.5)
-                        - (int) (gridPoint.getWidth() / 2),
+                        - (int) (Skin.getGridPoint().getWidth() / 2),
                     y + (int) ((yOffset % 200) * 0.5)
-                        - (int) (gridPoint.getHeight() / 2),
+                        - (int) (Skin.getGridPoint().getHeight() / 2),
                     null
                 );
             }
@@ -191,7 +181,7 @@ public class Track implements View {
             if (pad < 0) pad = 0;
 
             g.drawImage(
-                approachCircle.getBuffer(),
+                Skin.getApproachCircle().getBuffer(),
                 (int) (beat.x - pad / 2 + xOffset + noteOffX),
                 (int) (beat.y - pad / 2 + yOffset + noteOffY),
                 (int) (100.0f + pad), (int) (100.0f + pad), null
@@ -199,7 +189,7 @@ public class Track implements View {
 
             if (beat.GetType() == Beat.CLICK) {
                 g.drawImage(
-                    hitCircle.getBuffer(), (int) (beat.x + xOffset + noteOffX),
+                    Skin.getHitCircle().getBuffer(), (int) (beat.x + xOffset + noteOffX),
                     (int) (beat.y + yOffset + noteOffY), 100, 100, null
                 );
             } else {
@@ -207,12 +197,12 @@ public class Track implements View {
                 float[] beatE = beat.sliderPoints
                     .get(beat.sliderPoints.size() - 1);
                 g.drawImage(
-                    hitCircle.getBuffer(), (int) (beat.x + xOffset + noteOffX),
+                    Skin.getHitCircle().getBuffer(), (int) (beat.x + xOffset + noteOffX),
                     (int) (beat.y + yOffset + noteOffY), 100, 100, null
                 );
 
                 g.drawImage(
-                    hitCircle.getBuffer(),
+                    Skin.getHitCircle().getBuffer(),
                     (int) (beatE[0] + xOffset + noteOffX),
                     (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
                 );
@@ -244,7 +234,7 @@ public class Track implements View {
 
         // draw cursor
         g.drawImage(
-            cursor.getBuffer(), (Config.WIDTH / 2) - 15,
+            Skin.getHitCircle().getBuffer(), (Config.WIDTH / 2) - 15,
             (Config.HEIGHT / 2) - 15, 30, 30, null
         );
 

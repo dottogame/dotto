@@ -1,5 +1,6 @@
 package com.dotto.cli.view;
 
+import com.dotto.cli.ui.Skin;
 import com.dotto.cli.util.Config;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,6 +17,13 @@ public class Boot implements View {
     /** A manual serial id, instead of the normal Java serailID. */
     public static int ID = 0;
 
+    /**
+     * Constructs a new {@code Boot View}.
+     */
+    public Boot() {
+        Skin.Initialize();
+    }
+    
     /**
      * Gets the serial id of this object.
      * 
