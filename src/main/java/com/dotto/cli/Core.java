@@ -169,9 +169,9 @@ public class Core {
      * Closes the game upon request.
      */
     public static void shutdown() {
-        GameLock.unlockFile();
         THREAD_FACTORY.shutdown();
         if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
+        GameLock.unlockFile();
         System.exit(0);
     }
 }
