@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
  */
-public class Graphic {
+public class Graphic implements AutoCloseable {
     /** The image that represents this {@code Graphic}. */
     private final ArrayList<BufferedImage> frame;
     /** The name of this {@code Graphic}. */
@@ -68,4 +68,12 @@ public class Graphic {
     public int getWidth() {
         return frame.get(0).getWidth();
     }
+
+    /**
+     * Inherited method.
+     * 
+     * @see java.lang.AutoCloseable#close()
+     */
+    @Override
+    public void close() throws Exception {}
 }
