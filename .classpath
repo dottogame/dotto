@@ -17,5 +17,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/tritonus_jorbis-0.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/discord-rpc.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

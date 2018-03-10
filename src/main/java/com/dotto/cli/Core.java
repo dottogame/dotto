@@ -23,6 +23,7 @@ import javax.swing.JFrame;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
+import com.dotto.cli.util.manager.Discord;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
 
@@ -41,6 +42,8 @@ public class Core {
     public static File rootDirectory;
     /** The graphics manager. */
     public static Graphics graphicManager;
+    /** Discord RPC manager */
+    public static Discord dcord;
     /** A thread factory for the game to use to schedule events. */
     public static final ScheduledThreadPoolExecutor THREAD_FACTORY = new ScheduledThreadPoolExecutor(
         2, Executors.defaultThreadFactory()
@@ -80,6 +83,9 @@ public class Core {
         // instantiate graphic manager
         graphicManager = new Graphics();
 
+        // instantiate discord rpc manager
+        dcord = new Discord();
+
         // Building the game window.
         pane = new GamePane();
 
@@ -87,6 +93,7 @@ public class Core {
             pane.renderLoop, 1000 / pane.renderLoop.targetFps,
             TimeUnit.MILLISECONDS
         );
+
         THREAD_FACTORY.schedule(
             pane.updateLoop, 1000 / pane.updateLoop.targetFps,
             TimeUnit.MILLISECONDS
@@ -109,7 +116,7 @@ public class Core {
 
         // load and set icon
         ImageIcon img = new ImageIcon(
-            rootDirectory.getAbsolutePath() + "/data/dotto_logo.png"
+            rootDirectory.getAbsolutePath() + "/data/dotto_64x64.png"
         );
 
         w.setIconImage(img.getImage());
