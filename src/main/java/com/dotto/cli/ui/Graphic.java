@@ -66,6 +66,7 @@ public class Graphic implements AutoCloseable {
         frames = new HashMap<>();
         frames.put("raw", framesRaw);
         framesTick = animated ? getFrameTick(path) : 0;
+
     }
 
     /**

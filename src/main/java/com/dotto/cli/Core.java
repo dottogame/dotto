@@ -3,6 +3,7 @@ package com.dotto.cli;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
+import java.awt.FontFormatException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -21,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import com.dotto.cli.ui.GraphKit;
+import com.dotto.cli.ui.Skin;
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.Flagger;
 import com.dotto.cli.util.Util;
@@ -87,8 +89,13 @@ public class Core {
         // instantiate discord rpc manager
         dcord = new Discord();
 
-        // init the graphic kit
+        // init the graphic kit & skin
         GraphKit.init();
+        try {
+            Skin.init();
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
 
         // Building the game window.
         pane = new GamePane();

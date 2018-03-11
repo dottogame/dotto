@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 import com.dotto.cli.util.Config;
 import com.dotto.cli.util.GameLoop;
-import com.dotto.cli.view.Boot;
+import com.dotto.cli.view.Menu;
 import com.dotto.cli.view.View;
 
 /**
@@ -37,7 +37,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         setOpaque(true);
 
         // The starting view of the game.
-        view = new Boot();
+        view = new Menu();
 
         // Assigning the graphics rendering loop for this Pane.
         renderLoop = new GameLoop(

@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +78,8 @@ public class Track implements View {
     private final int backWidth;
     /** A check to see if the track should reset. */
     private boolean shouldReset;
+    /** Decimal formatting */
+    private DecimalFormat twoDec;
 
     /**
      * Constructs a new {@code Track View}.
@@ -100,13 +103,14 @@ public class Track implements View {
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
-        Skin.getCursor().rescale(30, 30, "sized");
-        Skin.getHitCircle().rescale(100, 100, "100");
-        Skin.getHitCircleOverlay().rescale(100, 100, "100");
+        Skin.cursor.rescale(30, 30, "sized");
+        Skin.hitCircle.rescale(100, 100, "100");
+        Skin.hitCircleOverlay.rescale(100, 100, "100");
         for (String color : map.colors)
-            Skin.getHitCircle().tint("100", color, "100" + color);
+            Skin.hitCircle.tint("100", color, "100" + color);
 
         back.rescale(backWidth, (int) (backWidth * backRatio), "sized");
+        twoDec = new DecimalFormat("#.00");
     }
 
     /**
@@ -160,11 +164,11 @@ public class Track implements View {
         for (int y = -100; y < Config.HEIGHT + 100; y += 100) {
             for (int x = -100; x < Config.WIDTH + 100; x += 100) {
                 g.drawImage(
-                    Skin.getGridPoint().getBuffer(),
+                    Skin.gridPoint.getBuffer(),
                     x + (int) ((xOffset % 200) * 0.5)
-                        - (int) (Skin.getGridPoint().getWidth() / 2),
+                        - (int) (Skin.gridPoint.getWidth() / 2),
                     y + (int) ((yOffset % 200) * 0.5)
-                        - (int) (Skin.getGridPoint().getHeight() / 2),
+                        - (int) (Skin.gridPoint.getHeight() / 2),
                     null
                 );
             }
@@ -188,7 +192,7 @@ public class Track implements View {
 
             // draw approach circle
             g.drawImage(
-                Skin.getApproachCircle().getBuffer(),
+                Skin.approachCircle.getBuffer(),
                 (int) (beat.x - pad / 2 + xOffset + noteOffX),
                 (int) (beat.y - pad / 2 + yOffset + noteOffY),
                 (int) (100.0f + pad), (int) (100.0f + pad), null
@@ -196,14 +200,14 @@ public class Track implements View {
 
             // draw sub circle
             g.drawImage(
-                Skin.getHitCircle().getBuffer("100" + beat.color),
+                Skin.hitCircle.getBuffer("100" + beat.color),
                 (int) (beat.x + xOffset + noteOffX),
                 (int) (beat.y + yOffset + noteOffY), null
             );
 
             // draw top circle
             g.drawImage(
-                Skin.getHitCircleOverlay().getBuffer("100"),
+                Skin.hitCircleOverlay.getBuffer("100"),
                 (int) (beat.x + xOffset + noteOffX),
                 (int) (beat.y + yOffset + noteOffY), null
             );
@@ -215,14 +219,14 @@ public class Track implements View {
 
                 // draw sub circle
                 g.drawImage(
-                    Skin.getHitCircle().getBuffer("100" + beat.color),
+                    Skin.hitCircle.getBuffer("100" + beat.color),
                     (int) (beatE[0] + xOffset + noteOffX),
                     (int) (beatE[1] + yOffset + noteOffY), null
                 );
 
                 // draw top circle
                 g.drawImage(
-                    Skin.getHitCircleOverlay().getBuffer("100"),
+                    Skin.hitCircleOverlay.getBuffer("100"),
                     (int) (beatE[0] + xOffset + noteOffX),
                     (int) (beatE[1] + yOffset + noteOffY), null
                 );
@@ -254,13 +258,15 @@ public class Track implements View {
         g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
 
         // draw Accuracy
+        g.setFont(Skin.numbers);
         g.drawString(
-            score.currentAccuracy + "%", (int) (Config.WIDTH * 0.9f), 20
+            twoDec.format(score.currentAccuracy) + "%",
+            (int) (Config.WIDTH * 0.85f), 40
         );
 
         // draw cursor
         g.drawImage(
-            Skin.getCursor().getBuffer("sized"), Config.HALF_WIDTH - 15,
+            Skin.cursor.getBuffer("sized"), Config.HALF_WIDTH - 15,
             Config.HALF_HEIGHT - 15, null
         );
     }

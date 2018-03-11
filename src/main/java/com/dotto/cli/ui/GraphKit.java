@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 /**
- * /// Class Description ///
+ * Utility class used to perform many operations for UI
  * 
  * @author lite20 (Ephraim Bilson)
  */
