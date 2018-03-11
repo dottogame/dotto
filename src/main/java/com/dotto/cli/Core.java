@@ -30,6 +30,8 @@ import com.dotto.cli.util.manager.Discord;
 import com.dotto.cli.util.manager.Graphics;
 import com.dotto.cli.view.Track;
 
+import net.arikia.dev.drpc.DiscordRPC;
+
 /**
  * Entry point of program.
  *
@@ -194,6 +196,7 @@ public class Core {
     public static void shutdown() {
         THREAD_FACTORY.shutdown();
 
+        DiscordRPC.discordShutdown();
         if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
 
         if (!Flagger.DebugMode()) GameLock.unlockFile();

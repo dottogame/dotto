@@ -112,7 +112,8 @@ public class Track implements View {
 
         back.rescale(backWidth, (int) (backWidth * backRatio), "sized");
         twoDec = new DecimalFormat("#.00");
-        // set up discord to show song
+        // set up discord to show song info
+        Discord.discord.largeImageKey = "large_default";
         Discord.discord.details = "Playing \"" + beatMap.TrackData.TrackName
             + "\"";
         Discord.discord.endTimestamp = (System.currentTimeMillis()
@@ -146,6 +147,7 @@ public class Track implements View {
         beats.add(bsr.GetNextBeat());
         music.stop();
         music.clip.setFramePosition(0);
+        Discord.discord.largeImageKey = "large_default";
         Discord.discord.endTimestamp = (System.currentTimeMillis()
             + (music.clip.getMicrosecondLength() / 1000)) / 1000;
         Discord.update();
@@ -153,7 +155,7 @@ public class Track implements View {
     }
 
     /***
-     * Draws the current {@code Graphics g} to the screen.
+     * large_default Draws the current {@code Graphics g} to the screen.
      * 
      * @param g The {@code Graphics} to draw.
      */
