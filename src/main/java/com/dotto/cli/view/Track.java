@@ -115,8 +115,8 @@ public class Track implements View {
         // set up discord to show song
         Discord.discord.details = "Playing \"" + beatMap.TrackData.TrackName
             + "\"";
-        Discord.discord.startTimestamp = System.currentTimeMillis();
-        Discord.discord.endTimestamp = music.clip.getFrameLength();
+        Discord.discord.endTimestamp = (System.currentTimeMillis()
+            + (music.clip.getMicrosecondLength() / 1000)) / 1000;
         Discord.update();
     }
 
@@ -146,8 +146,8 @@ public class Track implements View {
         beats.add(bsr.GetNextBeat());
         music.stop();
         music.clip.setFramePosition(0);
-        Discord.discord.startTimestamp = System.currentTimeMillis();
-        Discord.discord.endTimestamp = music.clip.getFrameLength();
+        Discord.discord.endTimestamp = (System.currentTimeMillis()
+            + (music.clip.getMicrosecondLength() / 1000)) / 1000;
         Discord.update();
         start();
     }
