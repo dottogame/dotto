@@ -100,10 +100,13 @@ public class Track implements View {
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
+        Skin.getCursor().rescale(30, 30, "sized");
         Skin.getHitCircle().rescale(100, 100, "100");
         Skin.getHitCircleOverlay().rescale(100, 100, "100");
         for (String color : map.colors)
             Skin.getHitCircle().tint("100", color, "100" + color);
+
+        back.rescale(backWidth, (int) (backWidth * backRatio), "sized");
     }
 
     /**
@@ -144,8 +147,8 @@ public class Track implements View {
     public void draw(Graphics2D g) {
         // draw back
         g.drawImage(
-            back.getBuffer(), (int) (gxOffset * 0.25), (int) (gyOffset * 0.25),
-            backWidth, (int) (backWidth * backRatio), null
+            back.getBuffer("sized"), (int) (gxOffset * 0.25),
+            (int) (gyOffset * 0.25), null
         );
 
         // draw tint
@@ -170,8 +173,8 @@ public class Track implements View {
         // draw notes
         float pad;
         Beat beat;
-        double noteOffX = Config.WIDTH / 2 - 50;
-        double noteOffY = Config.HEIGHT / 2 - 50;
+        double noteOffX = Config.HALF_WIDTH - 50;
+        double noteOffY = Config.HALF_HEIGHT - 50;
 
         for (int i = 0; i < beats.size(); i++) {
             beat = beats.get(i);
@@ -183,6 +186,7 @@ public class Track implements View {
 
             if (pad < 0) pad = 0;
 
+            // draw approach circle
             g.drawImage(
                 Skin.getApproachCircle().getBuffer(),
                 (int) (beat.x - pad / 2 + xOffset + noteOffX),
@@ -234,9 +238,9 @@ public class Track implements View {
                     g.draw(
                         new Ellipse2D.Double(
                             beat.sliderPoints.get(z)[0] + xOffset
-                                + (Config.WIDTH / 2) - 4,
+                                + Config.HALF_WIDTH - 4,
                             beat.sliderPoints.get(z)[1] + yOffset
-                                + (Config.HEIGHT / 2) - 4,
+                                + Config.HALF_HEIGHT - 4,
                             8, 8
                         )
                     );
@@ -256,10 +260,9 @@ public class Track implements View {
 
         // draw cursor
         g.drawImage(
-            Skin.getHitCircle().getBuffer(), (Config.WIDTH / 2) - 15,
-            (Config.HEIGHT / 2) - 15, 30, 30, null
+            Skin.getCursor().getBuffer("sized"), Config.HALF_WIDTH - 15,
+            Config.HALF_HEIGHT - 15, null
         );
-
     }
 
     /**

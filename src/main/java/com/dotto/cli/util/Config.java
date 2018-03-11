@@ -25,9 +25,12 @@ import com.dotto.cli.Core;
  */
 public class Config {
     /** The configured width of the screen. */
-    public static int WIDTH = 720;
+    public static int WIDTH;
     /** The configured height of the screen. */
-    public static int HEIGHT = 480;
+    public static int HEIGHT;
+    /** Half the width and height pre-computed */
+    public static int HALF_WIDTH;
+    public static int HALF_HEIGHT;
     /** Whether or not the screen should be full. */
     public static boolean FULLSCREEN = false;
     /** Whether or not to antialias. **/
@@ -60,6 +63,8 @@ public class Config {
         JSONObject json = new JSONObject(configContents);
         WIDTH = json.getInt("width");
         HEIGHT = json.getInt("height");
+        HALF_WIDTH = (int) (WIDTH / 2);
+        HALF_HEIGHT = (int) (HEIGHT / 2);
         FULLSCREEN = json.getBoolean("fullscreen");
         ANTIALIAS = json.getBoolean("antialias");
         BACK_DIM = json.getFloat("backDim");
