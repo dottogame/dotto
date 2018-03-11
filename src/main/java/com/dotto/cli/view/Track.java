@@ -23,6 +23,7 @@ import com.dotto.cli.util.asset.Audio;
 import com.dotto.cli.util.asset.Beat;
 import com.dotto.cli.util.asset.BeatMap;
 import com.dotto.cli.util.asset.MapData;
+import com.dotto.cli.util.manager.Discord;
 import com.dotto.cli.util.manager.MapConfigure;
 import com.dotto.cli.util.manager.Score;
 
@@ -51,7 +52,7 @@ public class Track implements View {
     public double speed = 4;
     /** How much the cursor slides when moving. */
     public double glideFactor = 0.5;
-    /***/
+    /** Directions */
     public boolean UP = false;
     public boolean DOWN = false;
     public boolean LEFT = false;
@@ -111,6 +112,13 @@ public class Track implements View {
 
         back.rescale(backWidth, (int) (backWidth * backRatio), "sized");
         twoDec = new DecimalFormat("#.00");
+        // set up discord to show song
+        Discord.discord.details = "Playing \"" + beatMap.TrackData.TrackName
+            + "\"";
+        Discord.discord.startTimestamp = System.currentTimeMillis();
+        Discord.discord.endTimestamp = System.currentTimeMillis()
+            + music.clip.getFrameLength();
+        Discord.update();
     }
 
     /**

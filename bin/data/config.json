@@ -2,7 +2,7 @@
     "width": 1080,
     "height": 720,
     "fullscreen": false,
-    "antialias": false,
+    "antialias": true,
     "backDim": 0.1,
     "skin": "standard",
     "controls": {

@@ -45,8 +45,6 @@ public class Core {
     public static File rootDirectory;
     /** The graphics manager. */
     public static Graphics graphicManager;
-    /** Discord RPC manager */
-    public static Discord dcord;
     /** A thread factory for the game to use to schedule events. */
     public static final ScheduledThreadPoolExecutor THREAD_FACTORY = new ScheduledThreadPoolExecutor(
         2, Executors.defaultThreadFactory()
@@ -86,10 +84,8 @@ public class Core {
         // instantiate graphic manager
         graphicManager = new Graphics();
 
-        // instantiate discord rpc manager
-        dcord = new Discord();
-
-        // init the graphic kit & skin
+        // initialize utilities
+        Discord.init();
         GraphKit.init();
         try {
             Skin.init();

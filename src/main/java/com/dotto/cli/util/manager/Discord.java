@@ -7,25 +7,39 @@ import javax.swing.Timer;
 
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
+import net.arikia.dev.drpc.DiscordRichPresence;
 import net.arikia.dev.drpc.callbacks.ReadyCallback;
 import net.arikia.dev.drpc.callbacks.SpectateGameCallback;
 
 public class Discord implements ActionListener {
-    private boolean initialized = false;
+    private static boolean initialized = false;
+    private static boolean new_presence = true;
+    private static boolean connected = false;
 
-    private DiscordEventHandlers handler;
+    private static DiscordEventHandlers handler;
+
+    public static DiscordRichPresence discord;
+
+    // here in case we need to kill timers eventually
+    public static Discord dcord;
 
     public Discord() {
-        handler = new DiscordEventHandlers();
-        handler.ready = new ReadyEvent();
         Timer timer = new Timer(5000, this);
         timer.setInitialDelay(0);
         timer.start();
     }
 
+    public static void init() {
+        discord = new DiscordRichPresence();
+        handler = new DiscordEventHandlers();
+        handler.ready = new ReadyEvent();
+        dcord = new Discord();
+    }
+
     public static class ReadyEvent implements ReadyCallback {
         @Override
         public void apply() {
+            connected = true;
             System.out.println("Discord Connected.");
         }
     }
@@ -44,11 +58,19 @@ public class Discord implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent act) {
         // init, and if initialized we run callbacks
-        if (initialized) DiscordRPC.discordRunCallbacks();
+        if (connected && new_presence) {
+            new_presence = false;
+            System.out.println("updating presence");
+            DiscordRPC.discordUpdatePresence(discord);
+        } else if (initialized) DiscordRPC.discordRunCallbacks();
         else {
             initialized = true;
             System.out.println("Kickstarting Discord RPC");
             DiscordRPC.discordInitialize("421924584904851456", handler, true);
         }
+    }
+
+    public static void update() {
+        new_presence = true;
     }
 }
