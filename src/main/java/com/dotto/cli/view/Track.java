@@ -116,8 +116,7 @@ public class Track implements View {
         Discord.discord.details = "Playing \"" + beatMap.TrackData.TrackName
             + "\"";
         Discord.discord.startTimestamp = System.currentTimeMillis();
-        Discord.discord.endTimestamp = System.currentTimeMillis()
-            + music.clip.getFrameLength();
+        Discord.discord.endTimestamp = music.clip.getFrameLength();
         Discord.update();
     }
 
@@ -135,7 +134,7 @@ public class Track implements View {
     }
 
     /**
-     * Rests the game round.
+     * Resets the game round.
      * 
      * @throws java.io.IOException
      */
@@ -147,6 +146,9 @@ public class Track implements View {
         beats.add(bsr.GetNextBeat());
         music.stop();
         music.clip.setFramePosition(0);
+        Discord.discord.startTimestamp = System.currentTimeMillis();
+        Discord.discord.endTimestamp = music.clip.getFrameLength();
+        Discord.update();
         start();
     }
 
