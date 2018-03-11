@@ -126,7 +126,7 @@ public class Graphic implements AutoCloseable {
             String contents = new String(Files.readAllBytes(anim));
             JSONObject jo = new JSONObject(contents);
 
-            result = jo.getInt("framesTick");
+            result = jo.getInt("frameTick");
         } catch (IOException ex) {
             Logger.getLogger(Graphic.class.getName()).log(
                 Level.SEVERE, null, ex

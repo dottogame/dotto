@@ -1,16 +1,18 @@
 package com.dotto.cli.util.manager;
 
-import com.dotto.cli.util.asset.BeatMap;
-import com.dotto.cli.util.asset.MapData;
-import com.dotto.cli.util.asset.TrackData;
 import java.awt.Point;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.dotto.cli.util.asset.BeatMap;
+import com.dotto.cli.util.asset.MapData;
+import com.dotto.cli.util.asset.TrackData;
 
 /**
  * Parses and loads data about a beat map.
@@ -74,7 +76,6 @@ public final class MapConfigure {
     private static HashMap<String, MapData> MapDataFrom(JSONObject jo) {
         JSONArray maps = jo.getJSONArray("maps");
         HashMap<String, MapData> mapData = new HashMap<>();
-
         for (int i = 0; i < maps.length(); i++) {
             JSONObject jso = maps.getJSONObject(i);
 
@@ -91,9 +92,14 @@ public final class MapConfigure {
             Point bound = new Point(bjson.getInt("x"), bjson.getInt("y"));
             accelSpeed = jso.getDouble("acceleration");
             id = jso.getString("id");
+            JSONArray clrs = jso.getJSONArray("colors");
+            String[] colors = new String[clrs.length()];
+            for (int z = 0; z < clrs.length(); z++)
+                colors[z] = clrs.getString(z);
+
             mapData.put(
                 id, new MapData(
-                    mapName, clicks, slides, hops, bound, accelSpeed, id
+                    mapName, clicks, slides, hops, bound, accelSpeed, id, colors
                 )
             );
         }

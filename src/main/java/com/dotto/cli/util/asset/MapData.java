@@ -23,6 +23,8 @@ public final class MapData {
     public final String MapId;
     /** The distance in pixels from the leftmost note to the right most note **/
     public final Point bound;
+    /** The colors in a map */
+    public final String[] colors;
 
     /**
      * Constructs a new {@code MapData}.
@@ -37,7 +39,7 @@ public final class MapData {
      */
     public MapData(
         String MapName, int ClickCount, int SlideCount, int HopCount,
-        Point bound, double acceleration, String MapId
+        Point bound, double acceleration, String MapId, String[] colors
     ) {
         this.MapName = MapName;
         this.ClickCount = ClickCount;
@@ -46,5 +48,6 @@ public final class MapData {
         this.acceleration = acceleration;
         this.MapId = MapId;
         this.bound = bound;
+        this.colors = colors;
     }
 }

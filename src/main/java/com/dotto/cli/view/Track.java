@@ -100,6 +100,10 @@ public class Track implements View {
         backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         backRatio = (float) back.getHeight() / (float) back.getWidth();
         tint = new Color(0f, 0f, 0f, Config.BACK_DIM);
+        Skin.getHitCircle().rescale(100, 100, "100");
+        Skin.getHitCircleOverlay().rescale(100, 100, "100");
+        for (String color : map.colors)
+            Skin.getHitCircle().tint("100", color, "100" + color);
     }
 
     /**
@@ -138,7 +142,6 @@ public class Track implements View {
      */
     @Override
     public void draw(Graphics2D g) {
-
         // draw back
         g.drawImage(
             back.getBuffer(), (int) (gxOffset * 0.25), (int) (gyOffset * 0.25),
@@ -189,15 +192,16 @@ public class Track implements View {
 
             // draw sub circle
             g.drawImage(
-                Skin.getHitCircle().getTint(beat.color),
+                Skin.getHitCircle().getBuffer("100" + beat.color),
                 (int) (beat.x + xOffset + noteOffX),
-                (int) (beat.y + yOffset + noteOffY), 100, 100, null
+                (int) (beat.y + yOffset + noteOffY), null
             );
+
             // draw top circle
             g.drawImage(
-                Skin.getHitCircleOverlay().getBuffer(),
+                Skin.getHitCircleOverlay().getBuffer("100"),
                 (int) (beat.x + xOffset + noteOffX),
-                (int) (beat.y + yOffset + noteOffY), 100, 100, null
+                (int) (beat.y + yOffset + noteOffY), null
             );
 
             if (beat.GetType() == Beat.SLIDE) {
@@ -207,16 +211,16 @@ public class Track implements View {
 
                 // draw sub circle
                 g.drawImage(
-                    Skin.getHitCircle().getTint(beat.color),
+                    Skin.getHitCircle().getBuffer("100" + beat.color),
                     (int) (beatE[0] + xOffset + noteOffX),
-                    (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
+                    (int) (beatE[1] + yOffset + noteOffY), null
                 );
 
                 // draw top circle
                 g.drawImage(
-                    Skin.getHitCircleOverlay().getBuffer(),
+                    Skin.getHitCircleOverlay().getBuffer("100"),
                     (int) (beatE[0] + xOffset + noteOffX),
-                    (int) (beatE[1] + yOffset + noteOffY), 100, 100, null
+                    (int) (beatE[1] + yOffset + noteOffY), null
                 );
 
                 // get tint color
