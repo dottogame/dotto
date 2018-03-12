@@ -13,12 +13,18 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -61,38 +67,36 @@ public class Core {
         // Sets flags that the game will use to adjust how it runs.
         Flagger.setFlags(args);
 
-        // Setup an error callback. The default implementation will print the error message in
-        // System.err.
-        GLFWErrorCallback.createPrint(System.err).set();
+        // initialize the engine and utilities
+        try {
+            init();
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
-        if (
-            !glfwInit()
-            ) throw new IllegalStateException("Unable to initialize GLFW");
+            // Initialize & configure GLFW
+            if (!glfwInit()) throw new IllegalStateException("Init GLFW fail");
+            glfwDefaultWindowHints(); // optional, the current window hints are already the default
+            glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-        // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+            // Create the window
+            window = glfwCreateWindow(
+                Config.WIDTH, Config.HEIGHT, "dotto", NULL, NULL
+            );
 
-        // Create the window
-        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
-        if (
-            window == NULL
-            ) throw new RuntimeException("Failed to create the GLFW window");
+            if (window == NULL) throw new RuntimeException("GLFW window fail");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or
-        // released.
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if (
-                key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE
-                ) glfwSetWindowShouldClose(window, true);
-        });
+            // Setup key callback
+            glfwSetKeyCallback(
+                window, (window, key, scancode, action, mods) -> {
+                    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                        glfwSetWindowShouldClose(window, true);
+                    }
+                }
+            );
 
-        // Get the thread stack and push a new frame
-        try (MemoryStack stack = stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1); // int*
-            IntBuffer pHeight = stack.mallocInt(1); // int*
+            // Get the thread stack and push a new frame
+            MemoryStack stack = stackPush();
+            IntBuffer pWidth = stack.mallocInt(1);
+            IntBuffer pHeight = stack.mallocInt(1);
 
             // Get the window size passed to glfwCreateWindow
             glfwGetWindowSize(window, pWidth, pHeight);
@@ -101,29 +105,34 @@ public class Core {
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             // Center the window
-            glfwSetWindowPos(
-                window, (vidmode.width() - pWidth.get(0
-            )) / 2, (vidmode.height() - pHeight.get(0)) / 2);
-                } // the stack frame is popped automatically
+            int window_x = (vidmode.width() - pWidth.get(0)) / 2;
+            int window_y = (vidmode.height() - pHeight.get(0)) / 2;
+            glfwSetWindowPos(window, window_x, window_y);
 
-        // Make the OpenGL context current
-        glfwMakeContextCurrent(window);
+            // Make the OpenGL context current
+            glfwMakeContextCurrent(window);
 
-        // Enable v-sync
-        glfwSwapInterval(1);
+            // Enable v-sync
+            glfwSwapInterval(1);
 
-        // Make the window visible
-        glfwShowWindow(window);
+            // Make the window visible
+            glfwShowWindow(window);
 
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
-        GL.createCapabilities();
+            // Detect & configure to what the graphics card is capable of
+            GL.createCapabilities();
 
-        // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+            // Set the clear color
+            glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+
+            while (!glfwWindowShouldClose(window)) {
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+                glfwSwapBuffers(window); // swap the color buffers
+                glfwPollEvents(); // Poll for window events
+            }
+
+        } catch (URISyntaxException | IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -132,7 +141,7 @@ public class Core {
     public static void shutdown() {
         DiscordRPC.discordShutdown();
 
-        if (!Flagger.DebugMode()) GameLock.unlockFile();
+        if (!Flagger.DEBUG) GameLock.unlockFile();
 
         System.exit(0);
     }
@@ -140,13 +149,16 @@ public class Core {
     public static void init()
         throws URISyntaxException, IOException, FontFormatException {
         // Protects the game from creating multiple instances of itself.
-        if (!Flagger.DebugMode()) GameLock.lockGame();
+        if (!Flagger.DEBUG) GameLock.lockGame();
 
         // initialize utilities
+        Config.load();
         Discord.init();
         GraphKit.init();
         Skin.init();
-        Config.load();
         Graphics.init();
+
+        // create error callback
+        GLFWErrorCallback.createPrint(System.err).set();
     }
 }

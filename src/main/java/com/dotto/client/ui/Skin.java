@@ -57,7 +57,8 @@ public final class Skin {
     public static Graphic load(String path) {
         Graphic result = null;
 
-        try (Graphic g = new Graphic(path)) {
+        try {
+            Graphic g = new Graphic(path);
             result = g;
         } catch (IOException ioe) {
             Logger.getLogger(Skin.class.getName()).log(
@@ -68,11 +69,11 @@ public final class Skin {
             String[] filePath = path.split("/");
             String file = filePath[filePath.length - 1];
 
-            try (
+            try {
+
                 Graphic gStandard = new Graphic(
                     Util.getLocal() + "/skins/standard/" + file
-                )
-            ) {
+                );
                 result = gStandard;
             } catch (IOException ioex) {
                 Logger.getLogger(Skin.class.getName()).log(

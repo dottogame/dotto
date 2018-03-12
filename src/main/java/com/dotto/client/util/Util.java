@@ -25,7 +25,7 @@ public class Util {
         File result;
 
         if (
-            Flagger.DebugMode()
+            Flagger.DEBUG
         ) result = new File(
             new File(path).getParentFile().getParentFile().getPath() + "/bin/"
         );

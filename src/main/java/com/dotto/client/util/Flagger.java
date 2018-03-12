@@ -7,7 +7,7 @@ package com.dotto.client.util;
  */
 public final class Flagger {
     /** Tells whether the application should run in debug mode. */
-    private static boolean DEBUG = true;
+    public static boolean DEBUG = true;
 
     /**
      * Takes in the command line arguments and sets flags that correspond to their names.
@@ -21,14 +21,5 @@ public final class Flagger {
                 DEBUG = true;
                 break;
             }
-    }
-
-    /**
-     * Returns whether or not the application is in debug mode.
-     * 
-     * @return Whether or not the application is in debug mode.
-     */
-    public static boolean DebugMode() {
-        return DEBUG;
     }
 }

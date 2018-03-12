@@ -23,7 +23,7 @@ import org.json.JSONObject;
  * @author lite20 (Ephraim Bilson)
  * @author SoraKatadzuma
  */
-public class Graphic implements AutoCloseable {
+public class Graphic {
     /** The image(s) that represents this {@code Graphic}. */
     private final HashMap<String, ArrayList<BufferedImage>> frames;
     /** The name of this {@code Graphic}. */
@@ -129,9 +129,8 @@ public class Graphic implements AutoCloseable {
 
             result = jo.getInt("frameTick");
         } catch (IOException ex) {
-            Logger.getLogger(Graphic.class.getName()).log(
-                Level.SEVERE, null, ex
-            );
+            Logger.getLogger(Graphic.class.getName())
+                .log(Level.SEVERE, null, ex);
         }
 
         return result;
@@ -147,14 +146,6 @@ public class Graphic implements AutoCloseable {
     public boolean isAnimated() {
         return animated;
     }
-
-    /**
-     * Inherited method.
-     * 
-     * @see java.lang.AutoCloseable#close()
-     */
-    @Override
-    public void close() throws Exception {}
 
     /**
      * Clears all the editions stored to save memory

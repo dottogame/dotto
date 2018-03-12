@@ -13,7 +13,7 @@ public class GameLoop implements Runnable {
     public int staticFps;
     /** The number of frames per second we want to achieve. */
     private final int targetFps;
-    
+
     /**
      * Constructs a new {@code Engine} instance.
      * 
@@ -24,7 +24,7 @@ public class GameLoop implements Runnable {
         this.call = call;
         this.targetFps = targetFps;
     }
-    
+
     /**
      * Inherited method.
      * 

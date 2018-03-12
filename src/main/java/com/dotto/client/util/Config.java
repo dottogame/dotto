@@ -57,7 +57,6 @@ public class Config {
      */
     public static void load() throws IOException, URISyntaxException {
         Path path = Paths.get(Util.getLocal() + "/data/config.json");
-
         String configContents = new String(Files.readAllBytes(path));
         JSONObject json = new JSONObject(configContents);
         WIDTH = json.getInt("width");
