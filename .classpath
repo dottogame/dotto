@@ -16,7 +16,13 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/tritonus_jorbis-0.3.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/discord-rpc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/tritonus_jorbis-0.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/discord-rpc.jar"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

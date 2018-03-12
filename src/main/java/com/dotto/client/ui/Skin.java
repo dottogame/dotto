@@ -4,10 +4,10 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.dotto.client.Core;
 import com.dotto.client.util.Util;
 
 /**
@@ -34,8 +34,10 @@ public final class Skin {
      * 
      * @throws IOException
      * @throws FontFormatException
+     * @throws URISyntaxException
      */
-    public static void init() throws FontFormatException, IOException {
+    public static void init()
+        throws FontFormatException, IOException, URISyntaxException {
         cursor = load(Util.getSkinPath("cursor"));
         gridPoint = load(Util.getSkinPath("grid_plus"));
         hitCircle = load(Util.getSkinPath("hit_circle"));
@@ -68,8 +70,7 @@ public final class Skin {
 
             try (
                 Graphic gStandard = new Graphic(
-                    Core.rootDirectory.getAbsolutePath() + "/skins/standard/"
-                        + file
+                    Util.getLocal() + "/skins/standard/" + file
                 )
             ) {
                 result = gStandard;
@@ -79,14 +80,12 @@ public final class Skin {
                     ioex
                 );
             } catch (Exception ex) {
-                Logger.getLogger(Skin.class.getName()).log(
-                    Level.SEVERE, "Resource improperly released.", ex
-                );
+                Logger.getLogger(Skin.class.getName())
+                    .log(Level.SEVERE, "Resource improperly released.", ex);
             }
         } catch (Exception e) {
-            Logger.getLogger(Skin.class.getName()).log(
-                Level.SEVERE, "Resource improperly released.", e
-            );
+            Logger.getLogger(Skin.class.getName())
+                .log(Level.SEVERE, "Resource improperly released.", e);
         }
 
         return result;

@@ -1,36 +1,44 @@
 package com.dotto.client;
 
-import com.dotto.client.framework.GameLock;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.DisplayMode;
+import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
+import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 import java.awt.FontFormatException;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.nio.IntBuffer;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.system.MemoryStack;
 
 import com.dotto.client.ui.GraphKit;
 import com.dotto.client.ui.Skin;
 import com.dotto.client.util.Config;
 import com.dotto.client.util.Flagger;
-import com.dotto.client.util.Util;
 import com.dotto.client.util.manager.Discord;
 import com.dotto.client.util.manager.Graphics;
-import com.dotto.client.view.Track;
-import java.util.concurrent.ExecutorService;
 
 import net.arikia.dev.drpc.DiscordRPC;
 
@@ -41,20 +49,8 @@ import net.arikia.dev.drpc.DiscordRPC;
  * @author SoraKatadzuma
  */
 public class Core {
-    /** The current window. */
-    public static JFrame w;
-    /** The current game pane in the window. */
-    public static GamePane pane;
-    /** The root directory of the application. */
-    public static File rootDirectory;
-    /** The graphics manager. */
-    public static Graphics graphicManager;
-    /** A thread factory for the game to use to schedule events. */
-    public static final ExecutorService THREAD_FACTORY = Executors.newCachedThreadPool();
-    /** The user's original display mode before optimization. */
-    public static DisplayMode originalMode;
-    /** The graphic device of the user's original display. */
-    public static GraphicsDevice vc;
+    // The window handle
+    public static long window;
 
     /**
      * Entry point of application.
@@ -62,140 +58,95 @@ public class Core {
      * @param args The command line arguments.
      */
     public static void main(String... args) {
-        // needed to allow the game to draw in fullscreen mode
-        System.setProperty("sun.java2d.noddraw", "true");
+        // Sets flags that the game will use to adjust how it runs.
+        Flagger.setFlags(args);
 
-        try {
-            // Sets flags that the game will use to adjust how it runs.
-            Flagger.setFlags(args);
+        // Setup an error callback. The default implementation will print the error message in
+        // System.err.
+        GLFWErrorCallback.createPrint(System.err).set();
 
-            if (!Flagger.DebugMode())
-                // Protects the game from creating multiple instances of itself.
-                GameLock.lockGame();
+        // Initialize GLFW. Most GLFW functions will not work before doing this.
+        if (
+            !glfwInit()
+            ) throw new IllegalStateException("Unable to initialize GLFW");
 
-            rootDirectory = Util.getLocalDirectory();
-            Config.load();
-        } catch (URISyntaxException | IOException ex) {
-            Logger.getLogger(Core.class.getName()).log(
-                Level.WARNING, ex.getMessage(), ex
-            );
+        // Configure GLFW
+        glfwDefaultWindowHints(); // optional, the current window hints are already the default
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
-            shutdown();
-        }
+        // Create the window
+        window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+        if (
+            window == NULL
+            ) throw new RuntimeException("Failed to create the GLFW window");
 
-        // instantiate graphic manager
-        graphicManager = new Graphics();
-
-        // initialize utilities
-        Discord.init();
-        GraphKit.init();
-        
-        try {
-            Skin.init();
-        } catch (FontFormatException | IOException e) {
-            Logger.getLogger(Core.class.getName())
-                    .log(Level.SEVERE, "", e);
-        }
-
-        // Building the game window.
-        pane = new GamePane();
-        
-        THREAD_FACTORY.execute(pane.updateLoop);
-        THREAD_FACTORY.execute(pane.renderLoop);
-
-        // Building the game frame.
-        w = new JFrame("Dotto");
-        w.add(pane);
-        w.addKeyListener(pane);
-        w.addMouseListener(pane);
-
-        // Create a new blank cursor.
-        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
-            new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB),
-            new Point(0, 0), "blank cursor"
-        );
-
-        // Set the blank cursor to the JFrame.
-        Core.w.getContentPane().setCursor(blankCursor);
-
-        // load and set icon
-        ImageIcon img = new ImageIcon(
-            rootDirectory.getAbsolutePath() + "/data/dotto_64x64.png"
-        );
-
-        w.setIconImage(img.getImage());
-
-        // launch in either fullscreen mode or normal mode
-        if (Config.FULLSCREEN) {
-            w.setUndecorated(true);
-
-            vc = GraphicsEnvironment.getLocalGraphicsEnvironment()
-                .getDefaultScreenDevice();
+        // Setup a key callback. It will be called every time a key is pressed, repeated or
+        // released.
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (
-                !vc.isFullScreenSupported()
-            ) { throw new UnsupportedOperationException(
-                "Fullscreen mode is unsupported."
-            ); }
+                key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE
+                ) glfwSetWindowShouldClose(window, true);
+        });
 
-            originalMode = vc.getDisplayMode();
-            DisplayMode[] dm = vc.getDisplayModes();
-            DisplayMode finalDM = dm[0];
+        // Get the thread stack and push a new frame
+        try (MemoryStack stack = stackPush()) {
+            IntBuffer pWidth = stack.mallocInt(1); // int*
+            IntBuffer pHeight = stack.mallocInt(1); // int*
 
-            for (DisplayMode dm1 : dm) {
-                if (dm1.getRefreshRate() >= finalDM.getRefreshRate()) {
-                    if (dm1.getWidth() <= Config.WIDTH) {
-                        finalDM = dm1;
-                    }
-                }
-            }
+            // Get the window size passed to glfwCreateWindow
+            glfwGetWindowSize(window, pWidth, pHeight);
 
-            System.out.println(
-                finalDM.getWidth() + ":" + finalDM.getHeight() + ":"
-                    + finalDM.getRefreshRate()
-            );
+            // Get the resolution of the primary monitor
+            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-            vc.setFullScreenWindow(w);
-            vc.setDisplayMode(finalDM);
-            if (Config.FULLSCREEN) {
-                Config.WIDTH = w.getWidth();
-                Config.HEIGHT = w.getHeight();
-            }
-        } else {
-            w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            w.setPreferredSize(new Dimension(Config.WIDTH, Config.HEIGHT));
-            w.pack();
-            w.setLocationRelativeTo(null);
-            w.setResizable(false);
-            w.setVisible(true);
-        }
+            // Center the window
+            glfwSetWindowPos(
+                window, (vidmode.width() - pWidth.get(0
+            )) / 2, (vidmode.height() - pHeight.get(0)) / 2);
+                } // the stack frame is popped automatically
 
-        try {
-            Track t = new Track(
-                rootDirectory.getPath() + "/maps/still_snow", "tom_easy"
-            );
+        // Make the OpenGL context current
+        glfwMakeContextCurrent(window);
 
-            pane.view = t;
-            t.start();
-        } catch (IOException ex) {
-            Logger.getLogger(Core.class.getName()).log(
-                Level.WARNING, ex.getMessage(), ex
-            );
+        // Enable v-sync
+        glfwSwapInterval(1);
 
-            shutdown();
-        }
+        // Make the window visible
+        glfwShowWindow(window);
+
+        // This line is critical for LWJGL's interoperation with GLFW's
+        // OpenGL context, or any context that is managed externally.
+        // LWJGL detects the context that is current in the current thread,
+        // creates the GLCapabilities instance and makes the OpenGL
+        // bindings available for use.
+        GL.createCapabilities();
+
+        // Set the clear color
+        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
     }
 
     /**
      * Closes the game upon request.
      */
     public static void shutdown() {
-        THREAD_FACTORY.shutdown();
-
         DiscordRPC.discordShutdown();
-        if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
 
         if (!Flagger.DebugMode()) GameLock.unlockFile();
 
         System.exit(0);
+    }
+
+    public static void init()
+        throws URISyntaxException, IOException, FontFormatException {
+        // Protects the game from creating multiple instances of itself.
+        if (!Flagger.DebugMode()) GameLock.lockGame();
+
+        // initialize utilities
+        Discord.init();
+        GraphKit.init();
+        Skin.init();
+        Config.load();
+        Graphics.init();
     }
 }

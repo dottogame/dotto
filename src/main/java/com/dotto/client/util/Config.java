@@ -2,6 +2,7 @@ package com.dotto.client.util;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,8 +10,6 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.dotto.client.Core;
 
 /**
  * Class responsible for loading game settings. Stores commonly accessed values in their own
@@ -54,10 +53,10 @@ public class Config {
      * Loads in the configuration file.
      * 
      * @throws IOException If the config.json file cannot be found.
+     * @throws URISyntaxException
      */
-    public static void load() throws IOException {
-        Path path = Paths
-            .get(Core.rootDirectory.getAbsolutePath() + "/data/config.json");
+    public static void load() throws IOException, URISyntaxException {
+        Path path = Paths.get(Util.getLocal() + "/data/config.json");
 
         String configContents = new String(Files.readAllBytes(path));
         JSONObject json = new JSONObject(configContents);

@@ -1,7 +1,8 @@
 package com.dotto.client.util.manager;
 
-import com.dotto.client.ui.Graphic;
 import java.util.HashMap;
+
+import com.dotto.client.ui.Graphic;
 
 /**
  * The {@code GraphicLoader} class is responsible for loading all assets with graphics and store
@@ -11,12 +12,12 @@ import java.util.HashMap;
  */
 public class Graphics {
     /** The {@code Graphic}s that are loaded at runtime mapped to their name. */
-    private final HashMap<String, Graphic> LoadedGraphics;
+    private static HashMap<String, Graphic> LoadedGraphics;
 
     /**
      * Constructs a new {@code GraphicLoader}.
      */
-    public Graphics() {
+    public static void init() {
         LoadedGraphics = new HashMap<>();
     }
 

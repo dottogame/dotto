@@ -18,33 +18,24 @@ public class Util {
      * @return root directory
      * @throws URISyntaxException
      */
-    public static File getLocalDirectory() throws URISyntaxException {
+    public static String getLocal() throws URISyntaxException {
         String path = Core.class.getProtectionDomain().getCodeSource()
             .getLocation().toURI().getPath();
 
         File result;
 
-        if (Flagger.DebugMode()) result = new File(
+        if (
+            Flagger.DebugMode()
+        ) result = new File(
             new File(path).getParentFile().getParentFile().getPath() + "/bin/"
         );
 
         else result = new File(path).getParentFile().getParentFile();
 
-        return result;
+        return result.getAbsolutePath();
     }
 
-    /**
-     * Gets the path to an asset.
-     * 
-     * @param string The asset name.
-     * @return String path to the asset.
-     */
-    public static String getAssetPath(String string) {
-        return Core.rootDirectory.toPath().resolve(string).toString();
-    }
-
-    public static String getSkinPath(String item) {
-        return Core.rootDirectory.getAbsolutePath() + "/skins/" + Config.SKIN
-            + "/" + item;
+    public static String getSkinPath(String item) throws URISyntaxException {
+        return getLocal() + "/skins/" + Config.SKIN + "/" + item;
     }
 }

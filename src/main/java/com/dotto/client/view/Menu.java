@@ -1,10 +1,11 @@
 package com.dotto.client.view;
 
-import com.dotto.client.util.Config;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+
+import com.dotto.client.util.Config;
 
 /**
  * TODO: write class description.
@@ -71,6 +72,12 @@ public class Menu implements View {
 
     @Override
     public void update(double delta) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void draw() {
         // TODO Auto-generated method stub
 
     }
