@@ -43,8 +43,12 @@ import com.dotto.client.ui.GraphKit;
 import com.dotto.client.ui.Skin;
 import com.dotto.client.util.Config;
 import com.dotto.client.util.Flagger;
+import com.dotto.client.util.asset.BeatMap;
 import com.dotto.client.util.manager.Discord;
 import com.dotto.client.util.manager.Graphics;
+import com.dotto.client.util.manager.MapConfigure;
+import com.dotto.client.view.Track;
+import com.dotto.client.view.View;
 
 import net.arikia.dev.drpc.DiscordRPC;
 
@@ -57,6 +61,9 @@ import net.arikia.dev.drpc.DiscordRPC;
 public class Core {
     // The window handle
     public static long window;
+
+    // current view
+    public static View view;
 
     /**
      * Entry point of application.
@@ -88,6 +95,7 @@ public class Core {
             glfwSetKeyCallback(
                 window, (window, key, scancode, action, mods) -> {
                     if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                        shutdown();
                         glfwSetWindowShouldClose(window, true);
                     }
                 }
@@ -122,12 +130,22 @@ public class Core {
             GL.createCapabilities();
 
             // Set the clear color
-            glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+            BeatMap bm = MapConfigure.MapFromFolder("still_snow");
+            view = new Track(bm.Maps.get(0), "still_snow");
+            // TODO replace with proper game loop
             while (!glfwWindowShouldClose(window)) {
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-                glfwSwapBuffers(window); // swap the color buffers
-                glfwPollEvents(); // Poll for window events
+                // clear the framebuffer
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                // swap the color buffers
+                glfwSwapBuffers(window);
+
+                // Poll for window events
+                glfwPollEvents();
+
+                view.draw();
             }
 
         } catch (URISyntaxException | IOException | FontFormatException e) {
@@ -142,12 +160,11 @@ public class Core {
         DiscordRPC.discordShutdown();
 
         if (!Flagger.DEBUG) GameLock.unlockFile();
-
-        System.exit(0);
     }
 
     public static void init()
         throws URISyntaxException, IOException, FontFormatException {
+
         // Protects the game from creating multiple instances of itself.
         if (!Flagger.DEBUG) GameLock.lockGame();
 

@@ -19,8 +19,8 @@ public final class MapData {
     public final int HopCount;
     /** The amount of acceleration in this map. */
     public final double acceleration;
-    /** The path to this map. */
-    public final String MapId;
+    /** The id of this map. */
+    public final String id;
     /** The distance in pixels from the leftmost note to the right most note **/
     public final Point bound;
     /** The colors in a map */
@@ -46,7 +46,7 @@ public final class MapData {
         this.SlideCount = SlideCount;
         this.HopCount = HopCount;
         this.acceleration = acceleration;
-        this.MapId = MapId;
+        this.id = MapId;
         this.bound = bound;
         this.colors = colors;
     }

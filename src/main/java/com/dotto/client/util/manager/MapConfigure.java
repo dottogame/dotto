@@ -2,14 +2,16 @@ package com.dotto.client.util.manager;
 
 import java.awt.Point;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.dotto.client.util.Util;
 import com.dotto.client.util.asset.BeatMap;
 import com.dotto.client.util.asset.MapData;
 import com.dotto.client.util.asset.TrackData;
@@ -27,10 +29,12 @@ public final class MapConfigure {
      * @param PathToMapFolder The path to the {@code BeatMap} folder.
      * @return A {@code BeatMap} object representing the contents of the {@code index.json} file.
      * @throws IOException
+     * @throws URISyntaxException
      */
-    public static BeatMap MapFromFolder(String PathToMapFolder)
-        throws IOException {
-        Path path = Paths.get(PathToMapFolder + "/index.json");
+    public static BeatMap MapFromFolder(String mapName)
+        throws IOException, URISyntaxException {
+        Path path = Paths
+            .get(Util.getLocal() + "/maps/" + mapName + "/index.json");
         String mapIndex = new String(Files.readAllBytes(path));
         JSONObject object = new JSONObject(mapIndex);
 
@@ -73,9 +77,9 @@ public final class MapConfigure {
      * @param jo The json object that we are collecting data from.
      * @return A {@code MapData[]} object with all the {@code BeatMap}'s map data.
      */
-    private static HashMap<String, MapData> MapDataFrom(JSONObject jo) {
+    private static ArrayList<MapData> MapDataFrom(JSONObject jo) {
         JSONArray maps = jo.getJSONArray("maps");
-        HashMap<String, MapData> mapData = new HashMap<>();
+        ArrayList<MapData> mapData = new ArrayList<>();
         for (int i = 0; i < maps.length(); i++) {
             JSONObject jso = maps.getJSONObject(i);
 
@@ -97,8 +101,8 @@ public final class MapConfigure {
             for (int z = 0; z < clrs.length(); z++)
                 colors[z] = clrs.getString(z);
 
-            mapData.put(
-                id, new MapData(
+            mapData.add(
+                new MapData(
                     mapName, clicks, slides, hops, bound, accelSpeed, id, colors
                 )
             );
