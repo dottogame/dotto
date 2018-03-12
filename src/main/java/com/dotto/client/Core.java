@@ -1,5 +1,6 @@
 package com.dotto.client;
 
+import com.dotto.client.framework.GameLock;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
@@ -29,6 +30,7 @@ import com.dotto.client.util.Util;
 import com.dotto.client.util.manager.Discord;
 import com.dotto.client.util.manager.Graphics;
 import com.dotto.client.view.Track;
+import java.util.concurrent.ExecutorService;
 
 import net.arikia.dev.drpc.DiscordRPC;
 
@@ -48,9 +50,7 @@ public class Core {
     /** The graphics manager. */
     public static Graphics graphicManager;
     /** A thread factory for the game to use to schedule events. */
-    public static final ScheduledThreadPoolExecutor THREAD_FACTORY = new ScheduledThreadPoolExecutor(
-        2, Executors.defaultThreadFactory()
-    );
+    public static final ExecutorService THREAD_FACTORY = Executors.newCachedThreadPool();
     /** The user's original display mode before optimization. */
     public static DisplayMode originalMode;
     /** The graphic device of the user's original display. */
@@ -89,24 +89,19 @@ public class Core {
         // initialize utilities
         Discord.init();
         GraphKit.init();
+        
         try {
             Skin.init();
         } catch (FontFormatException | IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(Core.class.getName())
+                    .log(Level.SEVERE, "", e);
         }
 
         // Building the game window.
         pane = new GamePane();
-
-        THREAD_FACTORY.schedule(
-            pane.renderLoop, 1000 / pane.renderLoop.targetFps,
-            TimeUnit.MILLISECONDS
-        );
-
-        THREAD_FACTORY.schedule(
-            pane.updateLoop, 1000 / pane.updateLoop.targetFps,
-            TimeUnit.MILLISECONDS
-        );
+        
+        THREAD_FACTORY.execute(pane.updateLoop);
+        THREAD_FACTORY.execute(pane.renderLoop);
 
         // Building the game frame.
         w = new JFrame("Dotto");

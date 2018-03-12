@@ -5,26 +5,24 @@ package com.dotto.client.util;
  * @author lite20 (Ephraim Bilson)
  */
 public class GameLoop implements Runnable {
-    /** Whether or not this {@code GameLoop} is running. */
-    public boolean isRunning = true;
-    /** The {@code GameCall} this {@code GameLoop} should run. */
+    /** The call this loop will make. */
     private final GameCall call;
-    /** The current frames per second. */
-    public int fps = 0;
-    /** The static frames per second. */
-    public int staticFps = 0;
-    /** The target frames per second. */
-    public final int targetFps;
-
+    /** The number of frames we are currently getting. */
+    public int frames;
+    /** A static amount of frames per second to report back. */
+    public int staticFps;
+    /** The number of frames per second we want to achieve. */
+    private final int targetFps;
+    
     /**
-     * Constructs a new instance of {@code GameLoop}.
+     * Constructs a new {@code Engine} instance.
      * 
-     * @param call The call to make in this {@code GameLoop}.
-     * @param fps The frames per second we want to achieve.
+     * @param call The call this {@code GameLoop} will make.
+     * @param targetFps The target amount of frames per second we want to achieve.
      */
-    public GameLoop(GameCall call, int fps) {
+    public GameLoop(GameCall call, int targetFps) {
         this.call = call;
-        this.targetFps = fps;
+        this.targetFps = targetFps;
     }
     
     /**
@@ -34,31 +32,26 @@ public class GameLoop implements Runnable {
      */
     @Override
     public void run() {
-        // game render loop
-        long lastLoopTime = System.currentTimeMillis();
-        long lastFpsTime = 0;
+        long initialTime = System.nanoTime();
+        final double timeF = 1000000000 / targetFps;
+        double deltaF = 0;
+        long timer = System.currentTimeMillis();
 
-        final long OPTIMAL_TIME = 1000 / targetFps;
+        while (true) {
+            long currentTime = System.nanoTime();
+            deltaF += (currentTime - initialTime) / timeF;
+            initialTime = currentTime;
 
-        while (isRunning) {
-            // work out how long its been since the last update, this
-            // will be used to calculate how far the entities should
-            // move this loop
-            long now = System.currentTimeMillis();
-            long updateLength = now - lastLoopTime;
-            lastLoopTime = now;
-            double delta = updateLength / ((double) OPTIMAL_TIME);
+            if (deltaF >= 1) {
+                call.call(deltaF);
+                frames++;
+                deltaF--;
+            }
 
-            call.call(delta);
-
-            // update the frame counter
-            lastFpsTime += updateLength;
-            fps++;
-
-            if (lastFpsTime >= 1000) {
-                staticFps = fps;
-                lastFpsTime = 0;
-                fps = 0;
+            if (System.currentTimeMillis() - timer > 500) {
+                staticFps = frames;
+                frames = 0;
+                timer += 1000;
             }
         }
     }
