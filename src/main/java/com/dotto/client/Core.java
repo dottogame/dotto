@@ -136,8 +136,6 @@ public class Core {
             // TODO replace with proper game loop
             while (!glfwWindowShouldClose(window)) {
 
-                gl.glActiveTexture(textureUnit);
-
                 // Poll for window events
                 glfwPollEvents();
 
