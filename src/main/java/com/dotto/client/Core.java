@@ -10,10 +10,10 @@ import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -26,18 +26,17 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.IntBuffer;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.system.Configuration;
 
 import com.dotto.client.ui.GraphKit;
 import com.dotto.client.ui.Skin;
@@ -101,20 +100,12 @@ public class Core {
                 }
             );
 
-            // Get the thread stack and push a new frame
-            MemoryStack stack = stackPush();
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-
-            // Get the window size passed to glfwCreateWindow
-            glfwGetWindowSize(window, pWidth, pHeight);
-
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             // Center the window
-            int window_x = (vidmode.width() - pWidth.get(0)) / 2;
-            int window_y = (vidmode.height() - pHeight.get(0)) / 2;
+            int window_x = (vidmode.width() - Config.WIDTH) / 2;
+            int window_y = (vidmode.height() - Config.HEIGHT) / 2;
             glfwSetWindowPos(window, window_x, window_y);
 
             // Make the OpenGL context current
@@ -129,23 +120,35 @@ public class Core {
             // Detect & configure to what the graphics card is capable of
             GL.createCapabilities();
 
+            // Enable 2d textures
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+
             // Set the clear color
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            GL11.glLoadIdentity();
+            GL11.glOrtho(0, 800, 0, 600, 1, -1);
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
 
             BeatMap bm = MapConfigure.MapFromFolder("still_snow");
             view = new Track(bm.Maps.get(0), "still_snow");
             // TODO replace with proper game loop
             while (!glfwWindowShouldClose(window)) {
-                // clear the framebuffer
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                // swap the color buffers
-                glfwSwapBuffers(window);
+                gl.glActiveTexture(textureUnit);
 
                 // Poll for window events
                 glfwPollEvents();
 
+                // clear the framebuffer
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
                 view.draw();
+
+                // swap the color buffers
+                glfwSwapBuffers(window);
+
             }
 
         } catch (URISyntaxException | IOException | FontFormatException e) {
@@ -175,7 +178,14 @@ public class Core {
         Skin.init();
         Graphics.init();
 
+        Configuration.DEBUG.set(Flagger.DEBUG);
+
         // create error callback
-        GLFWErrorCallback.createPrint(System.err).set();
+        glfwSetErrorCallback((error, description) -> {
+            System.err.println(
+                "GLFW error [" + Integer.toHexString(error) + "]: " + GLFWErrorCallback.getDescription(description)
+            );
+        });
+
     }
 }

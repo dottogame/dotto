@@ -76,5 +76,6 @@
 	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/lwjgl-stb-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/lwjgl-vulkan.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/lwjgl-vulkan-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/libs/slick-util3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
