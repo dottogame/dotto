@@ -94,11 +94,11 @@ public class Track implements View {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
         GL11.glBegin(GL11.GL_TRIANGLES);
 
-        GL11.glTexCoord2f(0, 1);
-        GL11.glVertex2i(450, 0);
         GL11.glTexCoord2f(1, 0);
-        GL11.glVertex2i(0, 0);
+        GL11.glVertex2i(450, 0);
         GL11.glTexCoord2f(0, 0);
+        GL11.glVertex2i(0, 0);
+        GL11.glTexCoord2f(0, 1);
         GL11.glVertex2i(0, 450);
 
         GL11.glTexCoord2f(0, 1);
