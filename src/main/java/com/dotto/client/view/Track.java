@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+
+import com.dotto.client.Core;
 import com.dotto.client.ui.GraphKit;
 import com.dotto.client.ui.Graphic;
 import com.dotto.client.ui.Skin;
@@ -192,10 +195,10 @@ public class Track implements View {
         yAccel *= glideFactor;
         xAccel *= glideFactor;
 
-        if (UP) yAccel += speed;
-        if (DOWN) yAccel -= speed;
-        if (LEFT) xAccel += speed;
-        if (RIGHT) xAccel -= speed;
+        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_I) == 1) yAccel += speed;
+        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_K) == 1) yAccel -= speed;
+        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_J) == 1) xAccel += speed;
+        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_L) == 1) xAccel -= speed;
 
         yOffset += yAccel * delta;
         xOffset += xAccel * delta;
