@@ -4,7 +4,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.GLFW_VISIBLE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDefaultWindowHints;
@@ -38,7 +37,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.Configuration;
 
-import com.dotto.client.ui.GraphKit;
 import com.dotto.client.ui.Skin;
 import com.dotto.client.util.Config;
 import com.dotto.client.util.Flagger;
@@ -81,7 +79,7 @@ public class Core {
             if (!glfwInit()) throw new IllegalStateException("Init GLFW fail");
             glfwDefaultWindowHints(); // optional, the current window hints are already the default
             glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
 
             // Create the window
             window = glfwCreateWindow(
@@ -120,22 +118,17 @@ public class Core {
             // Detect & configure to what the graphics card is capable of
             GL.createCapabilities();
 
-            // Enable 2d textures
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            // configure our opengl context
+            initGL();
 
-            // Set the clear color
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            // load skin
+            Skin.init();
 
-            GL11.glMatrixMode(GL11.GL_PROJECTION);
-            GL11.glLoadIdentity();
-            GL11.glOrtho(0, 800, 0, 600, 1, -1);
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
+            // load test map
             BeatMap bm = MapConfigure.MapFromFolder("still_snow");
             view = new Track(bm.Maps.get(0), "still_snow");
             // TODO replace with proper game loop
             while (!glfwWindowShouldClose(window)) {
-
                 // Poll for window events
                 glfwPollEvents();
 
@@ -146,9 +139,7 @@ public class Core {
 
                 // swap the color buffers
                 glfwSwapBuffers(window);
-
             }
-
         } catch (URISyntaxException | IOException | FontFormatException e) {
             e.printStackTrace();
         }
@@ -172,8 +163,6 @@ public class Core {
         // initialize utilities
         Config.load();
         Discord.init();
-        GraphKit.init();
-        Skin.init();
         Graphics.init();
 
         Configuration.DEBUG.set(Flagger.DEBUG);
@@ -185,5 +174,27 @@ public class Core {
             );
         });
 
+    }
+
+    public static void initGL() {
+        // set matrix mode
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+
+        // set orthographic mode (and resolution)
+        GL11.glOrtho(0, Config.WIDTH, 0, Config.HEIGHT, 1, -1);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadIdentity();
+
+        // Enable 2d textures
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        // Enable transparency
+        GL11.glEnable(GL11.GL_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        // Set the clear color
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
 }

@@ -1,18 +1,13 @@
 package com.dotto.client.ui;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
 
 import org.json.JSONObject;
 
@@ -25,13 +20,17 @@ import org.json.JSONObject;
  */
 public class Graphic {
     /** The image(s) that represents this {@code Graphic}. */
-    private final HashMap<String, ArrayList<BufferedImage>> frames;
+    private final ArrayList<Texture> frames;
+
     /** The name of this {@code Graphic}. */
     public final String name;
+
     /** Tells if this {@code Graphic} is animated. */
-    private final boolean animated;
+    public final boolean isAnimated;
+
     /** The amount of frames per second an animation should be played. */
     public final int framesTick;
+
     /** The current game frames count. */
     private static int currentFrame = 0;
 
@@ -46,73 +45,44 @@ public class Graphic {
         String[] parts = path.split("/");
         this.name = parts[parts.length - 1];
         File imgFile = new File(path);
-
-        ArrayList<BufferedImage> framesRaw;
         if (imgFile.isDirectory()) {
             int x = imgFile.list().length;
-            framesRaw = new ArrayList<>(x);
-            for (int i = 0; i < x - 1; i++) {
-                framesRaw.add(ImageIO.read(new File(imgFile, i + ".png")));
-            }
+            frames = new ArrayList<>(x);
+            for (int i = 0; i < x - 1; i++)
+                frames.add(
+                    new Texture(imgFile.getAbsolutePath() + "\\" + i + ".png")
+                );
 
-            animated = true;
+            isAnimated = true;
         } else {
-            framesRaw = new ArrayList<>(1);
+            frames = new ArrayList<>(1);
             imgFile = new File(path + ".png");
-            framesRaw.add(ImageIO.read(imgFile));
-            animated = false;
+            frames.add(new Texture(imgFile.getAbsolutePath()));
+            isAnimated = false;
         }
 
-        frames = new HashMap<>();
-        frames.put("raw", framesRaw);
-        framesTick = animated ? getFrameTick(path) : 0;
-
+        framesTick = isAnimated ? getFrameTick(path) : 0;
     }
 
     /**
-     * Returns the {@code BufferedImage} that represents this {@code Graphic}.
-     * 
-     * @return The {@code BufferedImage} that represents this {@code Graphic}.
+     * Gets the texture at the current frame and binds it
      */
-    public BufferedImage getBuffer() {
-        return getBuffer("raw");
-    }
-
-    /**
-     * Returns the {@code BufferedImage} that represents this {@code Graphic}.
-     * 
-     * @return The {@code BufferedImage} that represents this {@code Graphic}.
-     */
-    public BufferedImage getBuffer(String edition) {
-        return frames.get(edition).get(0);
+    public void bind() {
+        frames.get(0).bind();
     }
 
     /**
      * @return The height of the first frames.
      */
     public int getHeight() {
-        return getHeight("raw");
-    }
-
-    /**
-     * @return The height of the first frames.
-     */
-    public int getHeight(String edition) {
-        return frames.get(edition).get(0).getHeight();
-    }
-
-    /**
-     * @return The width of the first frame.
-     */
-    public int getWidth() {
-        return getWidth("raw");
+        return frames.get(0).height;
     }
 
     /**
      * @return The width of the first frame of specific edition
      */
-    public int getWidth(String edition) {
-        return frames.get(edition).get(0).getWidth();
+    public int getWidth() {
+        return frames.get(0).width;
     }
 
     /**
@@ -134,77 +104,5 @@ public class Graphic {
         }
 
         return result;
-    }
-
-    public void rescale() {
-
-    }
-
-    /**
-     * @return Whether or not this {@code Graphic} is animated.
-     */
-    public boolean isAnimated() {
-        return animated;
-    }
-
-    /**
-     * Clears all the editions stored to save memory
-     */
-    public void clean() {
-        ArrayList<BufferedImage> raw = frames.get("raw");
-        frames.clear();
-        frames.put("raw", raw);
-    }
-
-    /**
-     * Creates a tinted edition derived from the raw edition
-     * 
-     * @param color
-     * @return returns self for function chaining
-     */
-    public Graphic tint(String color, String edition_id) {
-        return tint("raw", color, edition_id);
-    }
-
-    /**
-     * Crates a tinted edition derived from a base edition
-     * 
-     * @param base_edition
-     * @param color
-     * @return returns self for function chaining
-     */
-    public Graphic tint(String base_edition, String color, String edition_id) {
-        // clone the base edition
-        ArrayList<BufferedImage> tintFrames = new ArrayList<>();
-
-        // tint
-        Color clr = Color.decode(color);
-        for (int i = 0; i < frames.get(base_edition).size(); i++)
-            tintFrames.add(
-                GraphKit.tintGrayMap(frames.get(base_edition).get(i), clr)
-            );
-
-        frames.put(edition_id, tintFrames);
-        return this;
-    }
-
-    public Graphic rescale(int w, int h, String edition_id) {
-        return rescale("raw", w, h, edition_id);
-    }
-
-    public Graphic rescale(
-        String base_edition, int w, int h, String edition_id
-    ) {
-        // clone the base edition
-        ArrayList<BufferedImage> scaledFrames = new ArrayList<>();
-
-        // rescale
-        for (int i = 0; i < frames.get(base_edition).size(); i++)
-            scaledFrames.add(
-                GraphKit.qualityScale(frames.get(base_edition).get(i), w, h)
-            );
-
-        frames.put(edition_id, scaledFrames);
-        return this;
     }
 }

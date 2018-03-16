@@ -11,9 +11,12 @@ public interface View {
     int getId();
 
     /**
-     * Draws the {@code Graphic g}.
-     * 
-     * @param g The graphic to draw to the screen.
+     * Draws the view
      */
     void draw();
+
+    /**
+     * Updates the view
+     */
+    void update(float delta);
 }
