@@ -127,7 +127,11 @@ public class Core {
             // load test map
             BeatMap bm = MapConfigure.MapFromFolder("still_snow");
             view = new Track(bm.Maps.get(0), "still_snow");
-            // TODO replace with proper game loop
+
+            // init delta calculations
+            double time, lastLoopTime = System.nanoTime() / 1000000000.0;
+            float delta = 0;
+            // game loop
             while (!glfwWindowShouldClose(window)) {
                 // Poll for window events
                 glfwPollEvents();
@@ -135,11 +139,16 @@ public class Core {
                 // clear the framebuffer
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                view.update(1f);
+                view.update(delta);
                 view.draw();
 
                 // swap the color buffers
                 glfwSwapBuffers(window);
+
+                // update timer
+                time = System.nanoTime() / 1000000000.0;
+                delta = (float) (time - lastLoopTime);
+                lastLoopTime = time;
             }
         } catch (URISyntaxException | IOException | FontFormatException e) {
             e.printStackTrace();
