@@ -21,10 +21,14 @@ public class Engine implements Runnable {
      * instead of static. By default we try to keep this at 60.
      */
     public final int updatesPerSecond;
-    /***/
+    /** The amount of time between updates. */
     private final long period;
     /** The current static amount of updates that we are experiencing. */
     private int staticUpdates;
+    /** The current average amount of updates that we are experiencing. */
+    private int averageUpdatesPerSecond;
+    /** The number of full seconds that have gone by. */
+    private int fullSeconds;
     /** The current delta of the game. */
     private long delta = 0L;
     /** The time of our last update. */
@@ -33,6 +37,21 @@ public class Engine implements Runnable {
     private int updateCount = 0;
     /** The number of notifications this {@code Engine} has received. */
     private int notificationCount = 0;
+    /** Tells if this {@code Engine} is a fixed time engine. */
+    private final boolean fixed;
+    
+    /**
+     * @param updatesPerSecond The number of updates per second this {@code Engine} should
+     *      make.
+     * @param fixed Tells if this {@code Engine} is a fixed time engine.
+     */
+    public Engine(int updatesPerSecond, boolean fixed) {
+        this.updatesPerSecond = updatesPerSecond;
+        staticUpdates = updatesPerSecond;
+        averageUpdatesPerSecond = updatesPerSecond;
+        period = 1000 / updatesPerSecond;
+        this.fixed = fixed;
+    }
     
     /**
      * @param updatesPerSecond The number of updates per second this {@code Engine} should
@@ -41,7 +60,9 @@ public class Engine implements Runnable {
     public Engine(int updatesPerSecond) {
         this.updatesPerSecond = updatesPerSecond;
         staticUpdates = updatesPerSecond;
+        averageUpdatesPerSecond = updatesPerSecond;
         period = 1000 / updatesPerSecond;
+        fixed = false;
     }
     
     /**
@@ -72,13 +93,25 @@ public class Engine implements Runnable {
                 .log(Level.SEVERE, "Thread already interrupted.", ex);
         }
 
-        // increment our number of updates
-        updateCount = (++updateCount) < updatesPerSecond ? updateCount : 0;
-
+        updateCount = (++updateCount <= updatesPerSecond) ? updateCount : 1;
+        
+        averageUpdatesPerSecond +=
+            (averageUpdatesPerSecond - staticUpdates) / (
+                (updateCount != 1) ?
+                updateCount * fullSeconds :
+                updateCount * ++fullSeconds
+            );
+        
+        staticUpdates = (updateCount == 1) ? averageUpdatesPerSecond : staticUpdates;
+        
         currentTime = System.currentTimeMillis();
         difference = currentTime - lastUpdateTime;
-        displacement = period - difference;
-
+            
+        if (!fixed)
+            displacement = period - (2 * difference);
+        else
+            displacement = period - difference;
+        
         long nextUpdateTime = (displacement < 0) ? difference : displacement;
         
         // Liaison thread

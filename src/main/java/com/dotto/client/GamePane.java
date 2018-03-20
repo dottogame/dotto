@@ -46,20 +46,20 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         // The starting view of the game.
         view = new Menu();
 
-        engines.add(physicsEngine = new Engine(60));
-        engines.add(renderingEngine = new Engine(100));
+        engines.add(physicsEngine = new Engine(30, true));
+        engines.add(renderingEngine = new Engine(60));
 
         GameObject object = new GameObject() {
             @Override
             public void update() {
-                view.update(physicsEngine.deltaTime());
+                // view.update(physicsEngine.deltaTime());
             } 
         };
 
         GameObject object2 = new GameObject() {
             @Override
             public void update() {
-                repaint();
+                // repaint();
             } 
         };
 
