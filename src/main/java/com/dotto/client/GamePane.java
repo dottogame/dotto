@@ -1,5 +1,7 @@
 package com.dotto.client;
 
+import com.dotto.client.framework.Engine;
+import com.dotto.client.framework.GameObject;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -11,9 +13,12 @@ import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 
 import com.dotto.client.util.Config;
-import com.dotto.client.util.GameLoop;
 import com.dotto.client.view.Menu;
 import com.dotto.client.view.View;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Drawing surface for views and view manager.
@@ -23,12 +28,14 @@ import com.dotto.client.view.View;
  */
 @SuppressWarnings("serial")
 public class GamePane extends JPanel implements MouseListener, KeyListener {
-    /** Dedicated object for running rendering calls. */
-    public GameLoop renderLoop;
-    /** Dedicated object for running update calls. */
-    public GameLoop updateLoop;
     /** Current active view in the game pane. */
     public View view;
+    /** Our update engine. */
+    public final Engine physicsEngine;
+    /** Our render engine. */
+    public final Engine renderingEngine;
+    /** The list of our {@code Engine}s, ease of use. */
+    public final List<Engine> engines = new ArrayList<>();
 
     /**
      * Constructs a new {@code GamePane} object.
@@ -39,21 +46,55 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         // The starting view of the game.
         view = new Menu();
 
-        // Assigning the graphics rendering loop for this Pane.
-        renderLoop = new GameLoop(
-            delta -> {
-                repaint();
-            }, 100
-        );
+        engines.add(physicsEngine = new Engine(60));
+        engines.add(renderingEngine = new Engine(100));
 
-        // Assigning the game's updating loop this Pane.
-        updateLoop = new GameLoop(
-            delta -> {
-                view.update(delta);
-            }, 60
-        );
+        GameObject object = new GameObject() {
+            @Override
+            public void update() {
+                view.update(physicsEngine.deltaTime());
+            } 
+        };
+
+        GameObject object2 = new GameObject() {
+            @Override
+            public void update() {
+                repaint();
+            } 
+        };
+
+        physicsEngine.OBJECTS.add(object);
+        renderingEngine.OBJECTS.add(object2);
+
+        engines.forEach((engine) -> {
+            executeEngineAt(1000L, engine);
+        });
     }
 
+    /**
+     * Restarts the engines for another loop.
+     * 
+     * @param nextUpdateTime The time of the next update.
+     * @param engine The engine to execute again.
+     */
+    public final void executeEngineAt(long nextUpdateTime, Engine engine) {
+        Core.THREAD_FACTORY.execute(new Runnable() {
+            @Override
+            public synchronized void run() {
+                try {
+                    this.wait(nextUpdateTime);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GamePane.class.getName())
+                        .log(Level.SEVERE, "Thread already interrupted.", ex);
+                }
+
+                if (Core.THREAD_FACTORY.isShutdown()) return;
+                
+                Core.THREAD_FACTORY.execute(engine);
+            }
+        });
+    }
+    
     /**
      * Inherited method.
      * 

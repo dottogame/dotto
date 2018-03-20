@@ -62,7 +62,7 @@ public class Track implements View {
     /** The beatMap's data. */
     public MapData map;
     /** A reader for the map. */
-    private BeatStreamReader bsr;
+    private final BeatStreamReader bsr;
     /** The beats that will be loaded and placed on the screen. */
     private final List<Beat> beats;
     /** The music to play during this game round. */
@@ -80,7 +80,7 @@ public class Track implements View {
     /** A check to see if the track should reset. */
     private boolean shouldReset;
     /** Decimal formatting */
-    private DecimalFormat twoDec;
+    private final DecimalFormat twoDec;
 
     /**
      * Constructs a new {@code Track View}.
@@ -267,7 +267,7 @@ public class Track implements View {
         g.setColor(Color.WHITE);
 
         // draw FPS
-        g.drawString(Core.pane.renderLoop.staticFps + " fps", 10, 20);
+        g.drawString(Core.pane.renderingEngine.currentUpdatesPerSecond() + " fps", 10, 20);
 
         // draw Accuracy
         g.setFont(Skin.numbers);

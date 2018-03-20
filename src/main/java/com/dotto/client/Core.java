@@ -97,9 +97,6 @@ public class Core {
         // Building the game window.
         pane = new GamePane();
         
-        THREAD_FACTORY.execute(pane.updateLoop);
-        THREAD_FACTORY.execute(pane.renderLoop);
-
         // Building the game frame.
         w = new JFrame("Dotto");
         w.add(pane);
@@ -189,6 +186,7 @@ public class Core {
         THREAD_FACTORY.shutdown();
 
         DiscordRPC.discordShutdown();
+        
         if (Config.FULLSCREEN) vc.setDisplayMode(originalMode);
 
         if (!Flagger.DebugMode()) GameLock.unlockFile();
