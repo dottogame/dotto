@@ -52,14 +52,14 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         GameObject object = new GameObject() {
             @Override
             public void update() {
-                // view.update(physicsEngine.deltaTime());
+                view.update(physicsEngine.deltaTime());
             } 
         };
 
         GameObject object2 = new GameObject() {
             @Override
             public void update() {
-                // repaint();
+                repaint();
             } 
         };
 

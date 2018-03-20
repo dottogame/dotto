@@ -391,34 +391,22 @@ public class Track implements View {
 
         // notes can be deleted in this window (if game is reset)
         if (beats.size() > 0) {
-            Beat new_beat = beats.get(beats.size() - 1);
-
-            while (new_beat != null && new_beat.InitTimestamp < offset) {
-                new_beat = bsr.GetNextBeat();
-                beats.add(new_beat);
-            }
-        }
-
-        // expire passed notes
-        float pad;
-        int i = 0;
-        Beat beat;
-
-        for (int z = 0; z < beats.size(); z++) {
-            beat = beats.get(z);
-
-            if (beat == null) continue;
-
-            pad = (beat.ClickTimestamp
+            if (beats.get(beats.size() - 1) == null) return;
+            
+            if (beats.get(beats.size() - 1).InitTimestamp < offset) 
+                beats.add(bsr.GetNextBeat());
+            
+            // expire passed notes
+            // warning: null-case check removed. please actually resolve the null beat error
+            float pad = (beats.get(0).ClickTimestamp
                 - (music.clip.getMicrosecondPosition() / 1000));
 
             if (pad < -250) {
                 // it's a miss! D:
-                beats.remove(i);
+                beats.remove(0);
+                // lol why is this 0 btw?
                 score.adjustAccuracy(0);
             }
-
-            i++;
         }
     }
 

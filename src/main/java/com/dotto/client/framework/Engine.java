@@ -79,12 +79,12 @@ public class Engine implements Runnable {
         delta = difference / period;
         lastUpdateTime = currentTime;
 
-        new Thread(() -> {
-            OBJECTS.forEach((object) -> {
+        OBJECTS.forEach((object) -> {
+            Core.THREAD_FACTORY.execute(() -> {
                 object.update();
                 addNotification();
             });
-        }).start();
+        });
 
         try {
             this.wait();
@@ -112,7 +112,9 @@ public class Engine implements Runnable {
         else
             displacement = period - difference;
         
-        long nextUpdateTime = (displacement < 0) ? difference : displacement;
+        long nextUpdateTime = (displacement != 0) ? (displacement < 0) ? difference : displacement : 1;
+        
+        // System.out.println(String.format("Time delay: %d, StaticUPS: %d", nextUpdateTime, staticUpdates));
         
         // Liaison thread
         Core.THREAD_FACTORY.execute(() ->
