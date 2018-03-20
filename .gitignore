@@ -25,3 +25,4 @@ hs_err_pid*
 /pom.xml
 /bin/maps/
 /bin/dotstrap.exe
+nbactions-release-profile.xml

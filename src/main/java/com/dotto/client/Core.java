@@ -1,6 +1,5 @@
 package com.dotto.client;
 
-import com.dotto.client.framework.GameLock;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
@@ -14,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
