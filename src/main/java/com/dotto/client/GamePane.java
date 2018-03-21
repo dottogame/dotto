@@ -17,6 +17,7 @@ import com.dotto.client.view.Menu;
 import com.dotto.client.view.View;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +47,7 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         // The starting view of the game.
         view = new Menu();
 
-        engines.add(physicsEngine = new Engine(30, true));
+        engines.add(physicsEngine = new Engine(30));
         engines.add(renderingEngine = new Engine(60));
 
         GameObject object = new GameObject() {
@@ -67,6 +68,13 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
         renderingEngine.OBJECTS.add(object2);
 
         engines.forEach((engine) -> {
+            Engine.TIMER.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Engine.setSecond();
+                }
+            }, 0, 1000L);
+            
             executeEngineAt(1000L, engine);
         });
     }

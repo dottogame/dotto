@@ -4,6 +4,7 @@ package com.dotto.client.framework;
 import com.dotto.client.Core;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,49 +21,37 @@ public class Engine implements Runnable {
      * monitor it is displaying to, if it can. If not then the fps should be variable
      * instead of static. By default we try to keep this at 60.
      */
-    public final int updatesPerSecond;
+    private static int updatesPerSecond;
+    /** Helps time the {@code Engine} loop. */
+    public static final Timer TIMER = new Timer();
     /** The amount of time between updates. */
     private final long period;
     /** The current static amount of updates that we are experiencing. */
-    private int staticUpdates;
+    private static volatile int staticUpdates;
     /** The current average amount of updates that we are experiencing. */
-    private int averageUpdatesPerSecond;
-    /** The number of full seconds that have gone by. */
-    private int fullSeconds;
+    private static volatile int averageUpdatesPerSecond;
     /** The current delta of the game. */
     private long delta = 0L;
     /** The time of our last update. */
     private long lastUpdateTime;
     /** The number of updates that have elapsed since the last second. */
-    private int updateCount = 0;
+    private static int updateCount = 0;
+    /** The update count last second. */
+    private static int lastUpdateCount = 0;
+    /** The number of seconds that have passed. */
+    private static int secondCount = 0;
     /** The number of notifications this {@code Engine} has received. */
     private int notificationCount = 0;
-    /** Tells if this {@code Engine} is a fixed time engine. */
-    private final boolean fixed;
     
     /**
-     * @param updatesPerSecond The number of updates per second this {@code Engine} should
+     * @param targetUpdatesPerSecond The number of updates per second this {@code Engine} should
      *      make.
-     * @param fixed Tells if this {@code Engine} is a fixed time engine.
      */
-    public Engine(int updatesPerSecond, boolean fixed) {
-        this.updatesPerSecond = updatesPerSecond;
+    public Engine(int targetUpdatesPerSecond) {
+        updatesPerSecond = targetUpdatesPerSecond;
         staticUpdates = updatesPerSecond;
         averageUpdatesPerSecond = updatesPerSecond;
         period = 1000 / updatesPerSecond;
-        this.fixed = fixed;
-    }
-    
-    /**
-     * @param updatesPerSecond The number of updates per second this {@code Engine} should
-     *      make.
-     */
-    public Engine(int updatesPerSecond) {
-        this.updatesPerSecond = updatesPerSecond;
-        staticUpdates = updatesPerSecond;
-        averageUpdatesPerSecond = updatesPerSecond;
-        period = 1000 / updatesPerSecond;
-        fixed = false;
     }
     
     /**
@@ -75,12 +64,12 @@ public class Engine implements Runnable {
         long currentTime = System.currentTimeMillis();
         long difference = currentTime - lastUpdateTime;
         long displacement;
-
+        
         delta = difference / period;
         lastUpdateTime = currentTime;
 
-        OBJECTS.forEach((object) -> {
-            Core.THREAD_FACTORY.execute(() -> {
+        Core.THREAD_FACTORY.execute(() -> {
+            OBJECTS.forEach((object) -> {
                 object.update();
                 addNotification();
             });
@@ -94,32 +83,44 @@ public class Engine implements Runnable {
         }
 
         updateCount = (++updateCount <= updatesPerSecond) ? updateCount : 1;
-        
-        averageUpdatesPerSecond +=
-            (averageUpdatesPerSecond - staticUpdates) / (
-                (updateCount != 1) ?
-                updateCount * fullSeconds :
-                updateCount * ++fullSeconds
-            );
-        
-        staticUpdates = (updateCount == 1) ? averageUpdatesPerSecond : staticUpdates;
-        
         currentTime = System.currentTimeMillis();
         difference = currentTime - lastUpdateTime;
-            
-        if (!fixed)
-            displacement = period - (2 * difference);
-        else
-            displacement = period - difference;
-        
+        displacement = period - (2 * difference);
+
         long nextUpdateTime = (displacement != 0) ? (displacement < 0) ? difference : displacement : 1;
-        
-        // System.out.println(String.format("Time delay: %d, StaticUPS: %d", nextUpdateTime, staticUpdates));
-        
+
         // Liaison thread
         Core.THREAD_FACTORY.execute(() ->
             Core.pane.executeEngineAt(nextUpdateTime, this)
         );
+    }
+    
+    /**
+     * Does particular work that happens only every second.
+     */
+    public static void setSecond() {
+        long difference = updateCount - lastUpdateCount;
+        lastUpdateCount = updateCount;
+        
+        difference = difference == updatesPerSecond ?
+                     difference < 0 ?
+                     updateCount + difference :
+                     updateCount - difference :
+                     0;
+        
+//        System.out.println(
+//            String.format(
+//                "UC: %d, LSUC: %d, UD: %d",
+//                updateCount,
+//                lastUpdateCount,
+//                difference
+//            )
+//        );
+        
+        staticUpdates = (int)(difference == 0 ? updatesPerSecond : difference);
+        averageUpdatesPerSecond += ((staticUpdates - averageUpdatesPerSecond) / ++secondCount);
+        
+//        System.out.println(String.format("AverageUPS: %d, StaticUPS: %d", averageUpdatesPerSecond, staticUpdates));
     }
     
     /**
