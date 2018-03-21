@@ -27,17 +27,15 @@ public class Engine implements Runnable {
     /** The amount of time between updates. */
     private final long period;
     /** The current static amount of updates that we are experiencing. */
-    private static volatile int staticUpdates;
+    private int staticUpdates;
     /** The current average amount of updates that we are experiencing. */
-    private static volatile int averageUpdatesPerSecond;
+    private int averageUpdatesPerSecond;
     /** The current delta of the game. */
     private long delta = 0L;
     /** The time of our last update. */
     private long lastUpdateTime;
     /** The number of updates that have elapsed since the last second. */
-    private static int updateCount = 0;
-    /** The update count last second. */
-    private static int lastUpdateCount = 0;
+    public int updateCount = 0;
     /** The number of seconds that have passed. */
     private static int secondCount = 0;
     /** The number of notifications this {@code Engine} has received. */
@@ -52,6 +50,7 @@ public class Engine implements Runnable {
         staticUpdates = updatesPerSecond;
         averageUpdatesPerSecond = updatesPerSecond;
         period = 1000 / updatesPerSecond;
+        updateCount = updatesPerSecond;
     }
     
     /**
@@ -82,7 +81,7 @@ public class Engine implements Runnable {
                 .log(Level.SEVERE, "Thread already interrupted.", ex);
         }
 
-        updateCount = (++updateCount <= updatesPerSecond) ? updateCount : 1;
+        updateCount++;
         currentTime = System.currentTimeMillis();
         difference = currentTime - lastUpdateTime;
         displacement = period - (2 * difference);
@@ -98,29 +97,12 @@ public class Engine implements Runnable {
     /**
      * Does particular work that happens only every second.
      */
-    public static void setSecond() {
-        long difference = updateCount - lastUpdateCount;
-        lastUpdateCount = updateCount;
+    public void setSecond() {
+        staticUpdates = updateCount;
+        averageUpdatesPerSecond += (staticUpdates - averageUpdatesPerSecond) / ++secondCount;
+        updateCount = 0;
         
-        difference = difference == updatesPerSecond ?
-                     difference < 0 ?
-                     updateCount + difference :
-                     updateCount - difference :
-                     0;
-        
-//        System.out.println(
-//            String.format(
-//                "UC: %d, LSUC: %d, UD: %d",
-//                updateCount,
-//                lastUpdateCount,
-//                difference
-//            )
-//        );
-        
-        staticUpdates = (int)(difference == 0 ? updatesPerSecond : difference);
-        averageUpdatesPerSecond += ((staticUpdates - averageUpdatesPerSecond) / ++secondCount);
-        
-//        System.out.println(String.format("AverageUPS: %d, StaticUPS: %d", averageUpdatesPerSecond, staticUpdates));
+        System.out.println(String.format("AverageUPS: %d, StaticUPS: %d", averageUpdatesPerSecond, staticUpdates));
     }
     
     /**

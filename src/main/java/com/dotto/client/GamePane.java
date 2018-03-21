@@ -71,14 +71,27 @@ public class GamePane extends JPanel implements MouseListener, KeyListener {
             Engine.TIMER.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    Engine.setSecond();
+                    engine.setSecond();
                 }
             }, 0, 1000L);
             
-            executeEngineAt(1000L, engine);
+            executeEngine(engine);
         });
     }
 
+    /**
+     * Alternative to {@code executeEngineAt(long, Engine)}
+     * 
+     * @param engine The engine to execute.
+     */
+    public final void executeEngine(Engine engine) {
+        Core.THREAD_FACTORY.execute(() -> {
+            if (Core.THREAD_FACTORY.isShutdown()) return;
+            
+            Core.THREAD_FACTORY.execute(engine);
+        });
+    }
+    
     /**
      * Restarts the engines for another loop.
      * 
