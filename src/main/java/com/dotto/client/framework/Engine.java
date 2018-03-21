@@ -13,6 +13,8 @@ import java.util.logging.Logger;
  * @author SoraKatadzuma
  */
 public class Engine implements Runnable {
+    /** The name of this engine. */
+    public final String name;
     /** The list of objects with {@code Behaviour} on them. */
     public final List<GameObject> OBJECTS = new ArrayList<>();
     /**
@@ -42,10 +44,12 @@ public class Engine implements Runnable {
     private int notificationCount = 0;
     
     /**
+     * @param name The name of this {@code Engine}.
      * @param targetUpdatesPerSecond The number of updates per second this {@code Engine} should
      *      make.
      */
-    public Engine(int targetUpdatesPerSecond) {
+    public Engine(String name, int targetUpdatesPerSecond) {
+        this.name = name;
         updatesPerSecond = targetUpdatesPerSecond;
         staticUpdates = updatesPerSecond;
         averageUpdatesPerSecond = updatesPerSecond;
@@ -102,7 +106,7 @@ public class Engine implements Runnable {
         averageUpdatesPerSecond += (staticUpdates - averageUpdatesPerSecond) / ++secondCount;
         updateCount = 0;
         
-        System.out.println(String.format("AverageUPS: %d, StaticUPS: %d", averageUpdatesPerSecond, staticUpdates));
+        System.out.println(String.format(name + ": [ AverageUPS: %d, StaticUPS: %d ]", averageUpdatesPerSecond, staticUpdates));
     }
     
     /**
