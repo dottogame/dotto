@@ -18,24 +18,25 @@ public class GraphKit {
 
     public static RenderingHints qualityRescaleHints;
 
-    public static void drawQuad(float x2, float y2, float x1, float y1) {
+    public static void drawQuad(float x, float y, float w, float h) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, 0);
+        GL11.glRotatef(0, 0, 0, 1);
+
         GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(0, 0);
-        GL11.glVertex2f(x1, y1);
-        GL11.glTexCoord2f(1, 0);
-        GL11.glVertex2f(x2, y1);
-        GL11.glTexCoord2f(1, 1);
-        GL11.glVertex2f(x2, y2);
-        GL11.glTexCoord2f(0, 1);
-        GL11.glVertex2f(x1, y2);
+        
+        GL11.glTexCoord2f(1, 1); GL11.glVertex2f(0, 0);
+        GL11.glTexCoord2f(1, 0); GL11.glVertex2f(0, h);
+        GL11.glTexCoord2f(0, 0); GL11.glVertex2f(w, h);
+        GL11.glTexCoord2f(0, 1); GL11.glVertex2f(w, 0);
+        
         GL11.glEnd();
+
+        GL11.glPopMatrix();
     }
 
     public static void drawQuad(Rectangle rect) {
-        drawQuad(
-            (float) rect.getX(), (float) rect.getY(),
-            (float) (rect.getX() + rect.getWidth()),
-            (float) (rect.getY() + rect.getHeight())
-        );
+        drawQuad((float) rect.getX(), (float) rect.getY(), (float) (rect.getX() + rect.getWidth()),
+                (float) (rect.getY() + rect.getHeight()));
     }
 }

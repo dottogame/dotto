@@ -65,7 +65,8 @@ public class Core {
     /**
      * Entry point of application.
      * 
-     * @param args The command line arguments.
+     * @param args
+     *            The command line arguments.
      */
     public static void main(String... args) {
         // Sets flags that the game will use to adjust how it runs.
@@ -76,27 +77,25 @@ public class Core {
             init();
 
             // Initialize & configure GLFW
-            if (!glfwInit()) throw new IllegalStateException("Init GLFW fail");
+            if (!glfwInit())
+                throw new IllegalStateException("Init GLFW fail");
             glfwDefaultWindowHints(); // optional, the current window hints are already the default
             glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
             glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizable
 
             // Create the window
-            window = glfwCreateWindow(
-                Config.WIDTH, Config.HEIGHT, "dotto", NULL, NULL
-            );
+            window = glfwCreateWindow(Config.WIDTH, Config.HEIGHT, "dotto", NULL, NULL);
 
-            if (window == NULL) throw new RuntimeException("GLFW window fail");
+            if (window == NULL)
+                throw new RuntimeException("GLFW window fail");
 
             // Setup key callback
-            glfwSetKeyCallback(
-                window, (window, key, scancode, action, mods) -> {
-                    if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
-                        shutdown();
-                        glfwSetWindowShouldClose(window, true);
-                    }
+            glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+                if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
+                    shutdown();
+                    glfwSetWindowShouldClose(window, true);
                 }
-            );
+            });
 
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -161,14 +160,15 @@ public class Core {
     public static void shutdown() {
         DiscordRPC.discordShutdown();
 
-        if (!Flagger.DEBUG) GameLock.unlockFile();
+        if (!Flagger.DEBUG)
+            GameLock.unlockFile();
     }
 
-    public static void init()
-        throws URISyntaxException, IOException, FontFormatException {
+    public static void init() throws URISyntaxException, IOException, FontFormatException {
 
         // Protects the game from creating multiple instances of itself.
-        if (!Flagger.DEBUG) GameLock.lockGame();
+        if (!Flagger.DEBUG)
+            GameLock.lockGame();
 
         // initialize utilities
         Config.load();
@@ -179,11 +179,9 @@ public class Core {
 
         // create error callback
         glfwSetErrorCallback((error, description) -> {
-            System.err.println(
-                "GLFW error [" + Integer.toHexString(error) + "]: " + GLFWErrorCallback.getDescription(description)
-            );
+            System.err.println("GLFW error [" + Integer.toHexString(error) + "]: "
+                    + GLFWErrorCallback.getDescription(description));
         });
-
     }
 
     public static void initGL() {
