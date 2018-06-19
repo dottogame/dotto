@@ -33,7 +33,7 @@ public class Graphic {
 
     /** The current game frames count. */
     private static int currentFrame = 0;
-
+ 
     /**
      * Constructs a new {@code Graphic} class object with a {@code BufferedImage} as it's
      * representation.

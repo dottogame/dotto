@@ -19,18 +19,15 @@ public class Util {
      * @throws URISyntaxException
      */
     public static String getLocal() throws URISyntaxException {
-        String path = Core.class.getProtectionDomain().getCodeSource()
-            .getLocation().toURI().getPath();
+        String path = Core.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 
         File result;
 
-        if (
-            Flagger.DEBUG
-        ) result = new File(
-            new File(path).getParentFile().getParentFile().getPath() + "/bin/"
-        );
+        if (Flagger.DEBUG)
+            result = new File(new File(path).getParentFile().getParentFile().getPath() + "/bin/");
 
-        else result = new File(path).getParentFile().getParentFile();
+        else
+            result = new File(path).getParentFile().getParentFile();
 
         return result.getAbsolutePath();
     }

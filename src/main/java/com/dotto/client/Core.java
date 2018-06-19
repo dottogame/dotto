@@ -14,6 +14,7 @@ import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowIcon;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
@@ -25,13 +26,18 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -40,6 +46,7 @@ import org.lwjgl.system.Configuration;
 import com.dotto.client.ui.Skin;
 import com.dotto.client.util.Config;
 import com.dotto.client.util.Flagger;
+import com.dotto.client.util.Util;
 import com.dotto.client.util.asset.BeatMap;
 import com.dotto.client.util.manager.Discord;
 import com.dotto.client.util.manager.Graphics;
@@ -90,12 +97,27 @@ public class Core {
                 throw new RuntimeException("GLFW window fail");
 
             // Setup key callback
+            // TODO pull key callback into seperate class and use it for all input handling
             glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE) {
                     shutdown();
                     glfwSetWindowShouldClose(window, true);
                 }
             });
+
+            // set icon
+            IntBuffer w = BufferUtils.createIntBuffer(1);
+            IntBuffer h = BufferUtils.createIntBuffer(1);
+            IntBuffer buf = BufferUtils.createIntBuffer(1);
+            GLFWImage icon = GLFWImage.malloc();
+            GLFWImage.Buffer icon_set = GLFWImage.malloc(1);
+
+            ByteBuffer data = stbi_load(Util.getLocal() + "\\data\\dotto_64x64.png", w, h, buf, 4);
+            icon.set(64, 64, data);
+            icon_set.put(0, icon);
+            glfwSetWindowIcon(window, icon_set);
+            icon_set.free();
+            icon.free();
 
             // Get the resolution of the primary monitor
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -130,6 +152,7 @@ public class Core {
             // init delta calculations
             double time, lastLoopTime = System.nanoTime() / 1000000000.0;
             float delta = 0;
+
             // game loop
             while (!glfwWindowShouldClose(window)) {
                 // Poll for window events
