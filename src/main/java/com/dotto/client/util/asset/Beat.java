@@ -84,7 +84,7 @@ public class Beat {
             end[0] = Positions.get((z * 6) + 6);
             end[1] = Positions.get((z * 6) + 7);
 
-            for (int t = 0; t < 1000; t += 100) {
+            for (int t = 0; t <= 1000; t += 100) {
                 sliderPoints.add(Casteljau.bezier(start, startc, endc, end, t / 999.0f));
             }
         }
