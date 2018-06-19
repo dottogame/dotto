@@ -70,6 +70,7 @@ public class Track implements View {
 
         // backWidth = (int) (map.bound.x * 0.25f) + Config.WIDTH;
         // backRatio = (float) back.getHeight() / (float) back.getWidth();
+        music.play();
         setDiscordName(trackName);
     }
 
@@ -108,52 +109,58 @@ public class Track implements View {
             }
         }
 
-        /**
-         * // draw notes float pad; float noteOffX = Config.HALF_WIDTH - 50; float
-         * noteOffY = Config.HALF_HEIGHT - 50;
-         * 
-         * Beat beat; for (int i = 0; i < beats.size(); i++) { beat = beats.get(i);
-         * 
-         * if (beat == null) continue;
-         * 
-         * pad = ((beat.ClickTimestamp - (music.clip.getMicrosecondPosition() / 1000)) *
-         * 0.1f);
-         * 
-         * if (pad < 0) pad = 0;
-         * 
-         * // draw approach circle Skin.approachCircle.bind();
-         * 
-         * GraphKit.drawQuad( beat.x - pad / 2.0f + xOffset + noteOffX, beat.y - pad /
-         * 2.0f + yOffset + noteOffY, 100.0f + pad, 100.0f + pad);
-         * 
-         * // draw sub circle Skin.hitCircle.bind(); GraphKit.drawQuad( beat.x + xOffset
-         * + noteOffX, beat.y + yOffset + noteOffY, beat.x + xOffset + noteOffX +
-         * Skin.hitCircle.getWidth(), beat.y + yOffset + noteOffY +
-         * Skin.hitCircle.getHeight());
-         * 
-         * // draw top circle Skin.hitCircleOverlay.bind(); GraphKit.drawQuad( beat.x +
-         * xOffset + noteOffX, beat.y + yOffset + noteOffY, beat.x + xOffset + noteOffX
-         * + Skin.hitCircleOverlay.getWidth(), beat.y + yOffset + noteOffY +
-         * Skin.hitCircleOverlay.getHeight() );
-         * 
-         * if (beat.GetType() == Beat.SLIDE) { // draw hit point last point of slider
-         * float[] beatE = beat.sliderPoints .get(beat.sliderPoints.size() - 1);
-         * 
-         * // draw sub circle Skin.hitCircle.bind(); GraphKit.drawQuad( beatE[0] +
-         * xOffset + noteOffX, beatE[1] + yOffset + noteOffY, beatE[0] + xOffset +
-         * noteOffX + Skin.hitCircle.getWidth(), beatE[1] + yOffset + noteOffY +
-         * Skin.hitCircle.getHeight());
-         * 
-         * // draw top circle Skin.hitCircleOverlay.bind(); GraphKit.drawQuad( beatE[0]
-         * + xOffset + noteOffX, beatE[1] + yOffset + noteOffY, beatE[0] + xOffset +
-         * noteOffX + Skin.hitCircleOverlay.getWidth(), beatE[1] + yOffset + noteOffY +
-         * Skin.hitCircleOverlay.getHeight() ); } }
-         * 
-         * // draw cursor Skin.cursor.bind(); GraphKit.drawQuad( Config.HALF_WIDTH - 15,
-         * Config.HALF_HEIGHT - 15, Config.HALF_WIDTH - 15 + Skin.cursor.getWidth(),
-         * Config.HALF_HEIGHT - 15 + Skin.cursor.getHeight());
-         * 
-         */
+        // draw notes
+        float pad;
+        float noteOffX = Config.HALF_WIDTH - 50;
+        float noteOffY = Config.HALF_HEIGHT - 50;
+
+        Beat beat;
+        for (int i = 0; i < beats.size(); i++) {
+            beat = beats.get(i);
+
+            if (beat == null)
+                continue;
+
+            pad = ((beat.ClickTimestamp - (music.clip.getMicrosecondPosition() / 1000)) * 0.1f);
+
+            if (pad < 0)
+                pad = 0;
+
+            // draw approach circle
+            Skin.approachCircle.bind();
+            // GraphKit.drawQuad(beat.x - pad / 2.0f + xOffset + noteOffX, beat.y - pad /
+            // 2.0f + yOffset + noteOffY, 100.0f + pad, 100.0f + pad);
+
+            // draw sub circle
+            Skin.hitCircle.bind();
+            System.out.println(beat.x);
+            GraphKit.drawQuad(beat.x + xOffset + noteOffX, beat.y + yOffset + noteOffY, 100.0f, 100.0f);
+
+            // draw top circle
+            // Skin.hitCircleOverlay.bind();
+            // GraphKit.drawQuad(beat.x + xOffset + noteOffX, beat.y + yOffset + noteOffY,
+            // Skin.hitCircleOverlay.getWidth(), Skin.hitCircleOverlay.getHeight());
+
+            if (beat.GetType() == Beat.SLIDE) { // draw hit point last point of slider
+                float[] beatE = beat.sliderPoints.get(beat.sliderPoints.size() - 1);
+
+                // draw sub circle
+                Skin.hitCircle.bind();
+                // GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset +
+                // noteOffY, Skin.hitCircle.getWidth(), Skin.hitCircle.getHeight());
+
+                // draw top circle
+                Skin.hitCircleOverlay.bind();
+                // GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset +
+                // noteOffY, Skin.hitCircleOverlay.getWidth(),
+                // Skin.hitCircleOverlay.getHeight());
+            }
+        }
+
+        // draw cursor
+        Skin.cursor.bind();
+        float dim = Skin.cursor.getWidth() / 2;
+        GraphKit.drawQuad(Config.HALF_WIDTH - (dim / 2), Config.HALF_HEIGHT - (dim / 2), dim, dim);
     }
 
     @Override

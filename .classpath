@@ -16,43 +16,52 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/tritonus_jorbis-0.3.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/discord-rpc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/tritonus_jorbis-0.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/discord-rpc.jar"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-assimp.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-assimp-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-assimp-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-assimp-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-assimp-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-glfw.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-glfw-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-glfw-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-glfw-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-glfw-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-openal.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-openal-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-openal-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-openal-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-openal-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-opengl.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-opengl-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-opengl-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-opengl-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-opengl-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-stb.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-stb-natives-linux.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-stb-natives-macos.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-stb-natives-windows.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dottogame/dotto/lib/lwjgl-stb-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-assimp-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-glfw-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-openal-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-opengl-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb-natives-linux.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb-natives-macos.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb-natives-windows.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjgl-stb-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjglx-debug-1.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjglx-debug-1.0.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Ken/Documents/dotto/lib/lwjglx-debug-1.0.0-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
