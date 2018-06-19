@@ -25,7 +25,7 @@ public final class MapData {
     public final Point bound;
     /** The colors in a map */
     public final String[] colors;
-
+ 
     /**
      * Constructs a new {@code MapData}.
      * 

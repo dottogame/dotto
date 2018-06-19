@@ -1,8 +1,8 @@
 package com.dotto.client.util.manager;
 
 /**
- * The {@code Score} class is responsible for holding and keeping track of a player's score
- * throughout the game that he plays.
+ * The {@code Score} class is responsible for holding and keeping track of a
+ * player's score throughout the game that he plays.
  * 
  * @author SoraKatadzuma
  */
@@ -23,10 +23,11 @@ public final class Score {
     }
 
     /**
-     * Calculates the score based on the timing of the current {@code Beat}, combo, and current
-     * score.
+     * Calculates the score based on the timing of the current {@code Beat}, combo,
+     * and current score.
      * 
-     * @param acc The beat accuracy the player received.
+     * @param acc
+     *            The beat accuracy the player received.
      */
     public void adjustScore(double acc) {
         // TODO
@@ -35,7 +36,8 @@ public final class Score {
     /**
      * Calculate the player accuracy based off the milliseconds they were off by.
      * 
-     * @param ms The time in milliseconds it to the player to hit the beat.
+     * @param ms
+     *            The time in milliseconds it to the player to hit the beat.
      * @return
      */
     public double calculateAccuracy(long ms) {
@@ -47,7 +49,8 @@ public final class Score {
     /**
      * Adjust the player's accuracy after clicking a {@code Beat}.
      * 
-     * @param acc The accuracy of the click to adjust to.
+     * @param acc
+     *            The accuracy of the click to adjust to.
      */
     public void adjustAccuracy(double acc) {
         currentAccuracy += (acc - currentAccuracy) / ++noteCount;

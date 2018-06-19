@@ -116,6 +116,7 @@ public class Track implements View {
 
         Beat beat;
         for (int i = 0; i < beats.size(); i++) {
+            // TODO use dynamic note sizes
             beat = beats.get(i);
 
             if (beat == null)
@@ -128,32 +129,26 @@ public class Track implements View {
 
             // draw approach circle
             Skin.approachCircle.bind();
-            // GraphKit.drawQuad(beat.x - pad / 2.0f + xOffset + noteOffX, beat.y - pad /
-            // 2.0f + yOffset + noteOffY, 100.0f + pad, 100.0f + pad);
+            GraphKit.drawQuad(beat.x - pad / 2.0f + xOffset + noteOffX, beat.y - pad / 2.0f + yOffset + noteOffY,
+                    100.0f + pad, 100.0f + pad);
 
             // draw sub circle
             Skin.hitCircle.bind();
-            System.out.println(beat.x);
             GraphKit.drawQuad(beat.x + xOffset + noteOffX, beat.y + yOffset + noteOffY, 100.0f, 100.0f);
 
             // draw top circle
-            // Skin.hitCircleOverlay.bind();
-            // GraphKit.drawQuad(beat.x + xOffset + noteOffX, beat.y + yOffset + noteOffY,
-            // Skin.hitCircleOverlay.getWidth(), Skin.hitCircleOverlay.getHeight());
+            Skin.hitCircleOverlay.bind();
+            GraphKit.drawQuad(beat.x + xOffset + noteOffX, beat.y + yOffset + noteOffY, 100.0f, 100.0f);
 
             if (beat.GetType() == Beat.SLIDE) { // draw hit point last point of slider
                 float[] beatE = beat.sliderPoints.get(beat.sliderPoints.size() - 1);
-
                 // draw sub circle
                 Skin.hitCircle.bind();
-                // GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset +
-                // noteOffY, Skin.hitCircle.getWidth(), Skin.hitCircle.getHeight());
+                GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset + noteOffY, 100.0f, 100.0f);
 
                 // draw top circle
                 Skin.hitCircleOverlay.bind();
-                // GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset +
-                // noteOffY, Skin.hitCircleOverlay.getWidth(),
-                // Skin.hitCircleOverlay.getHeight());
+                GraphKit.drawQuad(beatE[0] + xOffset + noteOffX, beatE[1] + yOffset + noteOffY, 100.0f, 100.0f);
             }
         }
 
@@ -168,14 +163,33 @@ public class Track implements View {
         yAccel *= glideFactor;
         xAccel *= glideFactor;
 
-        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_I) == 1)
-            yAccel += speed;
         if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_K) == 1)
+            yAccel += speed;
+        if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_I) == 1)
             yAccel -= speed;
         if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_J) == 1)
             xAccel += speed;
         if (GLFW.glfwGetKey(Core.window, GLFW.GLFW_KEY_L) == 1)
             xAccel -= speed;
+
+        if (GLFW.glfwGetKey(Core.window, Config.TAP_KEYS[0]) == 1
+                || GLFW.glfwGetKey(Core.window, Config.TAP_KEYS[1]) == 1) {
+            Beat tapped = beats.get(0);
+
+            if (tapped == null)
+                return;
+
+            long tapOff = tapped.ClickTimestamp - (music.clip.getMicrosecondPosition() / 1000);
+
+            // ignore if too early. Eventually give some visual feedback
+            if (tapOff < 500) {
+                beats.remove(0);
+                score.adjustAccuracy(score.calculateAccuracy(tapOff));
+
+                if (Math.abs(tapOff) < 100)
+                    System.out.println("nice!");
+            }
+        }
 
         yOffset += yAccel * delta;
         xOffset += xAccel * delta;

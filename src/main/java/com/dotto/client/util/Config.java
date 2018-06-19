@@ -6,14 +6,14 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Class responsible for loading game settings. Stores commonly accessed values in their own
- * variables for convenient naming and potential compiler optimization.
+ * Class responsible for loading game settings. Stores commonly accessed values
+ * in their own variables for convenient naming and potential compiler
+ * optimization.
  * 
  * <p>
  * <b>Used to load and manage configuration file.</b>
@@ -43,7 +43,7 @@ public class Config {
     /** Represents the when the right key for the game is pressed. */
     public static int RIGHT_KEY = KeyEvent.VK_RIGHT;
     /** A list of clicking keys. */
-    public static ArrayList<Integer> TAP_KEYS = new ArrayList<>();
+    public static int[] TAP_KEYS;
     /** The amount of back light that should be applied to the game. */
     public static float BACK_DIM;
     /** The current skin name. */
@@ -52,7 +52,8 @@ public class Config {
     /**
      * Loads in the configuration file.
      * 
-     * @throws IOException If the config.json file cannot be found.
+     * @throws IOException
+     *             If the config.json file cannot be found.
      * @throws URISyntaxException
      */
     public static void load() throws IOException, URISyntaxException {
@@ -73,10 +74,8 @@ public class Config {
         LEFT_KEY = controls.getInt("left");
         RIGHT_KEY = controls.getInt("right");
         JSONArray taps = controls.getJSONArray("tapKeys");
-        TAP_KEYS.clear();
-
+        TAP_KEYS = new int[taps.length()];
         for (int i = 0; i < taps.length(); i++)
-            TAP_KEYS.add(taps.getInt(i));
-
+            TAP_KEYS[i] = taps.getInt(i);
     }
 }

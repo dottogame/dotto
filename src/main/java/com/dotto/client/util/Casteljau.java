@@ -4,14 +4,11 @@ public class Casteljau {
     // simple linear interpolation between two points
     public static float[] lerp(float[] a, float[] b, float t) {
         float[] res = { a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t };
-
         return res;
     }
 
     // evaluate a point on a bezier-curve. t goes from 0 to 1.0
-    public static float[] bezier(
-        float[] a, float[] b, float[] c, float[] d, float t
-    ) {
+    public static float[] bezier(float[] a, float[] b, float[] c, float[] d, float t) {
         float[] ab, bc, cd, abbc, bccd;
         ab = lerp(a, b, t); // point between a and b (green)
         bc = lerp(b, c, t); // point between b and c (green)
