@@ -6,6 +6,9 @@
 bin/
 int/
 
+# Don't ignore these
+!bin/res
+
 # Prerequisites
 *.d
 
