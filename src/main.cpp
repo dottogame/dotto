@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
     }
 
     // Request OpenGL core version 4.4
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLWF_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 
@@ -36,11 +36,11 @@ int main(int argc, char** argv) {
     }
 
     // Perform window actions.
-    while (!glfwShouldCloseWindow(window)) {
+    while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(true);
+            glfwSetWindowShouldClose(window, true);
 
         glfwSwapBuffers(window);
     }

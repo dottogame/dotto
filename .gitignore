@@ -1,3 +1,7 @@
+# Visual Studio ignore
+.vs/
+*.user
+
 # Dev folders
 bin/
 int/
