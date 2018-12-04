@@ -3,11 +3,12 @@
 *.user
 
 # Dev folders
-bin/
-int/
+bin/*
+int/*
 
-# Don't ignore these
+# Don't ignore this
 !bin/res
+!bin/res/*
 
 # Prerequisites
 *.d
