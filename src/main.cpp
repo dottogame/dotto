@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
     GLFWmonitor* primary    = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primary);
     GLFWwindow* window      = glfwCreateWindow(
-        mode->width,
-        mode->height,
+        640, // mode->width,
+        480, // mode->height,
         "Dotto",
-        primary,
+        NULL, // primary,
         NULL
     );
 
@@ -29,6 +29,9 @@ int main(int argc, char** argv) {
         std::cerr << "Failed to create window.\n";
         return EXIT_FAILURE;
     }
+
+    // Make window current.
+    glfwMakeContextCurrent(window);
 
     // Initialize GLEW.
     if (glewInit() != GLEW_OK) {
