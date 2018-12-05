@@ -1,5 +1,5 @@
-#include <pch.h>
-#include <dotto.h>
+#include <dotto/pch.h>
+#include <dotto/dotto.h>
 
 #ifdef _WIN32
 std::string get_working_directory() {
@@ -61,10 +61,10 @@ int main(int argc, char** argv) {
     GLFWmonitor* primary    = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(primary);
     GLFWwindow* window      = glfwCreateWindow(
-        640, // mode->width,
-        480, // mode->height,
+        mode->width,
+        mode->height,
         "Dotto",
-        NULL, // primary,
+        primary,
         NULL
     );
 
