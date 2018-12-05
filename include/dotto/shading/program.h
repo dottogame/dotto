@@ -6,7 +6,7 @@ namespace dotto {
     /* This class is designated to handle any and all shader related code. */
     class program final {
         /* The id for this shader program. */
-        GLuint m_program;
+        GLint m_program;
 
         /* The ids for the shaders used by this program. */
         std::vector<shader> m_shaders;

@@ -8,7 +8,7 @@ namespace dotto {
      */
     class shader final {
         /* The id of this shader. */
-        GLuint m_id;
+        GLint m_id;
 
         /* The source code for this shader. */
         std::string m_code;
