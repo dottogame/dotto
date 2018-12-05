@@ -11,7 +11,7 @@
 #ifdef _WIN32
 #define UNICODE
 
-#ifdef __MINGW32__
+#ifndef __MINGW32__
 #define NOMINMAX
 #endif
 
