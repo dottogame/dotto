@@ -76,7 +76,7 @@ namespace dotto::model {
         }
 
         /* Pushes all of the provided data. */
-        inline void push_all(T[] _data) {
+        inline void push_all(T* _data) {
             m_data.emplace_back(_data);
         }
 
