@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+message Point {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message SongMap {
+    string id = 1;
+    string name = 2;
+    int32 start_time = 3;
+    int32 difficulty = 4;
+    repeated string mapper = 5;
+    repeated string producer = 6;
+
+    message Config {
+        int32 timestamp = 1;
+        int32 speed = 2;
+        int32 time_to_press = 3;
+    }
+
+    message Element {
+        enum Tween {
+            LINEAR = 0;
+            SERPENT = 1;
+            PARABOLIC = 2;
+        }
+
+        enum Etype {
+            DT_NOTE = 0;
+            SLID_NOTE = 1;
+            POS = 2;
+        }
+
+        Etype elem_type = 1;
+        int32 timestamp = 2;
+
+        oneof data {
+            Point location = 3;
+            Tween transition = 4;
+        }
+    }
+
+    repeated Config configs = 7;
+    repeated Element elements = 8;
+}

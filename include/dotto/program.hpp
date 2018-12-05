@@ -61,22 +61,22 @@ namespace dotto {
         }
 
         // Implicit cast to GLuint.
-        operator const GLuint() {
+        inline operator const GLuint() {
             return m_program;
         }
 
         // Adds a shader to this program.
-        void add_shader(shader _shader) {
+        inline void add_shader(shader _shader) {
             m_shaders.emplace_back(std::move(_shader));
         }
 
         // Binds this program.
-        void bind() {
+        inline void bind() {
             glUseProgram(m_program);
         }
 
         // Links this shader program.
-        bool link() {
+        inline bool link() {
             m_program = glCreateProgram();
 
             for (dotto::shader& shdr : m_shaders) {
@@ -114,7 +114,7 @@ namespace dotto {
         }
 
         // Validates this shader program.
-        bool valid() {
+        inline bool valid() {
             GLint valid = 0;
             glValidateProgram(m_program);
             glGetProgramiv(m_program, GL_VALIDATE_STATUS, &valid);
@@ -141,7 +141,7 @@ namespace dotto {
         }
 
         // Gets the attribute with the given name.
-        GLuint get_attrib(const char* attrib) {
+        inline GLuint get_attrib(const char* attrib) {
             GLuint res = -1;
             const auto& itr = m_attribs.find(attrib);
 
@@ -156,7 +156,7 @@ namespace dotto {
         }
 
         // Gets the uniform with the given name.
-        GLuint get_uniform(const char* attrib) {
+        inline GLuint get_uniform(const char* attrib) {
             GLuint res = -1;
             const auto& itr = m_uniforms.find(attrib);
 

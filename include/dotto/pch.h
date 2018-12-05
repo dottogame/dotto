@@ -1,5 +1,6 @@
 #ifndef _DOTTO_PRECOMPILED_HEADER
 #define _DOTTO_PRECOMPILED_HEADER
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>

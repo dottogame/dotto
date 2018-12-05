@@ -1,6 +1,7 @@
 #include "dotto/pch.h"
-#include "dotto/window.hpp"
+#include "dotto/mesh.hpp"
 #include "dotto/program.hpp"
+#include "dotto/window.hpp"
 
 int main(int argc, char** argv) {
     // Create window.
@@ -21,16 +22,9 @@ int main(int argc, char** argv) {
          0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
     };
 
-    // Vertex array object.
-    GLuint vao = 0;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    // Vertex buffer object.
-    GLuint vbo = 0;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // Create mesh.
+    dotto::mesh mesh;
+    mesh.vertices.push_all(vertices);
 
     // Create, compile, and link shaders.
     dotto::shader vert("res/shaders/default.vert", GL_VERTEX_SHADER);
@@ -52,11 +46,12 @@ int main(int argc, char** argv) {
     }
 
     prog.bind();
+    mesh.shaders.push_back(prog);
 
     GLuint a_pos = prog.get_attrib("a_pos");
     GLuint a_col = prog.get_attrib("a_col");
-    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, 7 * sizeof(GLfloat), nullptr);
-    glVertexAttribPointer(a_col, 4, GL_FLOAT, false, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    mesh.array.attrib_pointer(a_pos, 3, GL_FLOAT, 7 * sizeof(GLfloat), nullptr);
+    mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Perform window actions.
     while (wnd.is_open()) {
@@ -67,7 +62,7 @@ int main(int argc, char** argv) {
         // Clear and render.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         prog.bind();
-        glBindVertexArray(vao);
+        mesh.array.bind();
         glEnableVertexAttribArray(a_pos);
         glEnableVertexAttribArray(a_col);
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -78,10 +73,6 @@ int main(int argc, char** argv) {
         wnd.swap_buffers();
         wnd.poll_events();
     }
-
-    // Cleanup
-    glDeleteBuffers(1, &vbo);
-    glDeleteVertexArrays(1, &vao);
 
     return EXIT_SUCCESS;
 }

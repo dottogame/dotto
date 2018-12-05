@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include "io.hpp"
 
 namespace dotto {
     /* This struct represents a single shader source file that will have been
@@ -14,113 +15,68 @@ namespace dotto {
         std::string m_code;
 
     public:
-        // Temporary
-#ifdef _WIN32
-std::string get_working_directory() {
-    HMODULE hModule = GetModuleHandleW(NULL);
-    char path[MAX_PATH];
-    GetModuleFileNameA(hModule, path, MAX_PATH);
-    std::string str(path);
+        // Constructs a new shader from the source at the given path.
+        shader(const std::string& path, const GLuint& type) :
+            m_id(glCreateShader(type))
+        {
+            GLint compiled = 0;
 
-    return str.substr(0, str.find_last_of("\\/")) + "\\";
-}
-#endif
+            io::file::to_string(m_code, path.c_str());
+            const GLchar* const source = m_code.c_str();
+            const GLint length = m_code.size();
+            glShaderSource(m_id, 1, &source, &length);
+            glCompileShader(m_id);
+            glGetShaderiv(m_id, GL_COMPILE_STATUS, &compiled);
 
-#ifdef linux
-std::string get_working_directory() {
-    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
-    const char *path;
+            if (!compiled) {
+                GLint max_length = 0;
+                glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &max_length);
 
-    if (count != -1) path = dirname(result);
-    else std::cout << "Error calling readlink!" << std::endl;
+                std::vector<GLchar> err(max_length);
+                glGetShaderInfoLog(m_id, max_length, &max_length, &err[0]);
 
-    std::string str(path);
+                std::cerr << "[OpenGL] : " << &err[0] << "\n";
 
-    return str.substr(0, str.length() - 11);
-}
-#endif
+                // Force no link.
+                m_id = -1;
+            }
+        }
 
-bool to_string(std::string& target, const char *filename) {
-    std::string path(get_working_directory() + filename);
+        // Copy constructor.
+        shader(const dotto::shader& other) :
+            m_id(other.m_id),
+            m_code(other.m_code)
+        {
+        }
 
-    std::cout << "Reading file: " << path << std::endl;
+        // Move constructor.
+        shader(dotto::shader&& other) :
+            m_id(0),
+            m_code()
+        {
+            std::swap(m_id, other.m_id);
+            std::swap(m_code, other.m_code);
+        }
 
-    std::FILE *fp = std::fopen(path.c_str(), "rb");
-    if (fp)
-    {
-        std::fseek(fp, 0, SEEK_END);
-        target.resize(std::ftell(fp));
-        std::rewind(fp);
-        std::fread(&target[0], 1, target.size(), fp);
-        std::fclose(fp);
-        return true;
-    }
+        // Deconstructs this shader.
+        ~shader() {
+        }
 
-    return false;
-}
-// Temporary
+        // Copy-swap idiom assignment operator.
+        inline shader& operator=(dotto::shader other) {
+            std::swap(m_id, other.m_id);
+            std::swap(m_code, other.m_code);
+            return *this;
+        }
 
-// Constructs a new shader from the source at the given path.
-shader(const std::string& path, const GLuint& type) :
-    m_id(glCreateShader(type))
-{
-    GLint compiled = 0;
-    to_string(m_code, path.c_str());
-    const GLchar* const source = m_code.c_str();
-    const GLint length = m_code.size();
-    glShaderSource(m_id, 1, &source, &length);
-    glCompileShader(m_id);
-    glGetShaderiv(m_id, GL_COMPILE_STATUS, &compiled);
+        // Implicit GLuint cast operator.
+        inline operator const GLuint() {
+            return m_id;
+        }
 
-    if (!compiled) {
-        GLint max_length = 0;
-        glGetShaderiv(m_id, GL_INFO_LOG_LENGTH, &max_length);
-
-        std::vector<GLchar> err(max_length);
-        glGetShaderInfoLog(m_id, max_length, &max_length, &err[0]);
-
-        std::cerr << "[OpenGL] : " << &err[0] << "\n";
-
-        // Force no link.
-        m_id = -1;
-    }
-}
-
-// Copy constructor.
-shader(const dotto::shader& other) :
-    m_id(other.m_id),
-    m_code(other.m_code)
-{
-}
-
-// Move constructor.
-shader(dotto::shader&& other) :
-    m_id(0),
-    m_code()
-{
-    std::swap(m_id, other.m_id);
-    std::swap(m_code, other.m_code);
-}
-
-// Deconstructs this shader.
-~shader() {
-}
-
-// Copy-swap idiom assignment operator.
-dotto::shader& operator=(dotto::shader other) {
-    std::swap(m_id, other.m_id);
-    std::swap(m_code, other.m_code);
-    return *this;
-}
-
-// Implicit GLuint cast operator.
-operator const GLuint() {
-    return m_id;
-}
-
-// Checks that this shader is valid.
-bool valid() {
-    return m_id != -1;
-}
+        // Checks that this shader is valid.
+        inline bool valid() {
+            return m_id != -1;
+        }
     };
 }

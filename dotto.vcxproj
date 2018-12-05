@@ -132,9 +132,14 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\dotto\array.hpp" />
+    <ClInclude Include="include\dotto\io.hpp" />
+    <ClInclude Include="include\dotto\mesh.hpp" />
     <ClInclude Include="include\dotto\pch.h" />
     <ClInclude Include="include\dotto\program.hpp" />
     <ClInclude Include="include\dotto\shader.hpp" />
+    <ClInclude Include="include\dotto\buffer.hpp" />
+    <ClInclude Include="include\dotto\tector.hpp" />
     <ClInclude Include="include\dotto\window.hpp" />
     <ClInclude Include="include\glfw\glfw3.h" />
     <ClInclude Include="include\glfw\glfw3native.h" />

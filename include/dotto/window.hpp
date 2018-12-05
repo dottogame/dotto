@@ -74,52 +74,52 @@ namespace dotto {
         }
 
         // Casts this window to a GLFWwindow*.
-        operator GLFWwindow*() {
+        inline explicit operator GLFWwindow*() {
             return m_window;
         }
 
         // Closes this
-        void close() {
+        inline void close() {
             glfwSetWindowShouldClose(m_window, true);
         }
 
         // Hides this
-        void hide() {
+        inline void hide() {
             glfwHideWindow(m_window);
         }
 
         // Checks if this window is open.
-        bool is_open() {
+        inline bool is_open() {
             return !glfwWindowShouldClose(m_window);
         }
 
         // Makes this window current.
-        void make_current() {
+        inline void make_current() {
             glfwMakeContextCurrent(m_window);
         }
 
         // Polls the event of this
-        void poll_events() {
+        inline void poll_events() {
             glfwPollEvents();
         }
 
         // Sets the position of this
-        void position_at(const int& x_pos, const int& y_pos) {
+        inline void position_at(const int& x_pos, const int& y_pos) {
             glfwSetWindowPos(m_window, x_pos, y_pos);
         }
 
         // Sets the size of this
-        void resize_to(const int& width, const int& height) {
+        inline void resize_to(const int& width, const int& height) {
             glfwSetWindowSize(m_window, width, height);
         }
 
         // Shows this
-        void show() {
+        inline void show() {
             glfwShowWindow(m_window);
         }
 
         // Swaps the buffers of this
-        void swap_buffers() {
+        inline void swap_buffers() {
             glfwSwapBuffers(m_window);
         }
     };
