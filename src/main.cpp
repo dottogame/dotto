@@ -1,5 +1,6 @@
-#include <dotto/pch.h>
-#include <dotto/dotto.h>
+#include "dotto/pch.h"
+#include "dotto/window.hpp"
+#include "dotto/program.hpp"
 
 int main(int argc, char** argv) {
     // Create window.

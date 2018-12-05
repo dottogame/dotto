@@ -1,3 +1,0 @@
-# dotto
-
-Needed dependencies:

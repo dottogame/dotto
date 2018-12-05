@@ -1,6 +1,20 @@
-#include <dotto/shading/shader.h>
+#pragma once
 
-// Temporary
+#include "pch.h"
+
+namespace dotto {
+    /* This struct represents a single shader source file that will have been
+     * compiled and is prepared for linking.
+     */
+    class shader final {
+        /* The id of this shader. */
+        GLint m_id;
+
+        /* The source code for this shader. */
+        std::string m_code;
+
+    public:
+        // Temporary
 #ifdef _WIN32
 std::string get_working_directory() {
     HMODULE hModule = GetModuleHandleW(NULL);
@@ -47,7 +61,7 @@ bool to_string(std::string& target, const char *filename) {
 // Temporary
 
 // Constructs a new shader from the source at the given path.
-dotto::shader::shader(const std::string& path, const GLuint& type) :
+shader(const std::string& path, const GLuint& type) :
     m_id(glCreateShader(type))
 {
     GLint compiled = 0;
@@ -73,14 +87,14 @@ dotto::shader::shader(const std::string& path, const GLuint& type) :
 }
 
 // Copy constructor.
-dotto::shader::shader(const dotto::shader& other) :
+shader(const dotto::shader& other) :
     m_id(other.m_id),
     m_code(other.m_code)
 {
 }
 
 // Move constructor.
-dotto::shader::shader(dotto::shader&& other) :
+shader(dotto::shader&& other) :
     m_id(0),
     m_code()
 {
@@ -89,22 +103,24 @@ dotto::shader::shader(dotto::shader&& other) :
 }
 
 // Deconstructs this shader.
-dotto::shader::~shader() {
+~shader() {
 }
 
 // Copy-swap idiom assignment operator.
-dotto::shader& dotto::shader::operator=(dotto::shader other) {
+dotto::shader& operator=(dotto::shader other) {
     std::swap(m_id, other.m_id);
     std::swap(m_code, other.m_code);
     return *this;
 }
 
 // Implicit GLuint cast operator.
-dotto::shader::operator const GLuint() {
+operator const GLuint() {
     return m_id;
 }
 
 // Checks that this shader is valid.
-bool dotto::shader::valid() {
+bool valid() {
     return m_id != -1;
+}
+    };
 }
