@@ -140,9 +140,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\dotto.h" />
+    <ClInclude Include="include\dotto\dotto.h" />
     <ClInclude Include="include\glfw\glfw3.h" />
     <ClInclude Include="include\glfw\glfw3native.h" />
     <ClInclude Include="include\glm\common.hpp" />
@@ -389,7 +390,8 @@
     <ClInclude Include="include\gl\glew.h" />
     <ClInclude Include="include\gl\glxew.h" />
     <ClInclude Include="include\gl\wglew.h" />
-    <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\dotto\pch.h" />
+    <ClInclude Include="include\dotto\window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\res\shaders\default.frag" />
