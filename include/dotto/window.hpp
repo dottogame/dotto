@@ -60,7 +60,7 @@ namespace dotto {
 
             // Check that window was created.
             if (!m_window) {
-                std::cerr << "[Dotto] : Failed to create \n";
+                std::cerr << "[Dotto] : Failed to create window.\n";
                 return;
             }
         }
