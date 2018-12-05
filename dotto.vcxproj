@@ -144,10 +144,13 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">dotto/pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dotto/pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\shading\program.cpp" />
+    <ClCompile Include="src\shading\shader.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\dotto\dotto.h" />
+    <ClInclude Include="include\dotto\shading\shader.h" />
     <ClInclude Include="include\glfw\glfw3.h" />
     <ClInclude Include="include\glfw\glfw3native.h" />
     <ClInclude Include="include\glm\common.hpp" />
@@ -396,6 +399,7 @@
     <ClInclude Include="include\gl\wglew.h" />
     <ClInclude Include="include\dotto\pch.h" />
     <ClInclude Include="include\dotto\window.h" />
+    <ClInclude Include="include\dotto\shading\program.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\res\shaders\default.frag" />

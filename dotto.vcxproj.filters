@@ -27,6 +27,12 @@
     <ClCompile Include="src\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shading\program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shading\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\gl\eglew.h">
@@ -774,6 +780,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\dotto\pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dotto\shading\program.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dotto\shading\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
