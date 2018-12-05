@@ -1,7 +1,23 @@
 #ifndef _DOTTO_PRECOMPILED_HEADER
 #define _DOTTO_PRECOMPILED_HEADER
 #include <iostream>
+#include <string>
+#include <vector>
 #include "gl/glew.h"
 #include "glfw/glfw3.h"
+
+#ifdef _WIN32
+#define UNICODE
+#define NOMINMAX
+#define STRICT
+#define VC_EXTRALEAN
+#define WIN32_LEAN_AND_MEAN
+#include <Windows.h>
+#undef UNICODE
+#undef NOMINMAX
+#undef STRICT
+#undef VC_EXTRALEAN
+#undef WIN32_LEAN_AND_MEAN
+#endif
 
 #endif

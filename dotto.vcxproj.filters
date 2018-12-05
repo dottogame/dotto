@@ -1165,5 +1165,7 @@
     <None Include="include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="bin\res\shaders\default.frag" />
+    <None Include="bin\res\shaders\default.vert" />
   </ItemGroup>
 </Project>
