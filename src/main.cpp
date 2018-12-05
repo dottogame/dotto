@@ -84,10 +84,10 @@ int main(int argc, char** argv) {
     }
 
     // Triangle vertices.
-    GLfloat vertices[9] = {
-        -0.5f, -0.5f, 0.0f, // 1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f, // 0.0f, 1.0f, 0.0f, 1.0f,
-         0.0f,  0.5f, 0.0f, // 0.0f, 0.0f, 1.0f, 1.0f
+    GLfloat vertices[21] = {
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
     };
 
     // Vertex array object.
@@ -98,8 +98,8 @@ int main(int argc, char** argv) {
     // Vertex buffer object.
     GLuint vbo = 0;
     glGenBuffers(1, &vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Create, compile, and link shaders.
     GLint is_compiled = 0;
@@ -111,18 +111,18 @@ int main(int argc, char** argv) {
     glShaderSource(vert_shader, 1, &v_sauce, &v_length);
     glCompileShader(vert_shader);
     glGetShaderiv(vert_shader, GL_COMPILE_STATUS, &is_compiled);
-
+    
     if (!is_compiled) {
         GLint max_length = 0;
         glGetShaderiv(vert_shader, GL_INFO_LOG_LENGTH, &max_length);
         
         std::vector<GLchar> err(max_length);
         glGetShaderInfoLog(vert_shader, max_length, &max_length, &err[0]);
-
+    
         std::cerr << &err[0] << '\n';
         return EXIT_FAILURE;
     }
-
+    
     GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
     std::string frag_source_str;
     to_string(frag_source_str, "res/shaders/default.frag");
@@ -131,41 +131,41 @@ int main(int argc, char** argv) {
     glShaderSource(frag_shader, 1, &f_sauce, &f_length);
     glCompileShader(frag_shader);
     glGetShaderiv(frag_shader, GL_COMPILE_STATUS, &is_compiled);
-
+    
     if (!is_compiled) {
         GLint max_length = 0;
         glGetShaderiv(frag_shader, GL_INFO_LOG_LENGTH, &max_length);
-
+    
         std::vector<GLchar> err(max_length);
         glGetShaderInfoLog(frag_shader, max_length, &max_length, &err[0]);
-
+    
         std::cerr << &err[0] << "\n";
         return EXIT_FAILURE;
     }
-
+    
     GLuint program = glCreateProgram();
     glAttachShader(program, vert_shader);
     glAttachShader(program, frag_shader);
     glLinkProgram(program);
-
+    
     GLint is_linked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
     
     if (!is_linked) {
         GLint max_length = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_length);
-
+    
         std::vector<GLchar> err(max_length);
         glGetProgramInfoLog(program, max_length, &max_length, &err[0]);
-
+    
         std::cerr << &err[0] << "\n";
-
+    
         glDeleteProgram(program);
         glDeleteShader(vert_shader);
         glDeleteShader(frag_shader);
         return EXIT_FAILURE;
     }
-
+    
     glValidateProgram(program);
     GLint is_valid = 0;
     glGetProgramiv(program, GL_VALIDATE_STATUS, &is_valid);
@@ -173,12 +173,12 @@ int main(int argc, char** argv) {
     if (!is_valid) {
         GLint max_length = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_length);
-
+    
         std::vector<GLchar> err(max_length);
         glGetProgramInfoLog(program, max_length, &max_length, &err[0]);
-
+    
         std::cerr << &err[0] << "\n";
-
+    
         glDeleteProgram(program);
         glDeleteShader(vert_shader);
         glDeleteShader(frag_shader);
@@ -191,9 +191,9 @@ int main(int argc, char** argv) {
     glUseProgram(program);
 
     GLuint a_pos = glGetAttribLocation(program, "a_pos");
-    // GLuint a_col = glGetAttribLocation(program, "a_col");
-    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, 3 * sizeof(GLfloat), nullptr);
-    // glVertexAttribPointer(a_col, 4, GL_FLOAT, false, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    GLuint a_col = glGetAttribLocation(program, "a_col");
+    glVertexAttribPointer(a_pos, 3, GL_FLOAT, false, 7 * sizeof(GLfloat), nullptr);
+    glVertexAttribPointer(a_col, 4, GL_FLOAT, false, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Perform window actions.
     while (!glfwWindowShouldClose(window)) {
@@ -206,9 +206,10 @@ int main(int argc, char** argv) {
         glUseProgram(program);
         glBindVertexArray(vao);
         glEnableVertexAttribArray(a_pos);
-        // glEnableVertexAttribArray(a_col);
+        glEnableVertexAttribArray(a_col);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glDisableVertexAttribArray(a_pos);
+        glDisableVertexAttribArray(a_col);
 
         // Swap back and front buffer.
         glfwSwapBuffers(window);
