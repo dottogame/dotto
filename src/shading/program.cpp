@@ -37,7 +37,9 @@ dotto::program& dotto::program::operator=(dotto::program other) {
 // Deconstructs this program.
 dotto::program::~program() {
     for (dotto::shader& shdr : m_shaders)
-        glDeleteProgram(m_program);
+        glDeleteShader(shdr);
+
+    glDeleteProgram(m_program);
 }
 
 // Implicit cast to GLuint.
