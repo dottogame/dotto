@@ -8,6 +8,7 @@
 #include <vector>
 #include "gl/glew.h"
 #include "glfw/glfw3.h"
+#include "../dotto.pb.h"
 
 #ifdef _WIN32
 #define UNICODE
