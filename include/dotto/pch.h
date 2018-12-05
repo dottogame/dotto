@@ -10,7 +10,11 @@
 
 #ifdef _WIN32
 #define UNICODE
+
+#ifdef __MINGW32__
 #define NOMINMAX
+#endif
+
 #define STRICT
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
