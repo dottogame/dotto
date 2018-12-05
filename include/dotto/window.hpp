@@ -27,16 +27,20 @@ namespace dotto {
             m_original_height(720)
         {
             if (!m_initialized) {
-
+                std::cout << "[Dotto] Initializing glfw" << std::endl;
+                if (!glfwInit()) {
+                    std::cerr << "[Dotto] : Failed to initialize GLFW.\n";
+                    return;
+                }
 
                 m_initialized = true;
             }
 
             // Request OpenGL core version 4.4
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
             // The monitor we will be displaying to.
             GLFWmonitor* monitor    = glfwGetPrimaryMonitor();

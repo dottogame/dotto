@@ -2,9 +2,6 @@
 #include "dotto/window.hpp"
 #include "dotto/program.hpp"
 
-// error callback function.
-void glfw_error_callback(int error, const char* message);
-
 // Prints GL errors
 void gl_debug_callback(
     GLenum source,
@@ -24,13 +21,6 @@ void gl_debug_callback(
 
 
 int main(int argc, char** argv) {
-    std::cout << "[Dotto] Initializing glfw" << std::endl;
-    if (!glfwInit()) {
-        std::cerr << "[Dotto] : Failed to initialize GLFW.\n";
-        return 0;
-    }
-
-    glfwSetErrorCallback(glfw_error_callback);
     // Create window.
     dotto::window wnd(false);
     wnd.make_current();
@@ -112,8 +102,4 @@ int main(int argc, char** argv) {
     glDeleteVertexArrays(1, &vao);
 
     return EXIT_SUCCESS;
-}
-
-void glfw_error_callback(int error, const char* message) {
-    std::cerr << "[GLFW:" << error << "]: " << message << "\n";
 }
