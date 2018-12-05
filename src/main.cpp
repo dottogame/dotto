@@ -46,36 +46,10 @@ bool to_string(std::string& target, const char *filename) {
 }
 
 int main(int argc, char** argv) {
-    /* Initialize GLFW. */
-    if (!glfwInit()) {
-        std::cerr << "Failed to initialize GLFW.\n";
-        return EXIT_FAILURE;
-    }
-
-    // Request OpenGL core version 4.4
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-
     // Create window.
-    GLFWmonitor* primary    = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(primary);
-    GLFWwindow* window      = glfwCreateWindow(
-        mode->width,
-        mode->height,
-        "Dotto",
-        primary,
-        NULL
-    );
-
-    // Check if Window exists.
-    if (!window) {
-        std::cerr << "Failed to create window.\n";
-        return EXIT_FAILURE;
-    }
-
-    // Make window current.
-    glfwMakeContextCurrent(window);
+    dotto::window wnd(false);
+    wnd.make_current();
+    wnd.show();
 
     // Initialize GLEW.
     if (glewInit() != GLEW_OK) {
@@ -111,18 +85,18 @@ int main(int argc, char** argv) {
     glShaderSource(vert_shader, 1, &v_sauce, &v_length);
     glCompileShader(vert_shader);
     glGetShaderiv(vert_shader, GL_COMPILE_STATUS, &is_compiled);
-    
+
     if (!is_compiled) {
         GLint max_length = 0;
         glGetShaderiv(vert_shader, GL_INFO_LOG_LENGTH, &max_length);
-        
+
         std::vector<GLchar> err(max_length);
         glGetShaderInfoLog(vert_shader, max_length, &max_length, &err[0]);
-    
+
         std::cerr << &err[0] << '\n';
         return EXIT_FAILURE;
     }
-    
+
     GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
     std::string frag_source_str;
     to_string(frag_source_str, "res/shaders/default.frag");
@@ -131,54 +105,54 @@ int main(int argc, char** argv) {
     glShaderSource(frag_shader, 1, &f_sauce, &f_length);
     glCompileShader(frag_shader);
     glGetShaderiv(frag_shader, GL_COMPILE_STATUS, &is_compiled);
-    
+
     if (!is_compiled) {
         GLint max_length = 0;
         glGetShaderiv(frag_shader, GL_INFO_LOG_LENGTH, &max_length);
-    
+
         std::vector<GLchar> err(max_length);
         glGetShaderInfoLog(frag_shader, max_length, &max_length, &err[0]);
-    
+
         std::cerr << &err[0] << "\n";
         return EXIT_FAILURE;
     }
-    
+
     GLuint program = glCreateProgram();
     glAttachShader(program, vert_shader);
     glAttachShader(program, frag_shader);
     glLinkProgram(program);
-    
+
     GLint is_linked = 0;
     glGetProgramiv(program, GL_LINK_STATUS, &is_linked);
-    
+
     if (!is_linked) {
         GLint max_length = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_length);
-    
+
         std::vector<GLchar> err(max_length);
         glGetProgramInfoLog(program, max_length, &max_length, &err[0]);
-    
+
         std::cerr << &err[0] << "\n";
-    
+
         glDeleteProgram(program);
         glDeleteShader(vert_shader);
         glDeleteShader(frag_shader);
         return EXIT_FAILURE;
     }
-    
+
     glValidateProgram(program);
     GLint is_valid = 0;
     glGetProgramiv(program, GL_VALIDATE_STATUS, &is_valid);
-    
+
     if (!is_valid) {
         GLint max_length = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &max_length);
-    
+
         std::vector<GLchar> err(max_length);
         glGetProgramInfoLog(program, max_length, &max_length, &err[0]);
-    
+
         std::cerr << &err[0] << "\n";
-    
+
         glDeleteProgram(program);
         glDeleteShader(vert_shader);
         glDeleteShader(frag_shader);
@@ -196,10 +170,10 @@ int main(int argc, char** argv) {
     glVertexAttribPointer(a_col, 4, GL_FLOAT, false, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Perform window actions.
-    while (!glfwWindowShouldClose(window)) {
+    while (wnd.is_open()) {
         // Check if we should escape the window.
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
+        if (glfwGetKey((GLFWwindow*)wnd, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose((GLFWwindow*)wnd, true);
 
         // Clear and render.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,8 +186,8 @@ int main(int argc, char** argv) {
         glDisableVertexAttribArray(a_col);
 
         // Swap back and front buffer.
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        wnd.swap_buffers();
+        wnd.poll_events();
     }
 
     // Cleanup
@@ -222,13 +196,6 @@ int main(int argc, char** argv) {
     glDeleteShader(vert_shader);
     glDeleteShader(frag_shader);
     glDeleteProgram(program);
-
-    // Destroy window if it still exists.
-    if (window)
-        glfwDestroyWindow(window);
-
-    // Terminate GLFW.
-    glfwTerminate();
 
     return EXIT_SUCCESS;
 }
