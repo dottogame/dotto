@@ -2,24 +2,6 @@
 #include "dotto/window.hpp"
 #include "dotto/program.hpp"
 
-// Prints GL errors
-void gl_debug_callback(
-    GLenum source,
-    GLenum type,
-    GLuint id,
-    GLenum severity,
-    GLsizei length,
-    const GLchar *message,
-    const void *userParam
-) {
-    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-        return;
-
-    std::cerr << "[OPENGL:(" << source << ", " << type << ", " << id << ", "
-        << severity << ")]: " << message << "\n";
-}
-
-
 int main(int argc, char** argv) {
     // Create window.
     dotto::window wnd(false);
