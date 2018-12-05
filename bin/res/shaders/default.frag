@@ -1,4 +1,4 @@
-#version 430
+#version 330
 
 // The color from our vertex.
 in vec4 f_col;

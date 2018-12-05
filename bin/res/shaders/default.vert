@@ -1,4 +1,4 @@
-#version 430
+#version 330
 
 // Attributes.
 in vec3 a_pos;
