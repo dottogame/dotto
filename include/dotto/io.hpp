@@ -1,4 +1,5 @@
 #pragma once
+
 #include "pch.h"
 
 namespace dotto::io
@@ -53,7 +54,6 @@ namespace dotto::io
         }
 
         /**
-            [DEPRECATED]
             Clean, abstracted interface for reading file line by line.
             Yeah, it basically abstracts nothing. Whatever. Puts it all in
             one object at least.
