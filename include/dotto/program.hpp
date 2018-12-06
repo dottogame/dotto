@@ -60,7 +60,7 @@ namespace dotto {
         }
 
         // Implicit cast to GLuint.
-        inline operator const GLuint() {
+        inline operator GLuint() {
             return m_program;
         }
 
@@ -160,7 +160,7 @@ namespace dotto {
             const auto& itr = m_uniforms.find(attrib);
 
             if (itr == m_uniforms.end()) {
-                res = glGetAttribLocation(m_program, attrib);
+                res = glGetUniformLocation(m_program, attrib);
                 m_uniforms.emplace(std::make_pair(attrib, res));
             } else {
                 res = itr->second;

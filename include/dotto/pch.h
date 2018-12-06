@@ -9,6 +9,7 @@
 #include "gl/glew.h"
 #include "glfw/glfw3.h"
 #include "glm/glm.hpp"
+#include "glm/ext.hpp"
 // #include "dotto.pb.h"
 
 #ifdef _WIN32

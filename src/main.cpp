@@ -1,5 +1,5 @@
 #include "dotto/pch.h"
-#include "dotto/mesh.hpp"
+#include "dotto/rectangle.hpp"
 #include "dotto/program.hpp"
 #include "dotto/window.hpp"
 
@@ -15,26 +15,8 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    // Triangle vertices.
-    GLfloat vertices[28] = {
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
-    };
-
-    GLuint indices[6] = {
-        0, 1, 2,
-        2, 3, 0
-    };
-
-    // Create mesh.
-    dotto::mesh mesh;
-    mesh.array.bind();
-    mesh.vertices.push_all(vertices, 28);
-    mesh.indices.push_all(indices, 6);
-    mesh.vertices.glify();
-    mesh.indices.glify();
+    // Rectangle.
+    dotto::rectangle rect;
 
     // Create, compile, and link shaders.
     dotto::shader vert("res/shaders/default.vert", GL_VERTEX_SHADER);
@@ -56,12 +38,26 @@ int main(int argc, char** argv) {
     }
 
     prog.bind();
-    mesh.shaders.push_back(prog);
 
     GLuint a_pos = prog.get_attrib("a_pos");
     GLuint a_col = prog.get_attrib("a_col");
-    mesh.array.attrib_pointer(a_pos, 3, GL_FLOAT, 7 * sizeof(GLfloat), nullptr);
-    mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    rect.mesh.array.attrib_pointer(a_pos, 3, GL_FLOAT, 7 * sizeof(GLfloat), nullptr);
+    rect.mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+    // Temp cam
+    glm::fvec3 camera_pos(4.0f, 3.0f, 3.0f);
+    glm::fvec3 origin(0.0f, 0.0f, 0.0f);
+    glm::fvec3 camera_upv(0.0f, 1.0f, 0.0f);
+    glm::fvec3 camera_for(0.0f, 0.0f, -1.0f);
+    GLuint u_proj           = prog.get_uniform("u_proj");
+    GLuint u_view           = prog.get_uniform("u_view");
+    GLuint u_model          = prog.get_uniform("u_model");
+    glm::fmat4 projection   = glm::perspective(70.0f, 16.0f / 9.0f, 0.1f, 10.0f);
+    glm::fmat4 view         = glm::lookAt(camera_pos, origin, camera_upv);
+    glm::fmat4 model        = rect.transform();
+    glUniformMatrix4fv(u_proj, 1, false, &projection[0][0]);
+    glUniformMatrix4fv(u_view, 1, false, &view[0][0]);
+    glUniformMatrix4fv(u_model, 1, false, &model[0][0]);
 
     // Perform window actions.
     while (wnd.is_open()) {
@@ -72,13 +68,13 @@ int main(int argc, char** argv) {
         // Clear and render.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         prog.bind();
-        mesh.array.bind();
-        mesh.array.enable_attrib(a_pos, true);
-        mesh.array.enable_attrib(a_col, true);
-        mesh.indices.bind();
+        rect.mesh.array.bind();
+        rect.mesh.array.enable_attrib(a_pos, true);
+        rect.mesh.array.enable_attrib(a_col, true);
+        rect.mesh.indices.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        mesh.array.enable_attrib(a_pos, false);
-        mesh.array.enable_attrib(a_col, false);
+        rect.mesh.array.enable_attrib(a_pos, false);
+        rect.mesh.array.enable_attrib(a_col, false);
 
         // Swap back and front buffer.
         wnd.swap_buffers();

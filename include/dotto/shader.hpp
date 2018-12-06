@@ -70,7 +70,7 @@ namespace dotto {
         }
 
         // Implicit GLuint cast operator.
-        inline operator const GLuint() {
+        inline operator GLuint() {
             return m_id;
         }
 

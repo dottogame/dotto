@@ -14,6 +14,7 @@ out vec4 f_col;
 
 // Main.
 void main() {
-	gl_Position = vec4(a_pos, 1.0f);
+	mat4 mvp = u_proj * u_view * u_model;
+	gl_Position = (mvp * vec4(a_pos, 1.0f));
 	f_col = a_col;
 }
