@@ -1,4 +1,5 @@
 #include "dotto/pch.h"
+#include "dotto/camera.hpp"
 #include "dotto/rectangle.hpp"
 #include "dotto/program.hpp"
 #include "dotto/window.hpp"
@@ -45,12 +46,8 @@ int main(int argc, char** argv) {
     rect.mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Temp cam
-    glm::fvec3 camera_pos(4.0f, 3.0f, 3.0f);
-    glm::fvec3 origin(0.0f, 0.0f, 0.0f);
-    glm::fvec3 camera_upv(0.0f, 1.0f, 0.0f);
-    glm::fvec3 camera_for(0.0f, 0.0f, -1.0f);
-    glm::fmat4 projection   = glm::perspective(70.0f, 16.0f / 9.0f, 0.1f, 10.0f);
-    glm::fmat4 view         = glm::lookAt(camera_pos, origin, camera_upv);
+    glm::fmat4 projection   = dotto::camera::projection();
+    glm::fmat4 view         = dotto::camera::looking_at();
     glm::fmat4 model        = rect.transform();
     prog.set_uniform(dotto::uniform::fmat4, "u_proj", &projection[0][0]);
     prog.set_uniform(dotto::uniform::fmat4, "u_view", &view[0][0]);

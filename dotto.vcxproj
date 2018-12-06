@@ -121,6 +121,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="include\glm\detail\glm.cpp" />
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -134,6 +135,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\dotto\array.hpp" />
+    <ClInclude Include="include\dotto\camera.hpp" />
+    <ClInclude Include="include\dotto\clip_plane.hpp" />
+    <ClInclude Include="include\dotto\gameplay\map.hpp" />
+    <ClInclude Include="include\dotto\gameplay\parser1.hpp" />
+    <ClInclude Include="include\dotto\gameplay\structures.hpp" />
     <ClInclude Include="include\dotto\io.hpp" />
     <ClInclude Include="include\dotto\mesh.hpp" />
     <ClInclude Include="include\dotto\model.hpp" />
@@ -144,6 +150,7 @@
     <ClInclude Include="include\dotto\buffer.hpp" />
     <ClInclude Include="include\dotto\tector.hpp" />
     <ClInclude Include="include\dotto\uniform_types.h" />
+    <ClInclude Include="include\dotto\vector_constants.h" />
     <ClInclude Include="include\dotto\window.hpp" />
     <ClInclude Include="include\glfw\glfw3.h" />
     <ClInclude Include="include\glfw\glfw3native.h" />
