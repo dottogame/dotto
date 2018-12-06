@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #include "buffer.hpp"
 #include "array.hpp"
 #include "program.hpp"
@@ -12,13 +11,13 @@ namespace dotto {
         /* The mesh vertex array, for multiple mesh parts, makes a connected
          * mesh.
          */
-        model::array array;
+        array array;
 
         /* The mesh vertex data. */
-        model::buffer<GLfloat> vertices;
+        buffer<GLfloat> vertices;
 
         /* The mesh indice data. */
-        model::buffer<GLuint> indices;
+        buffer<GLuint> indices;
 
         /* The currently attached shaders to this mesh. */
         std::vector<program> shaders;
@@ -30,6 +29,18 @@ namespace dotto {
             indices(GL_ELEMENT_ARRAY_BUFFER),
             shaders()
         {
+        }
+
+        /* Deconstructs this mesh. */
+        ~mesh() {
+        }
+
+        /* Swaps this mesh with the other. */
+        void swap(mesh& other) {
+            array.swap(other.array);
+            vertices.swap(other.vertices);
+            indices.swap(other.indices);
+            std::swap(shaders, other.shaders);
         }
     };
 }

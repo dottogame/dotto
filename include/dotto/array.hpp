@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-namespace dotto::model {
+namespace dotto {
     /* This class is designated for defining a vertex array that multiple vertex
      * buffers can be assigned to and controlled.
      */
@@ -60,6 +60,11 @@ namespace dotto::model {
                 glEnableVertexAttribArray(attrib);
             else
                 glDisableVertexAttribArray(attrib);
+        }
+
+        /* Swaps this with other. */
+        inline void swap(array& other) {
+            std::swap(m_id, other.m_id);
         }
     };
 }

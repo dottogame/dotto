@@ -1,7 +1,7 @@
 #pragma once
 #include "pch.h"
 
-namespace dotto::model {
+namespace dotto {
     /* This class designates a buffer for storing vertices or indices. */
     template<typename T>
     class buffer final {
@@ -91,6 +91,14 @@ namespace dotto::model {
         /* Gives this buffer a new peice of data. */
         inline void push_data(T _data) {
             m_data.emplace_back(_data);
+        }
+
+        /* Swaps this with other. */
+        inline void swap(buffer& other) {
+            std::swap(m_type, other.m_type);
+            std::swap(m_id, other.m_id);
+            std::swap(m_data, other.m_data);
+            std::swap(m_draw, other.m_draw);
         }
     };
 

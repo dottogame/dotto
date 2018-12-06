@@ -136,6 +136,7 @@
     <ClInclude Include="include\dotto\array.hpp" />
     <ClInclude Include="include\dotto\io.hpp" />
     <ClInclude Include="include\dotto\mesh.hpp" />
+    <ClInclude Include="include\dotto\model.hpp" />
     <ClInclude Include="include\dotto\pch.h" />
     <ClInclude Include="include\dotto\program.hpp" />
     <ClInclude Include="include\dotto\shader.hpp" />

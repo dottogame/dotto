@@ -1,5 +1,4 @@
 #pragma once
-
 #include "shader.hpp"
 
 namespace dotto {
