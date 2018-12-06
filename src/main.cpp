@@ -16,15 +16,25 @@ int main(int argc, char** argv) {
     }
 
     // Triangle vertices.
-    GLfloat vertices[21] = {
+    GLfloat vertices[28] = {
         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
          0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
+         0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    GLuint indices[6] = {
+        0, 1, 2,
+        2, 3, 0
     };
 
     // Create mesh.
     dotto::mesh mesh;
-    mesh.vertices.push_all(vertices);
+    mesh.array.bind();
+    mesh.vertices.push_all(vertices, 28);
+    mesh.indices.push_all(indices, 6);
+    mesh.vertices.glify();
+    mesh.indices.glify();
 
     // Create, compile, and link shaders.
     dotto::shader vert("res/shaders/default.vert", GL_VERTEX_SHADER);
@@ -63,11 +73,12 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         prog.bind();
         mesh.array.bind();
-        glEnableVertexAttribArray(a_pos);
-        glEnableVertexAttribArray(a_col);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDisableVertexAttribArray(a_pos);
-        glDisableVertexAttribArray(a_col);
+        mesh.array.enable_attrib(a_pos, true);
+        mesh.array.enable_attrib(a_col, true);
+        mesh.indices.bind();
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        mesh.array.enable_attrib(a_pos, false);
+        mesh.array.enable_attrib(a_col, false);
 
         // Swap back and front buffer.
         wnd.swap_buffers();

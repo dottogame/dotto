@@ -23,7 +23,7 @@ namespace dotto::model {
 
         /* Move constructor. */
         array(array&& other) :
-            m_id(0)
+            m_id(UINT32_MAX)
         {
             std::swap(m_id, other.m_id);
         }
@@ -31,6 +31,11 @@ namespace dotto::model {
         /* Deconstructs this vertex array. */
         ~array() {
             glDeleteVertexArrays(1, &m_id);
+        }
+
+        /* Implicit cast to GLuint. */
+        operator GLuint() {
+            return m_id;
         }
 
         /* Attributes a pointer in the array to handle data a specific way. */
@@ -41,14 +46,20 @@ namespace dotto::model {
             const GLuint& stride,
             const void* offset
         ) {
-            glEnableVertexAttribArray(attr);
             glVertexAttribPointer(attr, length, type, false, stride, offset);
-            glDisableVertexAttribArray(attr);
         }
 
         /* Binds this vertex array to the target. */
         inline void bind() {
             glBindVertexArray(m_id);
+        }
+
+        /* Enables or disables an attribute. */
+        inline void enable_attrib(const GLuint& attrib, const bool&& enbl) {
+            if (enbl)
+                glEnableVertexAttribArray(attrib);
+            else
+                glDisableVertexAttribArray(attrib);
         }
     };
 }

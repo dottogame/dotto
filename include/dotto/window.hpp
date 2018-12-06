@@ -8,7 +8,7 @@ namespace dotto {
      */
     class window final {
         /* Tells if glfw has been initialized. */
-        bool m_initialized = false;
+        static bool m_initialized;
 
         /* The underlying window that represents this  */
         GLFWwindow* m_window;
@@ -37,6 +37,9 @@ namespace dotto {
             }
 
             // Request OpenGL core version 4.4
+            glfwWindowHint(GLFW_RESIZABLE, false);
+            glfwWindowHint(GLFW_VISIBLE, false);
+            glfwWindowHint(GLFW_AUTO_ICONIFY, false);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
