@@ -168,5 +168,17 @@ namespace dotto {
 
             return res;
         }
+
+        /* Sets a uniform of a given type. */
+        template<typename T>
+        inline void set_uniform(const uniform&& type, const GLchar* name, const T* data) {
+            switch (type) {
+            case uniform::fmat4: {
+                GLint loc = get_uniform(name);
+                glUniformMatrix4fv(loc, 1, false, data);
+                break;
+            }
+            }
+        }
     };
 }

@@ -1,7 +1,7 @@
 #pragma once
-
 #include "pch.h"
 #include "io.hpp"
+#include "uniform_types.h"
 
 namespace dotto {
     /* This struct represents a single shader source file that will have been

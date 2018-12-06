@@ -49,15 +49,12 @@ int main(int argc, char** argv) {
     glm::fvec3 origin(0.0f, 0.0f, 0.0f);
     glm::fvec3 camera_upv(0.0f, 1.0f, 0.0f);
     glm::fvec3 camera_for(0.0f, 0.0f, -1.0f);
-    GLuint u_proj           = prog.get_uniform("u_proj");
-    GLuint u_view           = prog.get_uniform("u_view");
-    GLuint u_model          = prog.get_uniform("u_model");
     glm::fmat4 projection   = glm::perspective(70.0f, 16.0f / 9.0f, 0.1f, 10.0f);
     glm::fmat4 view         = glm::lookAt(camera_pos, origin, camera_upv);
     glm::fmat4 model        = rect.transform();
-    glUniformMatrix4fv(u_proj, 1, false, &projection[0][0]);
-    glUniformMatrix4fv(u_view, 1, false, &view[0][0]);
-    glUniformMatrix4fv(u_model, 1, false, &model[0][0]);
+    prog.set_uniform(dotto::uniform::fmat4, "u_proj", &projection[0][0]);
+    prog.set_uniform(dotto::uniform::fmat4, "u_view", &view[0][0]);
+    prog.set_uniform(dotto::uniform::fmat4, "u_model", &model[0][0]);
 
     // For timings.
     using namespace std::chrono_literals;
