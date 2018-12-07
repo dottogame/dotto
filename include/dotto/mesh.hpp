@@ -2,6 +2,7 @@
 #include "buffer.hpp"
 #include "array.hpp"
 #include "program.hpp"
+#include "texture.hpp"
 
 namespace dotto {
     /* Constructs a mesh for the game, specifically, dotto should generate
@@ -20,14 +21,18 @@ namespace dotto {
         buffer<GLuint> indices;
 
         /* The currently attached shaders to this mesh. */
-        std::vector<program> shaders;
+        program shader;
+
+        /* The currently attached texture to this mesh. */
+        texture texture;
 
         /* Constructs a new mesh. */
         mesh() :
             array(),
             vertices(GL_ARRAY_BUFFER),
             indices(GL_ELEMENT_ARRAY_BUFFER),
-            shaders()
+            shader(),
+            texture()
         {
         }
 
@@ -40,7 +45,8 @@ namespace dotto {
             array.swap(other.array);
             vertices.swap(other.vertices);
             indices.swap(other.indices);
-            std::swap(shaders, other.shaders);
+            std::swap(shader, other.shader);
+            // texture.swap(other.texture);
         }
     };
 }

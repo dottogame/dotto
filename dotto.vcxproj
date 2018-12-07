@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\dotto\array.hpp" />
+    <ClInclude Include="include\dotto\atlas.hpp" />
     <ClInclude Include="include\dotto\camera.hpp" />
     <ClInclude Include="include\dotto\clip_plane.hpp" />
     <ClInclude Include="include\dotto\gameplay\map.hpp" />
@@ -147,9 +148,10 @@
     <ClInclude Include="include\dotto\pch.h" />
     <ClInclude Include="include\dotto\program.hpp" />
     <ClInclude Include="include\dotto\rectangle.hpp" />
+    <ClInclude Include="include\dotto\scene.hpp" />
     <ClInclude Include="include\dotto\shader.hpp" />
     <ClInclude Include="include\dotto\buffer.hpp" />
-    <ClInclude Include="include\dotto\tector.hpp" />
+    <ClInclude Include="include\dotto\shaders\fallback.hpp" />
     <ClInclude Include="include\dotto\uniform_types.h" />
     <ClInclude Include="include\dotto\vector_constants.h" />
     <ClInclude Include="include\dotto\window.hpp" />

@@ -3,7 +3,7 @@
 
 namespace dotto {
     /* This class is designated to handle any and all shader related code. */
-    class program final {
+    class program {
         /* The id for this shader program. */
         GLint m_program;
 
@@ -52,7 +52,7 @@ namespace dotto {
         }
 
         // Deconstructs this program.
-        ~program() {
+        virtual ~program() {
             for (dotto::shader& shdr : m_shaders)
                 glDeleteShader(shdr);
 

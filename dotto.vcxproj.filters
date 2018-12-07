@@ -797,9 +797,6 @@
     <ClInclude Include="include\dotto\array.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\dotto\tector.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\dotto\model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -828,6 +825,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\dotto\transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dotto\scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dotto\atlas.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\dotto\shaders\fallback.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
