@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     dotto::rectangle rect;
     dotto::rectangle rect2;
 
-    rect.transform.set_position(glm::fvec3(2.0f, 2.0f, 0.0));
-    rect.transform.set_rotation(glm::fvec3(80.0f , 0.0f, 0.0f));
+    rect.transform.set_position(glm::fvec3(1.0f, 1.0f, 0.0));
+    rect.transform.set_rotation(glm::fvec3(0.0f , 0.0f, 0.0f));
 
     rendering_queue.emplace_back(std::move(rect));
     rendering_queue.emplace_back(std::move(rect2));
@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
     rect.mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Temp cam
+    dotto::camera::transform.set_position(0, 0, 5.0f);
     glm::fmat4 projection   = dotto::camera::projection();
     glm::fmat4 view         = dotto::camera::looking_at();
     prog.set_uniform(dotto::uniform::fmat4, "u_proj", &projection[0][0]);
@@ -79,10 +80,7 @@ int main(int argc, char** argv) {
         // Clear and render.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         prog.bind();
-        // rect.mesh.array.bind();
-        // rect.mesh.array.enable_attrib(a_pos, true);
-        // rect.mesh.array.enable_attrib(a_col, true);
-        // rect.mesh.indices.bind();
+
         for (auto& mod : rendering_queue) {
             glm::fmat4 _model = mod.transform;
             prog.set_uniform(dotto::uniform::fmat4, "u_model", &_model[0][0]);
@@ -97,9 +95,6 @@ int main(int argc, char** argv) {
             mod.mesh.array.enable_attrib(a_pos, false);
             mod.mesh.array.enable_attrib(a_col, false);
         }
-
-        // rect.mesh.array.enable_attrib(a_pos, false);
-        // rect.mesh.array.enable_attrib(a_col, false);
 
         // Swap back and front buffer.
         wnd.swap_buffers();

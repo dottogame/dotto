@@ -28,7 +28,7 @@ namespace dotto {
 
             transform.set_position(glm::fvec3(0.0f, 0.0f, 0.0f));
             transform.set_rotation(glm::fvec3(0.0f, 0.0f, 0.0f));
-            transform.set_scale(glm::fvec3(2.0f, 2.0f, 2.0f));
+            transform.set_scale(glm::fvec3(1.0f, 1.0f, 1.0f));
         }
 
         /* Disallow copy of this test object. */

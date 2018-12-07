@@ -61,6 +61,21 @@ namespace dotto {
             return m_rep;
         }
 
+        /* Gets this transform's position. */
+        inline glm::fvec3 position() {
+            return m_position;
+        }
+
+        /* Gets this transform's rotation. */
+        inline glm::fquat rotation() {
+            return m_rotation;
+        }
+
+        /* Gets this transform's scale. */
+        inline glm::fvec3 scale() {
+            return m_scale;
+        }
+
         /* Sets the position of this transform. */
         inline void set_position(
             const float& x_pos,
