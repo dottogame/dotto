@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
     dotto::rectangle rect;
     dotto::rectangle rect2;
 
-    rect.position = glm::fvec3(2.0f, 2.0f, 0.0);
-    rect2.position = glm::fvec3(-2.0f, -2.0f, 0.0);
+    rect.transform.set_position(glm::fvec3(2.0f, 2.0f, 0.0));
+    rect.transform.set_rotation(glm::fvec3(80.0f , 0.0f, 0.0f));
 
     rendering_queue.emplace_back(std::move(rect));
     rendering_queue.emplace_back(std::move(rect2));
@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
         // rect.mesh.array.enable_attrib(a_col, true);
         // rect.mesh.indices.bind();
         for (auto& mod : rendering_queue) {
-            glm::fmat4 _model = mod.transform();
+            glm::fmat4 _model = mod.transform;
             prog.set_uniform(dotto::uniform::fmat4, "u_model", &_model[0][0]);
 
             mod.mesh.array.bind();

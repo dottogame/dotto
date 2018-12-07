@@ -399,6 +399,7 @@
     <ClInclude Include="include\gl\glew.h" />
     <ClInclude Include="include\gl\glxew.h" />
     <ClInclude Include="include\gl\wglew.h" />
+    <ClInclude Include="include\dotto\transform.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\dotto\texture.hpp" />
