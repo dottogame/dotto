@@ -16,8 +16,18 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    // The rendering queue for the game.
+    std::vector<dotto::model> rendering_queue;
+
     // Rectangle.
     dotto::rectangle rect;
+    dotto::rectangle rect2;
+
+    rect.position = glm::fvec3(2.0f, 2.0f, 0.0);
+    rect2.position = glm::fvec3(-2.0f, -2.0f, 0.0);
+
+    rendering_queue.emplace_back(std::move(rect));
+    rendering_queue.emplace_back(std::move(rect2));
 
     // Create, compile, and link shaders.
     dotto::shader vert("res/shaders/default.vert", GL_VERTEX_SHADER);
@@ -48,10 +58,8 @@ int main(int argc, char** argv) {
     // Temp cam
     glm::fmat4 projection   = dotto::camera::projection();
     glm::fmat4 view         = dotto::camera::looking_at();
-    glm::fmat4 model        = rect.transform();
     prog.set_uniform(dotto::uniform::fmat4, "u_proj", &projection[0][0]);
     prog.set_uniform(dotto::uniform::fmat4, "u_view", &view[0][0]);
-    prog.set_uniform(dotto::uniform::fmat4, "u_model", &model[0][0]);
 
     // For timings.
     using namespace std::chrono_literals;
@@ -71,13 +79,27 @@ int main(int argc, char** argv) {
         // Clear and render.
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         prog.bind();
-        rect.mesh.array.bind();
-        rect.mesh.array.enable_attrib(a_pos, true);
-        rect.mesh.array.enable_attrib(a_col, true);
-        rect.mesh.indices.bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-        rect.mesh.array.enable_attrib(a_pos, false);
-        rect.mesh.array.enable_attrib(a_col, false);
+        // rect.mesh.array.bind();
+        // rect.mesh.array.enable_attrib(a_pos, true);
+        // rect.mesh.array.enable_attrib(a_col, true);
+        // rect.mesh.indices.bind();
+        for (auto& mod : rendering_queue) {
+            glm::fmat4 _model = mod.transform();
+            prog.set_uniform(dotto::uniform::fmat4, "u_model", &_model[0][0]);
+
+            mod.mesh.array.bind();
+            mod.mesh.array.enable_attrib(a_pos, true);
+            mod.mesh.array.enable_attrib(a_col, true);
+            mod.mesh.indices.bind();
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+            mod.mesh.array.enable_attrib(a_pos, false);
+            mod.mesh.array.enable_attrib(a_col, false);
+        }
+
+        // rect.mesh.array.enable_attrib(a_pos, false);
+        // rect.mesh.array.enable_attrib(a_col, false);
 
         // Swap back and front buffer.
         wnd.swap_buffers();

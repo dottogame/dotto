@@ -54,9 +54,10 @@ namespace dotto {
         /* Returns this model's calculated transform. */
         glm::fmat4 transform() {
             glm::fmat4 tform(1.0f);
-            tform *= glm::fvec4(scale, 1.0f);
-            tform *= glm::fvec4(rotation, 1.0f);
-            tform *= glm::fvec4(position, 1.0f);
+            glm::fmat4 smat = glm::scale(glm::fmat4(1.0f), scale);
+            glm::fmat4 rmat = glm::rotate(glm::fmat4(1.0f), glm::radians(0.0f), rotation);
+            glm::fmat4 pmat = glm::translate(glm::fmat4(1.0f), position);
+            tform = pmat * rmat * smat;
             return tform;
         }
     };

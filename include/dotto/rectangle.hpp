@@ -8,10 +8,10 @@ namespace dotto {
         rectangle() {
             // Rectangle vertices.
             GLfloat vertices[28] = {
-                -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+                -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, // 0.0f, 0.5f,
+                 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 0.0f, 0.3f,
+                 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, // 0.7f, 0.1f,
+                -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, // 0.9f, 1.0f
             };
 
             // Rectangle indices.

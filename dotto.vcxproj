@@ -131,6 +131,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">dotto/pch.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +401,7 @@
     <ClInclude Include="include\gl\wglew.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\dotto\texture.hpp" />
     <None Include="include\glm\detail\func_common.inl" />
     <None Include="include\glm\detail\func_common_simd.inl" />
     <None Include="include\glm\detail\func_exponential.inl" />
