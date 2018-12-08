@@ -147,6 +147,7 @@
     <ClInclude Include="include\dotto\pch.h" />
     <ClInclude Include="include\dotto\program.hpp" />
     <ClInclude Include="include\dotto\rectangle.hpp" />
+    <ClInclude Include="include\dotto\scene.hpp" />
     <ClInclude Include="include\dotto\shader.hpp" />
     <ClInclude Include="include\dotto\buffer.hpp" />
     <ClInclude Include="include\dotto\tector.hpp" />

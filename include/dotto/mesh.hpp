@@ -20,27 +20,45 @@ namespace dotto {
         buffer<GLuint> indices;
 
         /* The currently attached shaders to this mesh. */
-        std::vector<program> shaders;
+        program shader;
 
         /* Constructs a new mesh. */
-        mesh() :
-            array(),
-            vertices(GL_ARRAY_BUFFER),
-            indices(GL_ELEMENT_ARRAY_BUFFER),
-            shaders()
+        mesh() = default;
+
+        /* Copy constructor. */
+        mesh(const mesh& other) :
+            array(other.array),
+            vertices(other.vertices),
+            indices(other.indices),
+            shader(other.shader)
         {
+        }
+
+        /* Move constructor. */
+        mesh(mesh&& other) {
+            this->swap(other);
         }
 
         /* Deconstructs this mesh. */
         ~mesh() {
         }
 
-        /* Swaps this mesh with the other. */
+        /* Copy-swap idiom assignment operator. */
+        mesh& operator=(mesh other) {
+            this->swap(other);
+            return *this;
+        }
+
+        /* Swaps one mesh with another. */
         void swap(mesh& other) {
-            array.swap(other.array);
-            vertices.swap(other.vertices);
-            indices.swap(other.indices);
-            std::swap(shaders, other.shaders);
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(array, other.array);
+            swap(vertices, other.vertices);
+            swap(indices, other.indices);
+            swap(shader, other.shader);
         }
     };
 }

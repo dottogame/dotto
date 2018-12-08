@@ -2,7 +2,25 @@
 #include "dotto/camera.hpp"
 #include "dotto/rectangle.hpp"
 #include "dotto/program.hpp"
+#include "dotto/scene.hpp"
 #include "dotto/window.hpp"
+
+// Prints GL errors
+void gl_debug_callback(
+    GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar *message,
+    const void *userParam
+) {
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+        return;
+
+    std::cerr << "[OPENGL:(" << source << ", " << type << ", " << id << ", "
+        << severity << ")]: " << message << "\n";
+}
 
 int main(int argc, char** argv) {
     // Create window.
@@ -11,23 +29,21 @@ int main(int argc, char** argv) {
     wnd.show();
 
     // Initialize GLEW.
+    glewExperimental = true;
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW.\n";
         return EXIT_FAILURE;
     }
 
-    // The rendering queue for the game.
-    std::vector<dotto::model> rendering_queue;
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(gl_debug_callback, nullptr);
+
+    // Our scene to be rendered.
+    dotto::scene scn;
 
     // Rectangle.
     dotto::rectangle rect;
     dotto::rectangle rect2;
-
-    rect.transform.set_position(glm::fvec3(1.0f, 1.0f, 0.0));
-    rect.transform.set_rotation(glm::fvec3(0.0f , 0.0f, 0.0f));
-
-    rendering_queue.emplace_back(std::move(rect));
-    rendering_queue.emplace_back(std::move(rect2));
 
     // Create, compile, and link shaders.
     dotto::shader vert("res/shaders/default.vert", GL_VERTEX_SHADER);
@@ -48,12 +64,12 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    prog.bind();
-
-    GLuint a_pos = prog.get_attrib("a_pos");
-    GLuint a_col = prog.get_attrib("a_col");
-    rect.mesh.array.attrib_pointer(a_pos, 3, GL_FLOAT, 7 * sizeof(GLfloat), nullptr);
-    rect.mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+    rect.mesh.shader    = prog;
+    rect2.mesh.shader   = prog;
+    rect.transform.set_position(glm::fvec3(1.0f, 1.0f, 0.0));
+    rect.transform.set_rotation(glm::fvec3(0.0f , 0.0f, 0.0f));
+    scn.objects.emplace_back(std::move(rect));
+    scn.objects.emplace_back(std::move(rect2));
 
     // Temp cam
     dotto::camera::transform.set_position(0, 0, 5.0f);
@@ -77,24 +93,8 @@ int main(int argc, char** argv) {
         if (glfwGetKey((GLFWwindow*)wnd, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose((GLFWwindow*)wnd, true);
 
-        // Clear and render.
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        prog.bind();
-
-        for (auto& mod : rendering_queue) {
-            glm::fmat4 _model = mod.transform;
-            prog.set_uniform(dotto::uniform::fmat4, "u_model", &_model[0][0]);
-
-            mod.mesh.array.bind();
-            mod.mesh.array.enable_attrib(a_pos, true);
-            mod.mesh.array.enable_attrib(a_col, true);
-            mod.mesh.indices.bind();
-
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-            mod.mesh.array.enable_attrib(a_pos, false);
-            mod.mesh.array.enable_attrib(a_col, false);
-        }
+        // Render current scene.
+        scn.render();
 
         // Swap back and front buffer.
         wnd.swap_buffers();

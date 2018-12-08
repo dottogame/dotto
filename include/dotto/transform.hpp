@@ -34,14 +34,17 @@ namespace dotto {
 
         /* Move constructor. */
         transform(transform&& other) {
-            std::swap(m_position, other.m_position);
-            std::swap(m_rotation, other.m_rotation);
-            std::swap(m_scale, other.m_scale);
-            std::swap(m_changed, other.m_changed);
+            this->swap(other);
         }
 
         /* Deconstructs this transform. */
         ~transform() = default;
+
+        /* Copy-swap idiom assignment operator. */
+        transform& operator=(transform other) {
+            this->swap(other);
+            return *this;
+        }
 
         /* Returns the representation of this transform. */
         inline operator glm::fmat4() {
@@ -192,12 +195,17 @@ namespace dotto {
             m_changed = true;
         }
 
-        /* Swaps this tranform with other. */
-        inline void swap(transform& other) {
-            std::swap(m_position, other.m_position);
-            std::swap(m_rotation, other.m_rotation);
-            std::swap(m_scale, other.m_scale);
-            std::swap(m_changed, other.m_changed);
+        /* Swaps one transform with another. */
+        void swap(transform& other) {
+            // ADL
+            using std::swap;
+
+            // Swap.
+            swap(m_position, other.m_position);
+            swap(m_rotation, other.m_rotation);
+            swap(m_scale, other.m_scale);
+            swap(m_rep, other.m_rep);
+            swap(m_changed, other.m_changed);
         }
     };
 }

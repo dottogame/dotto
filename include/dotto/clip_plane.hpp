@@ -56,15 +56,30 @@ namespace dotto {
 
         /* Move constructor. */
         clip_plane(clip_plane&& other) {
-            std::swap(_left, other._left);
-            std::swap(_right, other._right);
-            std::swap(_top, other._top);
-            std::swap(_bottom, other._bottom);
-            std::swap(_near, other._near);
-            std::swap(_far, other._far);
+            this->swap(other);
         }
 
         /* Deconstructs this clipping plane. */
         ~clip_plane() = default;
+
+        /* Copy-swap idiom assignment operator. */
+        clip_plane& operator=(clip_plane other) {
+            this->swap(other);
+            return *this;
+        }
+
+        /* Swaps this clip_plane with the other. */
+        void swap(clip_plane& other) {
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(_left, other._left);
+            swap(_right, other._right);
+            swap(_top, other._top);
+            swap(_bottom, other._bottom);
+            swap(_near, other._near);
+            swap(_far, other._far);
+        }
     };
 }

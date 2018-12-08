@@ -9,7 +9,7 @@ namespace dotto {
         GLuint m_type;
 
         /* The id for this buffer. */
-        GLuint m_id;
+        GLint m_id;
 
         /* The vertices for this buffer. */
         std::vector<T> m_data;
@@ -18,8 +18,20 @@ namespace dotto {
         GLuint m_draw;
 
     public:
+        /* Creates a defualt buffer. */
+        buffer() :
+            m_id(-1)
+        {
+        }
+
         /* Constructs a new buffer of the given type. */
         buffer(const GLuint& type) :
+            buffer(type, 0)
+        {
+        }
+
+        /* Constructs a new buffer of the given type. */
+        buffer(GLuint&& type) :
             buffer(type, 0)
         {
         }
@@ -27,11 +39,19 @@ namespace dotto {
         /* Constructs a new buffer of the given type and size. */
         explicit buffer(const GLuint& type, const int& size) :
             m_type(type),
-            m_id(UINT32_MAX),
+            m_id(-1),
             m_data(size),
             m_draw(GL_STATIC_DRAW)
         {
-            glGenBuffers(1, &m_id);
+        }
+
+        /* Constructs a new buffer of the given type and size. */
+        explicit buffer(GLuint&& type, int&& size) :
+            m_type(type),
+            m_id(-1),
+            m_data(size),
+            m_draw(GL_STATIC_DRAW)
+        {
         }
 
         /* Copy constructor. */
@@ -44,21 +64,20 @@ namespace dotto {
         }
 
         /* Move constructor. */
-        buffer(buffer&& other) :
-            m_type(NULL),
-            m_id(UINT32_MAX),
-            m_data(),
-            m_draw(GL_STATIC_DRAW)
-        {
-            std::swap(m_type, other.m_type);
-            std::swap(m_id, other.m_id);
-            std::swap(m_data, other.m_data);
-            std::swap(m_draw, other.m_draw);
+        buffer(buffer&& other) {
+            this->swap(other);
         }
 
         /* Deconstructs this buffer. */
         ~buffer() {
-            glDeleteBuffers(1, &m_id);
+            if (m_id != -1)
+                glDeleteBuffers(1, (GLuint*)&m_id);
+        }
+
+        /* Copy-swap idiom assignment operator. */
+        buffer<T>& operator=(buffer<T> other) {
+            this->swap(other);
+            return *this;
         }
 
         /* Implicit cast to GLuint. */
@@ -78,6 +97,9 @@ namespace dotto {
 
         /* Passes the data to OpenGL. */
         inline void glify() {
+            if (m_id == -1)
+                glGenBuffers(1, (GLuint*)&m_id);
+
             glBindBuffer(m_type, m_id);
             glBufferData(m_type, m_data.size() * sizeof(T), &m_data[0], m_draw);
         }
@@ -93,12 +115,26 @@ namespace dotto {
             m_data.emplace_back(_data);
         }
 
-        /* Swaps this with other. */
-        inline void swap(buffer& other) {
-            std::swap(m_type, other.m_type);
-            std::swap(m_id, other.m_id);
-            std::swap(m_data, other.m_data);
-            std::swap(m_draw, other.m_draw);
+        /* Sets this buffer type. */
+        void set_type(const GLuint& type) {
+            m_type = type;
+        }
+
+        /* Sets this buffer type. */
+        void set_type(GLuint&& type) {
+            m_type = type;
+        }
+
+        /* Swaps one buffer with the other. */
+        void swap(buffer<T>& other) {
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(m_type, other.m_type);
+            swap(m_id, other.m_id);
+            swap(m_data, other.m_data);
+            swap(m_draw, other.m_draw);
         }
     };
 

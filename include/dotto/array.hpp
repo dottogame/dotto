@@ -7,12 +7,13 @@ namespace dotto {
      */
     class array final {
         /* The id of this vertex array. */
-        GLuint m_id;
+        GLint m_id;
 
     public:
         /* Constructs a new vertex array. */
-        array() {
-            glGenVertexArrays(1, &m_id);
+        array() :
+            m_id(-1)
+        {
         }
 
         /* Copy constructor. */
@@ -23,14 +24,21 @@ namespace dotto {
 
         /* Move constructor. */
         array(array&& other) :
-            m_id(UINT32_MAX)
+            m_id(-1)
         {
-            std::swap(m_id, other.m_id);
+            this->swap(other);
         }
 
         /* Deconstructs this vertex array. */
         ~array() {
-            glDeleteVertexArrays(1, &m_id);
+            if (m_id != -1)
+                glDeleteVertexArrays(1, (GLuint*)&m_id);
+        }
+
+        /* Copy-swap idiom assignment operator. */
+        array& operator=(array other) {
+            this->swap(other);
+            return *this;
         }
 
         /* Implicit cast to GLuint. */
@@ -54,6 +62,12 @@ namespace dotto {
             glBindVertexArray(m_id);
         }
 
+        /* Initializes a GL version of this class. */
+        inline void glify() {
+            if (m_id == -1)
+                glGenVertexArrays(1, (GLuint*)&m_id);
+        }
+
         /* Enables or disables an attribute. */
         inline void enable_attrib(const GLuint& attrib, const bool&& enbl) {
             if (enbl)
@@ -62,9 +76,13 @@ namespace dotto {
                 glDisableVertexAttribArray(attrib);
         }
 
-        /* Swaps this with other. */
-        inline void swap(array& other) {
-            std::swap(m_id, other.m_id);
+        /* Swaps one vertex array with the other. */
+        void swap(array& other) {
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(m_id, other.m_id);
         }
     };
 }

@@ -20,8 +20,11 @@ namespace dotto {
                 2, 3, 0
             };
 
+            mesh.array.glify();
             mesh.array.bind();
+            mesh.vertices.set_type(GL_ARRAY_BUFFER);
             mesh.vertices.push_all(vertices, 28);
+            mesh.indices.set_type(GL_ELEMENT_ARRAY_BUFFER);
             mesh.indices.push_all(indices, 6);
             mesh.vertices.glify();
             mesh.indices.glify();

@@ -23,12 +23,27 @@ namespace dotto {
 
         /* Move constructor. */
         model(model&& other) {
-            mesh.swap(other.mesh);
-            transform.swap(other.transform);
+            this->swap(other);
         }
 
         /* Deconstructs this model. */
         virtual ~model() {
+        }
+
+        /* Copy-swap idiom assignment operator. */
+        model& operator=(model other) {
+            this->swap(other);
+            return *this;
+        }
+
+        /* Swaps one model with the other. */
+        void swap(model& other) {
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(mesh, other.mesh);
+            swap(transform, other.transform);
         }
     };
 }

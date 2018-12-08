@@ -50,12 +50,8 @@ namespace dotto {
         }
 
         // Move constructor.
-        shader(dotto::shader&& other) :
-            m_id(0),
-            m_code()
-        {
-            std::swap(m_id, other.m_id);
-            std::swap(m_code, other.m_code);
+        shader(dotto::shader&& other) {
+            this->swap(other);
         }
 
         // Deconstructs this shader.
@@ -64,8 +60,7 @@ namespace dotto {
 
         // Copy-swap idiom assignment operator.
         inline shader& operator=(dotto::shader other) {
-            std::swap(m_id, other.m_id);
-            std::swap(m_code, other.m_code);
+            this->swap(other);
             return *this;
         }
 
@@ -77,6 +72,16 @@ namespace dotto {
         // Checks that this shader is valid.
         inline bool valid() {
             return m_id != -1;
+        }
+
+        /* Swaps one shader with the other. */
+        void swap(shader& other) {
+            // ADL
+            using std::swap;
+
+            // swap
+            swap(m_id, other.m_id);
+            swap(m_code, other.m_code);
         }
     };
 }

@@ -11,15 +11,18 @@ namespace dotto {
         std::vector<shader> m_shaders;
 
         /* A map of the attributes available or used by this shader. */
-        std::unordered_map<std::string, GLint> m_attribs;
+        std::unordered_map<const char*, GLint> m_attribs;
 
         /* A map of the uniforms available or used by this shader. */
-        std::unordered_map<std::string, GLint> m_uniforms;
+        std::unordered_map<const char*, GLint> m_uniforms;
 
     public:
         // Constructs a default shader.
         program() :
-            m_program(-1)
+            m_program(-1),
+            m_shaders(),
+            m_attribs(),
+            m_uniforms()
         {
         }
 
@@ -36,18 +39,12 @@ namespace dotto {
         program(dotto::program&& other) :
             m_program(-1)
         {
-            std::swap(m_program, other.m_program);
-            std::swap(m_shaders, other.m_shaders);
-            std::swap(m_attribs, other.m_attribs);
-            std::swap(m_uniforms, other.m_uniforms);
+            this->swap(other);
         }
 
         // Copy-swap idiom assignment operator.
         dotto::program& operator=(dotto::program other) {
-            std::swap(m_program, other.m_program);
-            std::swap(m_shaders, other.m_shaders);
-            std::swap(m_attribs, other.m_attribs);
-            std::swap(m_uniforms, other.m_uniforms);
+            this->swap(other);
             return *this;
         }
 
@@ -56,7 +53,8 @@ namespace dotto {
             for (dotto::shader& shdr : m_shaders)
                 glDeleteShader(shdr);
 
-            glDeleteProgram(m_program);
+            if (m_program != -1)
+                glDeleteProgram(m_program);
         }
 
         // Implicit cast to GLuint.
@@ -140,8 +138,8 @@ namespace dotto {
         }
 
         // Gets the attribute with the given name.
-        inline GLuint get_attrib(const char* attrib) {
-            GLuint res = -1;
+        inline GLint get_attrib(const char* attrib) {
+            GLint res = -1;
             const auto& itr = m_attribs.find(attrib);
 
             if (itr == m_attribs.end()) {
@@ -155,8 +153,8 @@ namespace dotto {
         }
 
         // Gets the uniform with the given name.
-        inline GLuint get_uniform(const char* attrib) {
-            GLuint res = -1;
+        inline GLint get_uniform(const char* attrib) {
+            GLint res = -1;
             const auto& itr = m_uniforms.find(attrib);
 
             if (itr == m_uniforms.end()) {
@@ -179,6 +177,18 @@ namespace dotto {
                 break;
             }
             }
+        }
+
+        /* Swaps one program with the other. */
+        void swap(program& other) {
+            // ADL
+            using std::swap;
+
+            // Swap members.
+            swap(m_program, other.m_program);
+            swap(m_shaders, other.m_shaders);
+            swap(m_attribs, other.m_attribs);
+            swap(m_uniforms, other.m_uniforms);
         }
     };
 }
