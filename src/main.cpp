@@ -39,7 +39,10 @@ int main(int argc, char** argv) {
     glDebugMessageCallback(gl_debug_callback, nullptr);
 
     // Our scene to be rendered.
-    dotto::scene scn;
+    // dotto::scene scn;
+
+    // The rendering queue for the game.
+    std::vector<dotto::model> rendering_queue;
 
     // Rectangle.
     dotto::rectangle rect;
@@ -64,12 +67,21 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    rect.mesh.shader    = prog;
-    rect2.mesh.shader   = prog;
+    prog.bind();
+
+    GLuint a_pos = prog.get_attrib("a_pos");
+    GLuint a_col = prog.get_attrib("a_col");
+    rect.mesh.array.attrib_pointer(a_pos, 3, GL_FLOAT, 7 * sizeof(GLfloat), nullptr);
+    rect.mesh.array.attrib_pointer(a_col, 4, GL_FLOAT, 7 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
+
+    // rect.mesh.shader    = prog;
+    // rect2.mesh.shader   = prog;
     rect.transform.set_position(glm::fvec3(1.0f, 1.0f, 0.0));
     rect.transform.set_rotation(glm::fvec3(0.0f , 0.0f, 0.0f));
-    scn.objects.emplace_back(std::move(rect));
-    scn.objects.emplace_back(std::move(rect2));
+    // scn.objects.emplace_back(std::move(rect));
+    // scn.objects.emplace_back(std::move(rect2));
+    rendering_queue.emplace_back(std::move(rect));
+    rendering_queue.emplace_back(std::move(rect2));
 
     // Temp cam
     dotto::camera::transform.set_position(0, 0, 5.0f);
@@ -94,7 +106,24 @@ int main(int argc, char** argv) {
             glfwSetWindowShouldClose((GLFWwindow*)wnd, true);
 
         // Render current scene.
-        scn.render();
+        // scn.render();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        prog.bind();
+
+        for (auto& mod : rendering_queue) {
+            glm::fmat4 _model = mod.transform;
+            prog.set_uniform(dotto::uniform::fmat4, "u_model", &_model[0][0]);
+
+            mod.mesh.array.bind();
+            mod.mesh.array.enable_attrib(a_pos, true);
+            mod.mesh.array.enable_attrib(a_col, true);
+            mod.mesh.indices.bind();
+
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+            mod.mesh.array.enable_attrib(a_pos, false);
+            mod.mesh.array.enable_attrib(a_col, false);
+        }
 
         // Swap back and front buffer.
         wnd.swap_buffers();

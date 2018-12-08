@@ -20,7 +20,7 @@ namespace dotto {
     public:
         /* Creates a defualt buffer. */
         buffer() :
-            m_id(-1)
+            buffer(0, 0)
         {
         }
 
