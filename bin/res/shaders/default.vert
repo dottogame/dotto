@@ -1,14 +1,13 @@
 #version 330 core
 
-layout(location = 0) in vec3 vertexPosition_modelspace;
-layout(location = 1) in vec2 texture_coord;
+layout(location = 0) in vec3 a_pos;
+layout(location = 1) in vec2 a_texture_coord;
 
-out vec2 tex_coord;
+out vec2 a_tex_coord;
 
-uniform mat4 MVP;
+uniform mat4 u_mvp;
 
-void main(){
-    // Output position of the vertex, in clip space : MVP * position
-    gl_Position =  MVP * vec4(vertexPosition_modelspace, 1);
-    tex_coord = texture_coord;
+void main() {
+    gl_Position = u_mvp * vec4(a_pos, 1.0f);
+    a_tex_coord = a_texture_coord;
 }

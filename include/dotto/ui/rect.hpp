@@ -16,21 +16,25 @@ namespace dotto::ui
 
     struct rect
     {
+    public:
+        glm::fvec3 position = glm::fvec3(0.0f);
+        glm::fquat rotation = glm::fquat(0.0f, 0.0f, 0.0f, 0.0f);
+        glm::fvec3 scale = glm::fvec3(1.0f);
+
     private:
         GLuint prog_id;
         GLuint vertexbuffer;
         GLuint indexbuffer;
 
-        glm::mat4 get_model_matrix()
+        glm::fmat4 get_model_matrix()
         {
-            return transform * rotation * scale;
+            glm::fmat4 pmat = glm::translate(glm::fmat4(1.0f), position);
+            glm::fmat4 rmat = glm::mat4_cast(rotation);
+            glm::fmat4 smat = glm::scale(glm::fmat4(1.0f), scale);
+            return pmat * rmat * smat;
         }
 
     public:
-        glm::mat4 transform = glm::mat4(1.0f);
-        glm::mat4 rotation = glm::mat4(1.0f);
-        glm::mat4 scale = glm::mat4(1.0f);
-
         texture* tex;
 
         rect(GLuint program_id, texture* texture)
@@ -75,7 +79,7 @@ namespace dotto::ui
             tex->bind();
 
             // pass mvp
-            GLuint MatrixID = glGetUniformLocation(prog_id, "MVP");
+            GLuint MatrixID = glGetUniformLocation(prog_id, "u_mvp");
             glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp[0][0]);
 
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);

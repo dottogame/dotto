@@ -3,6 +3,10 @@
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
 
+using namespace std::chrono_literals;
+
+constexpr std::chrono::nanoseconds timestep(16ms);
+
 // Prints GL errors
 void gl_debug_callback(
     GLenum source,
@@ -71,7 +75,6 @@ int main(int argc, char** argv) {
 
     dotto::ui::texture tex("res\\graphics\\konata.png");
     dotto::ui::rect testo(prog_id, &tex);
-
     // add rect
     meshes.push_back(&testo);
 
@@ -91,10 +94,12 @@ int main(int argc, char** argv) {
     );
 
     // RENDER LOOP
+    float delta_time = 0.0f;
     while(
         glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
         glfwWindowShouldClose(window) == 0
     ) {
+        auto start = std::chrono::high_resolution_clock::now();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // render meshes
@@ -103,6 +108,11 @@ int main(int argc, char** argv) {
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+        auto end = std::chrono::high_resolution_clock::now();
+        auto length_ns = end - start;
+        auto wait_ns = timestep - length_ns;
+        std::this_thread::sleep_for(wait_ns);
+        delta_time = (wait_ns + length_ns).count() / 1000000000.0;
     }
 
     return EXIT_SUCCESS;
