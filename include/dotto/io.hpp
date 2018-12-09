@@ -33,7 +33,12 @@ namespace dotto::io
 
     namespace file
     {
-        bool to_string(std::string& target, const char *path)
+        std::string make_relative(const char* path)
+        {
+            return get_working_directory() + path;
+        }
+
+        bool to_string(std::string& target, const char* path)
         {
             std::string full_path(get_working_directory() + path);
 

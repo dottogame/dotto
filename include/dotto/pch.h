@@ -8,10 +8,11 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
-#include "gl/glew.h"
-#include "glfw/glfw3.h"
-#include "glm/glm.hpp"
-#include "glm/ext.hpp"
+#include <lodepng.h>
+#include <gl/glew.h>
+#include <glfw/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #ifdef _WIN32

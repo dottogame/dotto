@@ -1,6 +1,6 @@
 #include "dotto/pch.h"
 #include "dotto/program.hpp"
-#include "dotto/rect.hpp"
+#include "dotto/ui/rect.hpp"
 
 // Prints GL errors
 void gl_debug_callback(
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // CONFIGURE OPENGL
+    // CONFIGURE THINGS
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // We want OpenGL 3.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     // BUILD WINDOW
     // Open a window and create its OpenGL context
     GLFWwindow* window; // (In the accompanying source code, this variable is global for simplicity)
-    window = glfwCreateWindow(1280, 720, "Tutorial 01", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "dotto", NULL, NULL);
     if( window == NULL ){
         fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
         glfwTerminate();
@@ -69,15 +69,15 @@ int main(int argc, char** argv) {
     std::vector<dotto::ui::rect*> meshes;
 
     // create rect
-    dotto::ui::rect testo(prog_id);
+    dotto::ui::rect testo(prog_id, NULL);
 
     // add rect
-    meshes.push(testo);
+    meshes.push_back(&testo);
 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     glm::mat4 projection_matrix = glm::perspective(
         glm::radians(45.0f),
-        (float) 4 / (float) 3,
+        (float) 1280 / (float) 720,
         0.1f,
         100.0f
     );
@@ -98,7 +98,10 @@ int main(int argc, char** argv) {
 
         // merge view and projection_matrix
         glm::mat4 vp = projection_matrix * view_matrix;
-        testo.render(vp);
+
+        // render meshes
+        for(auto mesh : meshes)
+            mesh->render(vp);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
