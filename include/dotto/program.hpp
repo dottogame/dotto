@@ -1,184 +1,89 @@
 #pragma once
-#include "shader.hpp"
 
-namespace dotto {
-    /* This class is designated to handle any and all shader related code. */
-    class program {
-        /* The id for this shader program. */
-        GLint m_program;
+#include "io.hpp"
 
-        /* The ids for the shaders used by this program. */
-        std::vector<shader> m_shaders;
-
-        /* A map of the attributes available or used by this shader. */
-        std::unordered_map<std::string, GLint> m_attribs;
-
-        /* A map of the uniforms available or used by this shader. */
-        std::unordered_map<std::string, GLint> m_uniforms;
-
-    public:
-        // Constructs a default shader.
-        program() :
-            m_program(-1)
+namespace dotto::pipeline
+{
+    bool program_is_okay(GLuint program_id)
+    {
+        GLint Result = GL_FALSE;
+        int InfoLogLength;
+        glGetProgramiv(program_id, GL_LINK_STATUS, &Result);
+        glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &InfoLogLength);
+        if (InfoLogLength > 1)
         {
+            std::vector<char> ProgramErrorMessage(InfoLogLength+1);
+            glGetProgramInfoLog(program_id, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+            printf("%s\n", &ProgramErrorMessage[0]);
+            return false;
         }
 
-        // Copy constructor.
-        program(const dotto::program& other) :
-            m_program(other.m_program),
-            m_shaders(other.m_shaders),
-            m_attribs(other.m_attribs),
-            m_uniforms(other.m_uniforms)
+        return true;
+    }
+
+    // returns if true if error
+    bool load_shader(GLuint shader_id, const char* path)
+    {
+        std::string shader_code;
+        if (!io::file::to_string(shader_code, path)) return true;
+        char const* src_ptr = shader_code.c_str();
+        glShaderSource(shader_id, 1, &src_ptr, NULL);
+        glCompileShader(shader_id);
+        return false;
+    }
+
+    bool shader_is_okay(GLuint shader_id)
+    {
+        GLint Result = GL_FALSE;
+        int InfoLogLength;
+        glGetShaderiv(shader_id, GL_COMPILE_STATUS, &Result);
+        glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &InfoLogLength);
+        // TODO check if this test is right
+        if (InfoLogLength > 1)
         {
+            std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
+            glGetShaderInfoLog(shader_id, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+            printf("%s\n", &VertexShaderErrorMessage[0]);
+            return false;
         }
 
-        // Move constructor.
-        program(dotto::program&& other) :
-            m_program(-1)
-        {
-            std::swap(m_program, other.m_program);
-            std::swap(m_shaders, other.m_shaders);
-            std::swap(m_attribs, other.m_attribs);
-            std::swap(m_uniforms, other.m_uniforms);
-        }
+        return true;
+    }
 
-        // Copy-swap idiom assignment operator.
-        dotto::program& operator=(dotto::program other) {
-            std::swap(m_program, other.m_program);
-            std::swap(m_shaders, other.m_shaders);
-            std::swap(m_attribs, other.m_attribs);
-            std::swap(m_uniforms, other.m_uniforms);
-            return *this;
-        }
+    GLuint create_program(const char* vertex_file_path, const char* fragment_file_path)
+    {
+        // Create the shaders
+        GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+        GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-        // Deconstructs this program.
-        virtual ~program() {
-            for (dotto::shader& shdr : m_shaders)
-                glDeleteShader(shdr);
+        // Load & compile shaders
+        if(load_shader(VertexShaderID, vertex_file_path))
+            std::cout << "error loading vert shader" << std::endl;
 
-            glDeleteProgram(m_program);
-        }
+        if(load_shader(FragmentShaderID, fragment_file_path))
+            std::cout << "error loading frag shader" << std::endl;
 
-        // Implicit cast to GLuint.
-        inline operator GLuint() {
-            return m_program;
-        }
+        // Check shaders
+        if(!shader_is_okay(VertexShaderID)) std::cout << "oof. vert shader is not okay." << std::endl;
+        if(!shader_is_okay(FragmentShaderID)) std::cout << "oof. frag shader is not okay." << std::endl;
 
-        // Adds a shader to this program.
-        inline void add_shader(shader _shader) {
-            m_shaders.emplace_back(std::move(_shader));
-        }
+        // Link the program
+        printf("Linking program\n");
+        GLuint program_id = glCreateProgram();
+        glAttachShader(program_id, VertexShaderID);
+        glAttachShader(program_id, FragmentShaderID);
+        glLinkProgram(program_id);
 
-        // Binds this program.
-        inline void bind() {
-            glUseProgram(m_program);
-        }
+        // Check the program
+        if (!program_is_okay(program_id)) std::cout << "oof. program is not okay." << std::endl;
 
-        // Links this shader program.
-        inline bool link() {
-            m_program = glCreateProgram();
+        glDetachShader(program_id, VertexShaderID);
+        glDetachShader(program_id, FragmentShaderID);
 
-            for (dotto::shader& shdr : m_shaders) {
-                if (!shdr.valid()) return false;
+        // delete the shaders
+        glDeleteShader(VertexShaderID);
+        glDeleteShader(FragmentShaderID);
 
-                glAttachShader(m_program, shdr);
-            }
-
-            GLint linked = 0;
-            glLinkProgram(m_program);
-            glGetProgramiv(m_program, GL_LINK_STATUS, &linked);
-
-            if (!linked) {
-                GLint max_length = 0;
-                glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &max_length);
-
-                std::vector<GLchar> err(max_length);
-                glGetProgramInfoLog(m_program, max_length, &max_length, &err[0]);
-
-                std::cerr << &err[0] << "\n";
-
-                for (dotto::shader& shdr : m_shaders) {
-                    glDetachShader(m_program, shdr);
-                    glDeleteShader(shdr);
-                    glDeleteProgram(m_program);
-                }
-
-                return false;
-            }
-
-            for (dotto::shader& shdr : m_shaders)
-                glDetachShader(m_program, shdr);
-
-            return true;
-        }
-
-        // Validates this shader program.
-        inline bool valid() {
-            GLint valid = 0;
-            glValidateProgram(m_program);
-            glGetProgramiv(m_program, GL_VALIDATE_STATUS, &valid);
-
-            if (!valid) {
-                GLint max_length = 0;
-                glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &max_length);
-
-                std::vector<GLchar> err(max_length);
-                glGetProgramInfoLog(m_program, max_length, &max_length, &err[0]);
-
-                std::cerr << &err[0] << "\n";
-
-                for (dotto::shader& shdr : m_shaders) {
-                    glDetachShader(m_program, shdr);
-                    glDeleteShader(shdr);
-                    glDeleteProgram(m_program);
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        // Gets the attribute with the given name.
-        inline GLuint get_attrib(const char* attrib) {
-            GLuint res = -1;
-            const auto& itr = m_attribs.find(attrib);
-
-            if (itr == m_attribs.end()) {
-                res = glGetAttribLocation(m_program, attrib);
-                m_attribs.emplace(std::make_pair(attrib, res));
-            } else {
-                res = itr->second;
-            }
-
-            return res;
-        }
-
-        // Gets the uniform with the given name.
-        inline GLuint get_uniform(const char* attrib) {
-            GLuint res = -1;
-            const auto& itr = m_uniforms.find(attrib);
-
-            if (itr == m_uniforms.end()) {
-                res = glGetUniformLocation(m_program, attrib);
-                m_uniforms.emplace(std::make_pair(attrib, res));
-            } else {
-                res = itr->second;
-            }
-
-            return res;
-        }
-
-        /* Sets a uniform of a given type. */
-        template<typename T>
-        inline void set_uniform(const uniform&& type, const GLchar* name, const T* data) {
-            switch (type) {
-            case uniform::fmat4: {
-                GLint loc = get_uniform(name);
-                glUniformMatrix4fv(loc, 1, false, data);
-                break;
-            }
-            }
-        }
-    };
+        return program_id;
+    }
 }

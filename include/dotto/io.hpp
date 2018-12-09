@@ -37,7 +37,7 @@ namespace dotto::io
         {
             std::string full_path(get_working_directory() + path);
 
-            std::cout << "Reading file: " << path << std::endl;
+            std::cout << "Reading file: " << full_path << std::endl;
 
             std::FILE *fp = std::fopen(full_path.c_str(), "rb");
             if (fp)
