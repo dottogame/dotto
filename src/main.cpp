@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     glm::mat4 projection_matrix = glm::perspective(
-        glm::radians(45.0f),
+        glm::radians(90.0f),
         (float) 1280 / (float) 720,
         0.1f,
         100.0f
@@ -85,14 +85,14 @@ int main(int argc, char** argv) {
 
     // Camera matrix
     glm::mat4 view_matrix = glm::lookAt(
-        glm::vec3(1, 1, 1),
-        glm::vec3(0, 0, 0),
-        glm::vec3(0, 1, 0)
+        glm::vec3(0.0f, 0.0f, 1.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f)
     );
 
     // RENDER LOOP
     while(
-        glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+        glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
         glfwWindowShouldClose(window) == 0
     ) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
