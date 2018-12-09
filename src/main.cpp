@@ -1,6 +1,7 @@
 #include "dotto/pch.h"
 #include "dotto/program.hpp"
 #include "dotto/ui/rect.hpp"
+#include "dotto/ui/texture.hpp"
 
 // Prints GL errors
 void gl_debug_callback(
@@ -59,17 +60,17 @@ int main(int argc, char** argv) {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    // create shader
+    // scene objects
+    std::vector<dotto::ui::rect*> meshes;
+
+    // create rect
     GLuint prog_id = dotto::pipeline::create_program(
         "res\\shaders\\default.vert",
         "res\\shaders\\default.frag"
     );
 
-    // scene objects
-    std::vector<dotto::ui::rect*> meshes;
-
-    // create rect
-    dotto::ui::rect testo(prog_id, NULL);
+    dotto::ui::texture tex("res\\graphics\\konata.png");
+    dotto::ui::rect testo(prog_id, &tex);
 
     // add rect
     meshes.push_back(&testo);
@@ -84,7 +85,7 @@ int main(int argc, char** argv) {
 
     // Camera matrix
     glm::mat4 view_matrix = glm::lookAt(
-        glm::vec3(4, 3, 3),
+        glm::vec3(1, 1, 1),
         glm::vec3(0, 0, 0),
         glm::vec3(0, 1, 0)
     );
@@ -96,12 +97,9 @@ int main(int argc, char** argv) {
     ) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // merge view and projection_matrix
-        glm::mat4 vp = projection_matrix * view_matrix;
-
         // render meshes
         for(auto mesh : meshes)
-            mesh->render(vp);
+            mesh->render(projection_matrix, view_matrix);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

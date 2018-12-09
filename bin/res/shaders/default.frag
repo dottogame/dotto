@@ -1,7 +1,12 @@
 #version 330 core
 
-out vec3 color;
+out vec4 color;
 
-void main() {
-    color = vec3(1, 0, 0);
+in vec2 tex_coord;
+
+uniform sampler2D texture;
+
+void main()
+{
+    color = texture(texture, tex_coord);
 }
