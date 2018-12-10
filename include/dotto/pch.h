@@ -6,7 +6,6 @@
 #include <memory>
 #include <string>
 #include <thread>
-#include <unordered_map>
 #include <vector>
 #include <lodepng.h>
 #include <gl/glew.h>
@@ -18,8 +17,6 @@
 #ifdef _WIN32
 #define UNICODE
 #define STRICT
-#define VC_EXTRALEAN
-#define WIN32_LEAN_AND_MEAN
 
 #ifndef __MINGW32__
 #define NOMINMAX
@@ -29,8 +26,6 @@
 
 #undef UNICODE
 #undef STRICT
-#undef VC_EXTRALEAN
-#undef WIN32_LEAN_AND_MEAN
 
 #ifndef __MINGW32__
 #undef NOMINMAX
