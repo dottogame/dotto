@@ -2,13 +2,7 @@
 #include "dotto/program.hpp"
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
-
-#define DR_MP3_IMPLEMENTATION
-#include "drsoft/dr_mp3.h"   // Enables MP3 decoding.
-#define MINI_AL_IMPLEMENTATION
-#include "drsoft/mini_al.h"
-
-#include <stdio.h>
+#include "dotto/audio/audio.hpp"
 
 using namespace std::chrono_literals;
 
@@ -111,37 +105,18 @@ int main(int argc, char** argv) {
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
 
-    mal_decoder decoder;
-    mal_result result = mal_decoder_init_file(
-        dotto::io::file::make_relative("res\\audio\\soraw.mp3").c_str(),
-        NULL,
-        &decoder
+    auto source1 = new dotto::audio::source(
+        dotto::io::file::make_relative("res\\audio\\iriguchi.mp3").c_str()
     );
 
-    if (result != MAL_SUCCESS) {
-        return -2;
-    }
-
-    mal_device_config config = mal_device_config_init_playback(
-        decoder.outputFormat,
-        decoder.outputChannels,
-        decoder.outputSampleRate,
-        on_send_frames_to_device
+    auto source2 = new dotto::audio::source(
+        dotto::io::file::make_relative("res\\audio\\soraw.mp3").c_str()
     );
 
-    mal_device device;
-    if (mal_device_init(NULL, mal_device_type_playback, NULL, &config, &decoder, &device) != MAL_SUCCESS) {
-        std::cout << "Failed to open playback device.\n";
-        mal_decoder_uninit(&decoder);
-        return -3;
-    }
-
-    if (mal_device_start(&device) != MAL_SUCCESS) {
-        std::cout << "Failed to start playback device.\n";
-        mal_device_uninit(&device);
-        mal_decoder_uninit(&decoder);
-        return -4;
-    }
+    dotto::audio::play(source1);
+    dotto::audio::play(source2);
+    
+    dotto::audio::init();
 
     // RENDER LOOP
     float delta_time = 0.0f;
@@ -165,8 +140,10 @@ int main(int argc, char** argv) {
         delta_time = (wait_ns + length_ns).count() / 1000000000.0;
     }
 
-    mal_device_uninit(&device);
-    mal_decoder_uninit(&decoder);
+    delete source1;
+    delete source2;
+
+    dotto::audio::clean();
 
     return EXIT_SUCCESS;
 }
