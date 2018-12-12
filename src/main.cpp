@@ -26,6 +26,8 @@ void gl_debug_callback(
         << severity << ")]: " << message << "\n";
 }
 
+boolean fullscreen = false;
+
 int main(int argc, char** argv) {
     // Initialise GLFW
     if( !glfwInit() )
@@ -41,16 +43,21 @@ int main(int argc, char** argv) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL
 
     // BUILD WINDOW
-    // Open a window and create its OpenGL context
-    GLFWwindow* window; // (In the accompanying source code, this variable is global for simplicity)
-    window = glfwCreateWindow(1280, 720, "dotto", NULL, NULL);
-    if (window == NULL) {
-        fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
-        glfwTerminate();
-        return -1;
-    }
+    // The monitor we will be displaying to.
+    GLFWmonitor* monitor    = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+    GLFWwindow* window;
+    // Go fullscreen or windowed.
+    if (fullscreen)
+        window = glfwCreateWindow(
+            mode->width, mode->height, "dotto", monitor, NULL
+        );
+    else
+        window = glfwCreateWindow(1280, 720, "dotto", NULL, NULL);
 
     glfwMakeContextCurrent(window); // Initialize GLEW
+
+    // INIT GLEW
     glewExperimental = true; // Needed in core profile
     if (glewInit() != GLEW_OK) {
         fprintf(stderr, "Failed to initialize GLEW\n");
