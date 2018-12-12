@@ -50,6 +50,12 @@ namespace dotto::ui
             glGenBuffers(1, &indexbuffer);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), rect_indices, GL_STATIC_DRAW);
+
+            if (tex->width < tex->height)
+                scale.y = (float) tex->height / (float) tex->width;
+
+            else
+                scale.x = (float) tex->width / (float) tex->height;
         }
 
         void render(glm::mat4 projection_matrix, glm::mat4 view_matrix)

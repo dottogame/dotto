@@ -28,7 +28,6 @@ void gl_debug_callback(
 
 int main(int argc, char** argv) {
     // Initialise GLFW
-    glewExperimental = true; // Needed for core profile
     if( !glfwInit() )
     {
         fprintf( stderr, "Failed to initialize GLFW\n" );
