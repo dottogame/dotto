@@ -51,6 +51,7 @@ namespace dotto::ui
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexbuffer);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), rect_indices, GL_STATIC_DRAW);
 
+            // preserve aspect ratio
             if (tex->width < tex->height)
                 scale.y = (float) tex->height / (float) tex->width;
 
