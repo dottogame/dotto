@@ -3,7 +3,7 @@
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
 #include "dotto/audio/audio.hpp"
-#include "dotto/scene/menu.hpp"
+#include "dotto/scene/scene.hpp"
 
 using namespace std::chrono_literals;
 
@@ -82,21 +82,7 @@ int main(int argc, char** argv) {
     );
 
     // create rect
-    dotto::scene::menu::init();
-
-    // add rect
-
-    auto source1 = new dotto::audio::source(
-        dotto::io::file::make_relative("res\\audio\\iriguchi.mp3").c_str()
-    );
-
-    auto source2 = new dotto::audio::source(
-        dotto::io::file::make_relative("res\\audio\\soraw.mp3").c_str()
-    );
-
-    dotto::audio::play(source1);
-    dotto::audio::play(source2);
-
+    dotto::scene::init();
     dotto::audio::init();
 
     // RENDER LOOP
@@ -109,8 +95,8 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // render meshes
-        for (size_t i = 0; i < dotto::scene::menu::meshes.size(); i++)
-            dotto::scene::menu::meshes.at(i)->render(projection_matrix, view_matrix);
+        for (auto mesh : *dotto::scene::live_meshes)
+            mesh->render(projection_matrix, view_matrix);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -121,9 +107,7 @@ int main(int argc, char** argv) {
         delta_time = (wait_ns + length_ns).count() / 1000000000.0;
     }
 
-    delete source1;
-    delete source2;
-
+    dotto::scene::clean();
     dotto::audio::clean();
 
     return EXIT_SUCCESS;

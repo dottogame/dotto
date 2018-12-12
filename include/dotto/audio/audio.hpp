@@ -23,7 +23,7 @@ namespace dotto::audio
         source(const char* path)
         {
             mal_result result = mal_decoder_init_file(
-                path,
+                io::file::make_relative(path).c_str(),
                 NULL,
                 &decoder
             );
@@ -47,7 +47,7 @@ namespace dotto::audio
     {
         sources.push_back(source);
     }
-    
+
     mal_uint32 on_send_frames_to_device(mal_device* pDevice, mal_uint32 frameCount, void* pSamples)
     {
         if (sources.size() == 0) return 0;
