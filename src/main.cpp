@@ -3,21 +3,11 @@
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
 #include "dotto/audio/audio.hpp"
+#include "dotto/scene/menu.hpp"
 
 using namespace std::chrono_literals;
 
 constexpr std::chrono::nanoseconds timestep(16ms);
-
-// This is the function that's used for sending more data to the device for playback.
-mal_uint32 on_send_frames_to_device(mal_device* pDevice, mal_uint32 frameCount, void* pSamples)
-{
-    mal_decoder* pDecoder = (mal_decoder*)pDevice->pUserData;
-    if (pDecoder == NULL) {
-        return 0;
-    }
-
-    return (mal_uint32)mal_decoder_read(pDecoder, frameCount, pSamples);
-}
 
 // Prints GL errors
 void gl_debug_callback(
@@ -55,8 +45,8 @@ int main(int argc, char** argv) {
     // Open a window and create its OpenGL context
     GLFWwindow* window; // (In the accompanying source code, this variable is global for simplicity)
     window = glfwCreateWindow(1280, 720, "dotto", NULL, NULL);
-    if( window == NULL ){
-        fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
+    if (window == NULL) {
+        fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
         glfwTerminate();
         return -1;
     }
@@ -76,20 +66,6 @@ int main(int argc, char** argv) {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
 
-    // scene objects
-    std::vector<dotto::ui::rect*> meshes;
-
-    // create rect
-    GLuint prog_id = dotto::pipeline::create_program(
-        "res\\shaders\\default.vert",
-        "res\\shaders\\default.frag"
-    );
-
-    dotto::ui::texture tex("res\\graphics\\konata.png");
-    dotto::ui::rect testo(prog_id, &tex);
-    // add rect
-    meshes.push_back(&testo);
-
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     glm::mat4 projection_matrix = glm::perspective(
         glm::radians(90.0f),
@@ -105,6 +81,11 @@ int main(int argc, char** argv) {
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
 
+    // create rect
+    dotto::scene::menu::init();
+
+    // add rect
+
     auto source1 = new dotto::audio::source(
         dotto::io::file::make_relative("res\\audio\\iriguchi.mp3").c_str()
     );
@@ -115,7 +96,7 @@ int main(int argc, char** argv) {
 
     dotto::audio::play(source1);
     dotto::audio::play(source2);
-    
+
     dotto::audio::init();
 
     // RENDER LOOP
@@ -128,8 +109,8 @@ int main(int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // render meshes
-        for(auto mesh : meshes)
-            mesh->render(projection_matrix, view_matrix);
+        for (size_t i = 0; i < dotto::scene::menu::meshes.size(); i++)
+            dotto::scene::menu::meshes.at(i)->render(projection_matrix, view_matrix);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
