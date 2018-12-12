@@ -15,18 +15,21 @@ namespace dotto::scene::menu
 
     void init()
     {
-        background = new audio::source("res\\audio\\soraw.mp3");
+        background = new audio::source("res\\audio\\Icecream Queen-02.mp3");
 
         GLuint default_shader = dotto::pipeline::create_program(
             "res\\shaders\\default.vert",
             "res\\shaders\\default.frag"
         );
 
-        ui::texture* tex = new ui::texture("res\\graphics\\konata.png");
-        
-        ui::rect* testo = new ui::rect(default_shader, tex);
+        ui::texture* tex_back = new ui::texture("res\\graphics\\back.png");
+        ui::texture* tex_logo = new ui::texture("res\\graphics\\dotto_logo.png");
 
-        meshes.push_back(testo);
+        ui::rect* rect_back = new ui::rect(default_shader, tex_back);
+        ui::rect* rect_logo = new ui::rect(default_shader, tex_logo);
+
+        meshes.push_back(rect_back);
+        meshes.push_back(rect_logo);        
     }
 
     void set()

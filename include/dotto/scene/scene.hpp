@@ -9,7 +9,6 @@ namespace dotto::scene
 {
     std::vector<ui::rect*>* live_meshes;
 
-
     void init()
     {
         menu::init();

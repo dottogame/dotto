@@ -7,7 +7,7 @@ rm -rf bin/dotto.exe
 clear
 clear
 
-g++ -x c++-header -o include/dotto/pch.h.gch -c src/pch.cpp -I include/
+# g++ -x c++-header -o include/dotto/pch.h.gch -c src/pch.cpp -I include/
 
 echo -e "${RED}NOT Building 32 bit...${NC}"
 # g++ -DGLEW_STATIC src/* -I include/ -Llibs/x86/ -o bin/dotto -Wall -Wextra -pedantic -std=c++17 -m32 -lglfw3 -lglew32 -lws2_32 -lgdi32 -lopengl32
