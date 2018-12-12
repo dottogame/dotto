@@ -2,6 +2,10 @@
 
 #include "pch.h"
 
+#ifdef _WIN32
+#define mkdir(dir, mode) _mkdir(dir)
+#endif
+
 namespace dotto::io
 {
     #ifdef _WIN32
@@ -92,5 +96,12 @@ namespace dotto::io
                 delete in;
             }
         };
+    }
+
+    void init()
+    {
+        mkdir(file::make_relative("/logs/").c_str(), 0755);
+        mkdir(file::make_relative("/skins/").c_str(), 0755);
+        mkdir(file::make_relative("/data/").c_str(), 0755);
     }
 }

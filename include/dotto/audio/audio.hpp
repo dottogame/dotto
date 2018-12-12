@@ -12,6 +12,7 @@
 #include <drsoft/mini_al.h>
 
 #include "../io.hpp"
+#include "../util/console.hpp"
 
 namespace dotto::audio
 {
@@ -30,7 +31,8 @@ namespace dotto::audio
 
             if (result != MAL_SUCCESS)
             {
-                std::cout << "audio source error";
+                console::err("failed to load audio at path:");
+                console::err(std::string(path));
                 return;
             }
         }
@@ -79,6 +81,7 @@ namespace dotto::audio
 
     int init()
     {
+        console::log("initializing audio engine");
         mal_decoder decoder;
         mal_result result = mal_decoder_init_file(
             dotto::io::file::make_relative("res\\audio\\soraw.mp3").c_str(),
@@ -87,6 +90,8 @@ namespace dotto::audio
         );
 
         if (result != MAL_SUCCESS) {
+            console::err("failed to load configurating audio file:");
+            console::err("res\\audio\\soraw.mp3");
             return -2;
         }
 
@@ -98,13 +103,13 @@ namespace dotto::audio
         );
 
         if (mal_device_init(NULL, mal_device_type_playback, NULL, &config, &decoder, &device) != MAL_SUCCESS) {
-            std::cout << "Failed to open playback device.\n";
+            console::err("Failed to open playback device.\n");
             mal_decoder_uninit(&decoder);
             return -3;
         }
 
         if (mal_device_start(&device) != MAL_SUCCESS) {
-            std::cout << "Failed to start playback device.\n";
+            console::err("Failed to start playback device.\n");
             mal_device_uninit(&device);
             mal_decoder_uninit(&decoder);
             return -4;

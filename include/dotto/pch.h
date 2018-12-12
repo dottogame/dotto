@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <sstream>
 #include <lodepng.h>
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
@@ -14,7 +15,14 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#ifdef linux
+#include <sys/stat.h>
+#endif
+
 #ifdef _WIN32
+
+#include <direct.h>
+
 #define UNICODE
 #define STRICT
 
@@ -26,7 +34,6 @@
 
 #undef UNICODE
 #undef STRICT
-
 #ifndef __MINGW32__
 #undef NOMINMAX
 #endif // __MINGW32__

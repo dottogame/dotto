@@ -4,6 +4,7 @@
 #include "dotto/ui/texture.hpp"
 #include "dotto/audio/audio.hpp"
 #include "dotto/scene/scene.hpp"
+#include "dotto/util/console.hpp"
 
 using namespace std::chrono_literals;
 
@@ -29,6 +30,10 @@ void gl_debug_callback(
 boolean fullscreen = false;
 
 int main(int argc, char** argv) {
+    // init io & enable file logging
+    dotto::io::init();
+    dotto::console::enable_file();
+
     // Initialise GLFW
     if( !glfwInit() )
     {
@@ -115,6 +120,7 @@ int main(int argc, char** argv) {
 
     dotto::scene::clean();
     dotto::audio::clean();
+    dotto::console::clean();
 
     return EXIT_SUCCESS;
 }
