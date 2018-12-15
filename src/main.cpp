@@ -29,15 +29,15 @@ void gl_debug_callback(
 
 boolean fullscreen = false;
 
-int main(int argc, char** argv) {
+int main (int argc, char** argv) {
     // init io & enable file logging
     dotto::io::init();
     dotto::console::enable_file();
 
     // Initialise GLFW
-    if( !glfwInit() )
+    if(!glfwInit())
     {
-        fprintf( stderr, "Failed to initialize GLFW\n" );
+        fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
     }
 
@@ -52,13 +52,15 @@ int main(int argc, char** argv) {
     GLFWmonitor* monitor    = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     GLFWwindow* window;
+    D_WIDTH = mode->width;
+    D_HEIGHT = mode->height;
     // Go fullscreen or windowed.
     if (fullscreen)
         window = glfwCreateWindow(
-            mode->width, mode->height, "dotto", monitor, NULL
+            D_WIDTH, D_HEIGHT, "dotto", monitor, NULL
         );
     else
-        window = glfwCreateWindow(1280, 720, "dotto", NULL, NULL);
+        window = glfwCreateWindow(D_WIDTH, D_HEIGHT, "dotto", NULL, NULL);
 
     glfwMakeContextCurrent(window); // Initialize GLEW
 
@@ -79,10 +81,7 @@ int main(int argc, char** argv) {
 
     // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
     glm::mat4 projection_matrix = glm::perspective(
-        glm::radians(90.0f),
-        (float) 1280 / (float) 720,
-        0.1f,
-        100.0f
+        glm::radians(90.0f), (float) 1280 / (float) 720, 0.1f, 100.0f
     );
 
     // Camera matrix
@@ -92,9 +91,10 @@ int main(int argc, char** argv) {
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
 
-    // create rect
+    // INIT COMPONENTS
     dotto::scene::init();
     dotto::audio::init();
+    dotto::input::init();
 
     // RENDER LOOP
     float delta_time = 0.0f;
