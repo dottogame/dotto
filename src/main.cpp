@@ -1,10 +1,12 @@
 #include "dotto/pch.h"
 #include "dotto/program.hpp"
+#include "dotto/input.hpp"
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
 #include "dotto/audio/audio.hpp"
 #include "dotto/scene/scene.hpp"
 #include "dotto/util/console.hpp"
+#include "dotto/globals.hpp"
 
 using namespace std::chrono_literals;
 
@@ -52,15 +54,17 @@ int main (int argc, char** argv) {
     GLFWmonitor* monitor    = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
     GLFWwindow* window;
-    D_WIDTH = mode->width;
-    D_HEIGHT = mode->height;
     // Go fullscreen or windowed.
     if (fullscreen)
+    {
+        dotto::D_WIDTH = mode->width;
+        dotto::D_HEIGHT = mode->height;
         window = glfwCreateWindow(
-            D_WIDTH, D_HEIGHT, "dotto", monitor, NULL
+            dotto::D_WIDTH, dotto::D_HEIGHT, "dotto", monitor, NULL
         );
+    }
     else
-        window = glfwCreateWindow(D_WIDTH, D_HEIGHT, "dotto", NULL, NULL);
+        window = glfwCreateWindow(dotto::D_WIDTH, dotto::D_HEIGHT, "dotto", NULL, NULL);
 
     glfwMakeContextCurrent(window); // Initialize GLEW
 
@@ -94,7 +98,7 @@ int main (int argc, char** argv) {
     // INIT COMPONENTS
     dotto::scene::init();
     dotto::audio::init();
-    dotto::input::init();
+    dotto::input::init(window);
 
     // RENDER LOOP
     float delta_time = 0.0f;

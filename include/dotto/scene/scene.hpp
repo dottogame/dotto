@@ -3,6 +3,7 @@
 #include "../pch.h"
 
 #include "../ui/rect.hpp"
+#include "../input.hpp"
 #include "menu.hpp"
 
 namespace dotto::scene
@@ -13,6 +14,8 @@ namespace dotto::scene
     {
         menu::init();
         menu::set();
+        input::mouse_handle = &(menu::mouse_handle);
+        input::key_handle = &(menu::key_handle);
         live_meshes = &(menu::meshes);
     }
 

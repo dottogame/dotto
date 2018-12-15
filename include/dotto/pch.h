@@ -15,8 +15,6 @@
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "globals.h"
-
 #ifdef linux
 #include <sys/stat.h>
 #endif

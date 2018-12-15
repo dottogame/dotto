@@ -13,6 +13,17 @@ namespace dotto::scene::menu
 
     audio::source* background;
 
+    void mouse_handle(int button, int action, GLFWwindow* window)
+    {
+        std::cout << "clicked\n";
+    }
+
+    void key_handle(int key, int action, GLFWwindow* window)
+    {
+
+    }
+
+
     void init()
     {
         background = new audio::source("res\\audio\\Icecream Queen-02.mp3");
