@@ -47,46 +47,37 @@ namespace dotto::console
         log_level = level;
     }
 
-    void log(std::string msg)
+    void print(std::string label, std::string msg)
     {
-        if (log_level > LL_INFO) return;
-
         // compile message to go out
         std::stringstream out_ss;
-        out_ss << "[" << timestamp_str() << "][INFO] " << msg;
+        out_ss << "[" << timestamp_str() << "]" << label << " " << msg;
         std::string out = out_ss.str();
 
         // send it away!
         if (file) outfile << out << std::endl;
-        std::cout << out << std::endl;
+        std::cout << out << std::endl << std::flush;
+    }
+
+    void log(std::string msg)
+    {
+        if (log_level > LL_INFO) return;
+
+        print("[INFO]", msg);
     }
 
     void warn(std::string msg)
     {
         if (log_level > LL_WARNING) return;
 
-        // compile message to go out
-        std::stringstream out_ss;
-        out_ss << "[" << timestamp_str() << "][WARN] " << msg;
-        std::string out = out_ss.str();
-
-        // send it away!
-        if (file) outfile << out << std::endl;
-        std::cout << out << std::endl;
+        print("[WARN]", msg);
     }
 
     void err(std::string msg)
     {
         if (log_level > LL_ERROR) return;
 
-        // compile message to go out
-        std::stringstream out_ss;
-        out_ss << "[" << timestamp_str() << "][ERROR] " << msg;
-        std::string out = out_ss.str();
-
-        // send it away!
-        if (file) outfile << out << std::endl;
-        std::cout << out << std::endl;
+        print("[ERROR]", msg);
     }
 
     void clean()

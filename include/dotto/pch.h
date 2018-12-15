@@ -8,6 +8,7 @@
 #include <thread>
 #include <vector>
 #include <sstream>
+#include <iomanip>
 #include <lodepng.h>
 #include <gl/glew.h>
 #include <glfw/glfw3.h>
