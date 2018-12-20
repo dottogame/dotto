@@ -4,9 +4,7 @@
 #include "dotto/ui/rect.hpp"
 #include "dotto/ui/texture.hpp"
 #include "dotto/audio/audio.hpp"
-#include "dotto/scene/scene.hpp"
-#include "dotto/scene/menu.hpp"
-#include "dotto/scene/stage.hpp"
+#include "dotto/scene/view.hpp"
 #include "dotto/util/console.hpp"
 #include "dotto/globals.hpp"
 
@@ -98,13 +96,12 @@ int main (int argc, char** argv) {
     );
 
     // INIT COMPONENTS
+    dotto::view::init();
     dotto::audio::init();
     dotto::input::init(window);
 
     // INIT SCENES
-    dotto::scene::menu::init();
-    dotto::scene::stage::init();
-    dotto::scene::menu::present();
+    dotto::view::load();
 
     // RENDER LOOP
     float delta_time = 0.0f;
@@ -116,7 +113,7 @@ int main (int argc, char** argv) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // render meshes
-        for (auto mesh : *dotto::scene::live_meshes)
+        for (auto mesh : *dotto::view::live_meshes)
             mesh->render(projection_matrix, view_matrix);
 
         glfwSwapBuffers(window);
@@ -128,9 +125,7 @@ int main (int argc, char** argv) {
         delta_time = (wait_ns + length_ns).count() / 1000000000.0;
     }
 
-    dotto::scene::menu::clean();
-    dotto::scene::stage::clean();
-
+    dotto::view::clean();
     dotto::audio::clean();
     dotto::console::clean();
 

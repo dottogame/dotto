@@ -5,7 +5,7 @@
 #include "../ui/rect.hpp"
 #include "../audio/audio.hpp"
 
-namespace dotto::view::stage
+namespace dotto::view::launch
 {
     std::vector<ui::rect*> meshes;
 
