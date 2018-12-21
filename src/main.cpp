@@ -75,9 +75,6 @@ int main (int argc, char** argv) {
         return -1;
     }
 
-    // Ensure we can capture the escape key being pressed below
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-
     // BUILD RENDER DATA
     GLuint VertexArrayID;
     glGenVertexArrays(1, &VertexArrayID);
@@ -105,10 +102,8 @@ int main (int argc, char** argv) {
 
     // RENDER LOOP
     float delta_time = 0.0f;
-    while(
-        glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-        glfwWindowShouldClose(window) == 0
-    ) {
+    while (glfwWindowShouldClose(window) == 0 && !dotto::should_exit)
+    {
         auto start = std::chrono::high_resolution_clock::now();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -7,6 +7,7 @@
 #include "../ui/rect.hpp"
 #include "../audio/audio.hpp"
 #include "../input.hpp"
+#include "../globals.hpp"
 #include "launch.hpp"
 #include "menu.hpp"
 #include "stage.hpp"
@@ -38,14 +39,23 @@ namespace dotto::view
         switch (scene)
         {
             case SCENE_MENU:
-                if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
+                if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+                    should_exit = true;
+
+                else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
+                {
                     live_meshes = &(stage::meshes);
+                    scene = SCENE_STAGE;
+                }
 
                 break;
 
             case SCENE_STAGE:
                 if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+                {
                     live_meshes = &(menu::meshes);
+                    scene = SCENE_MENU;
+                }
 
                 break;
         }
