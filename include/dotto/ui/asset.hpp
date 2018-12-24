@@ -13,6 +13,7 @@ namespace dotto::ui::asset
 
     void init()
     {
+        srand (time(NULL));
         default_shader = dotto::pipeline::create_program(
             "res\\shaders\\default.vert",
             "res\\shaders\\default.frag"
