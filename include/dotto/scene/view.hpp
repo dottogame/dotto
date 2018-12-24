@@ -77,11 +77,42 @@ namespace dotto::view
         // load all static audio
         menu::background = new audio::source("res\\audio\\Icecream Queen-02.mp3");
 
-        // load all assets
+        // load assets
         ui::rect* wallpaper = ui::asset::load("data\\wallpapers\\techpro_miku");
+        ui::rect* logo = ui::asset::load("res\\graphics\\logo");
+        ui::rect* rewind = ui::asset::load("res\\graphics\\rewind");
+        ui::rect* list = ui::asset::load("res\\graphics\\list");
+        ui::rect* play = ui::asset::load("res\\graphics\\play");
+        ui::rect* fast_forward = ui::asset::load("res\\graphics\\fast_forward");
+
+        // adjust assets
+        logo->scale *= 0.1f;
+        logo->position.y = -0.75f;
+
+        rewind->scale *= 0.035f;
+        rewind->position.x = -0.25f;
+        rewind->position.y = -0.55f;
+
+        list->scale *= 0.035f;
+        list->position.x = -0.08f;
+        list->position.y = -0.55f;
+
+        play->scale *= 0.035f;
+        play->position.x = 0.08f;
+        play->position.y = -0.55f;
+
+        fast_forward->scale *= 0.035f;
+        fast_forward->position.x = 0.25f;
+        fast_forward->position.y = -0.55f;
 
         // distribute rect mesh pointers to their scene mesh groups
         menu::meshes.push_back(wallpaper);
+        menu::meshes.push_back(logo);
+
+        menu::meshes.push_back(rewind);
+        menu::meshes.push_back(list);
+        menu::meshes.push_back(play);
+        menu::meshes.push_back(fast_forward);
     }
 
     void clean()
