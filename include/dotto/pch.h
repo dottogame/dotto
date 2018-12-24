@@ -23,6 +23,7 @@
 #ifdef _WIN32
 
 #include <direct.h>
+#include <tronkko/dirent.h>
 
 #define UNICODE
 #define STRICT

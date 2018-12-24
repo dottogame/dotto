@@ -1,8 +1,7 @@
 #include "dotto/pch.h"
 #include "dotto/program.hpp"
 #include "dotto/input.hpp"
-#include "dotto/ui/rect.hpp"
-#include "dotto/ui/texture.hpp"
+#include "dotto/ui/asset.hpp"
 #include "dotto/audio/audio.hpp"
 #include "dotto/scene/view.hpp"
 #include "dotto/util/console.hpp"
@@ -94,6 +93,7 @@ int main (int argc, char** argv) {
 
     // INIT COMPONENTS
     dotto::view::init();
+    dotto::ui::asset::init();
     dotto::audio::init();
     dotto::input::init(window);
 

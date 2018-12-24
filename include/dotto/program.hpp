@@ -25,10 +25,15 @@ namespace dotto::pipeline
     bool load_shader(GLuint shader_id, const char* path)
     {
         std::string shader_code;
-        if (!io::file::to_string(shader_code, path)) return true;
+        const char* full_path = io::file::make_relative(path).c_str();
+
+        if (!io::file::to_string(shader_code, full_path)) return true;
+
         char const* src_ptr = shader_code.c_str();
+
         glShaderSource(shader_id, 1, &src_ptr, NULL);
         glCompileShader(shader_id);
+
         return false;
     }
 

@@ -37,6 +37,15 @@ namespace dotto::io
 
     namespace file
     {
+        bool exists(const char* path)
+        {
+            FILE * pFile;
+            pFile = fopen (path, "r");
+            bool exist = (pFile != NULL);
+            fclose (pFile);
+            return exist;
+        }
+
         std::string make_relative(const char* path)
         {
             return get_working_directory() + path;
@@ -44,11 +53,9 @@ namespace dotto::io
 
         bool to_string(std::string& target, const char* path)
         {
-            std::string full_path(get_working_directory() + path);
+            std::cout << "Reading file: " << path << std::endl;
 
-            std::cout << "Reading file: " << full_path << std::endl;
-
-            std::FILE *fp = std::fopen(full_path.c_str(), "rb");
+            std::FILE *fp = std::fopen(path, "rb");
             if (fp)
             {
                 std::fseek(fp, 0, SEEK_END);
@@ -103,5 +110,6 @@ namespace dotto::io
         mkdir(file::make_relative("/logs/").c_str(), 0755);
         mkdir(file::make_relative("/skins/").c_str(), 0755);
         mkdir(file::make_relative("/data/").c_str(), 0755);
+        mkdir(file::make_relative("/data/wallpapers/").c_str(), 0755);
     }
 }

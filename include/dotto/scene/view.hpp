@@ -8,6 +8,7 @@
 #include "../audio/audio.hpp"
 #include "../input.hpp"
 #include "../globals.hpp"
+#include "../ui/asset.hpp"
 #include "launch.hpp"
 #include "menu.hpp"
 #include "stage.hpp"
@@ -76,23 +77,11 @@ namespace dotto::view
         // load all static audio
         menu::background = new audio::source("res\\audio\\Icecream Queen-02.mp3");
 
-        // load all shaders
-        GLuint default_shader = dotto::pipeline::create_program(
-            "res\\shaders\\default.vert",
-            "res\\shaders\\default.frag"
-        );
-
-        // load all graphics
-        ui::texture* tex_back = new ui::texture("res\\graphics\\back.png");
-        ui::texture* tex_logo = new ui::texture("res\\graphics\\dotto_logo.png");
-
-        // construct all rectangles
-        ui::rect* rect_back = new ui::rect(default_shader, tex_back);
-        ui::rect* rect_logo = new ui::rect(default_shader, tex_logo);
+        // load all assets
+        ui::rect* wallpaper = ui::asset::load("data\\wallpapers\\techpro_miku");
 
         // distribute rect mesh pointers to their scene mesh groups
-        menu::meshes.push_back(rect_back);
-        menu::meshes.push_back(rect_logo);
+        menu::meshes.push_back(wallpaper);
     }
 
     void clean()
