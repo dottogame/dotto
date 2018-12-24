@@ -6,10 +6,10 @@
 namespace dotto::ui
 {
     static const GLfloat rect_verts[] = {
-       -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-        1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-       -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+       -1.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+        1.0f,  1.0f, 0.0f, 1.0f, 0.0f,
+       -1.0f,  1.0f, 0.0f, 0.0f, 0.0f
     };
 
     static const GLuint rect_indices[] = {0, 1, 2, 0, 2, 3};
