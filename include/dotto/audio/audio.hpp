@@ -21,7 +21,7 @@ namespace dotto::audio
     public:
         mal_decoder decoder;
 
-        source(const char* path)
+        source(std::string path)
         {
             mal_result result = mal_decoder_init_file(
                 io::file::make_relative(path).c_str(),
@@ -32,7 +32,7 @@ namespace dotto::audio
             if (result != MAL_SUCCESS)
             {
                 console::err("failed to load audio at path:");
-                console::err(std::string(path));
+                console::err(path);
                 return;
             }
         }

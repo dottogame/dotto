@@ -37,25 +37,25 @@ namespace dotto::io
 
     namespace file
     {
-        bool exists(const char* path)
+        bool exists(std::string path)
         {
             FILE * pFile;
-            pFile = fopen (path, "r");
+            pFile = fopen(path.c_str(), "r");
             bool exist = (pFile != NULL);
-            fclose (pFile);
+            fclose(pFile);
             return exist;
         }
 
-        std::string make_relative(const char* path)
+        std::string make_relative(std::string path)
         {
             return get_working_directory() + path;
         }
 
-        bool to_string(std::string& target, const char* path)
+        bool to_string(std::string& target, std::string path)
         {
             std::cout << "Reading file: " << path << std::endl;
 
-            std::FILE *fp = std::fopen(path, "rb");
+            std::FILE *fp = std::fopen(path.c_str(), "rb");
             if (fp)
             {
                 std::fseek(fp, 0, SEEK_END);
@@ -103,6 +103,29 @@ namespace dotto::io
                 delete in;
             }
         };
+    }
+
+    std::string strip_extension(std::string path)
+    {
+        size_t index = path.find_last_of(".");
+        if (index != std::string::npos) return path.substr(0, index);
+        else return path;
+    }
+
+    void fetch_contents(std::vector<std::string>& list, std::string path)
+    {
+        DIR *dir;
+        struct dirent *ent;
+        if ((dir = opendir(file::make_relative(path).c_str())) != NULL)
+        {
+            while ((ent = readdir (dir)) != NULL)
+                if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, ".."))
+                    list.push_back(strip_extension(ent->d_name));
+
+            closedir(dir);
+        }
+        else
+            std::cout << "[IO ERROR] Failed to open directory: " << path << std::endl;
     }
 
     void init()

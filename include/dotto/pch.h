@@ -2,6 +2,7 @@
 #define _DOTTO_PRECOMPILED_HEADER
 #include <chrono>
 #include <fstream>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>

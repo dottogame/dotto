@@ -9,6 +9,7 @@
 #include "../input.hpp"
 #include "../globals.hpp"
 #include "../ui/asset.hpp"
+#include "../util/console.hpp"
 #include "launch.hpp"
 #include "menu.hpp"
 #include "stage.hpp"
@@ -78,7 +79,19 @@ namespace dotto::view
         menu::background = new audio::source("res\\audio\\Icecream Queen-02.mp3");
 
         // load assets
-        ui::rect* wallpaper = ui::asset::load("data\\wallpapers\\techpro_miku");
+        std::vector<std::string> wallpapers;
+        io::fetch_contents(wallpapers, "data\\wallpapers");
+
+        console::log("Scanned for wallpapers. Found: ");
+        for (auto item : wallpapers) console::log(item);
+        if (wallpapers.size() == 0) console::warn("NO WALLPAPERS FOUND.");
+        console::log("---- end list ----");
+
+        std::string wallpaper_path = std::string(
+            "data\\wallpapers\\"
+        ) + wallpapers.at(rand() % wallpapers.size());
+
+        ui::rect* wallpaper = ui::asset::load(wallpaper_path);
         ui::rect* logo = ui::asset::load("res\\graphics\\logo");
         ui::rect* rewind = ui::asset::load("res\\graphics\\rewind");
         ui::rect* list = ui::asset::load("res\\graphics\\list");

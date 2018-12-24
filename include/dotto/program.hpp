@@ -22,12 +22,11 @@ namespace dotto::pipeline
     }
 
     // returns if true if error
-    bool load_shader(GLuint shader_id, const char* path)
+    bool load_shader(GLuint shader_id, std::string path)
     {
         std::string shader_code;
-        const char* full_path = io::file::make_relative(path).c_str();
-
-        if (!io::file::to_string(shader_code, full_path)) return true;
+        if (!io::file::to_string(shader_code, io::file::make_relative(path)))
+            return true;
 
         char const* src_ptr = shader_code.c_str();
 
@@ -55,7 +54,7 @@ namespace dotto::pipeline
         return true;
     }
 
-    GLuint create_program(const char* vertex_file_path, const char* fragment_file_path)
+    GLuint create_program(std::string vertex_file_path, std::string fragment_file_path)
     {
         // Create the shaders
         GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);

@@ -22,7 +22,7 @@ namespace dotto::ui
             glBindTexture(GL_TEXTURE_2D, id);
         }
 
-        texture(const char* path)
+        texture(std::string path)
         {
             unsigned error = lodepng::decode(
                 data,
