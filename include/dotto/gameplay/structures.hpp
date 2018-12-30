@@ -16,16 +16,19 @@ namespace dotto::gameplay
 {
     struct element
     {
-        int type;
-        int tween;
-        
-        time_t timestamp;
-        time_t screen_time; // approach rate
+        unsigned type : 2;
+        unsigned ring : 3;
+        unsigned tween : 3;
+        unsigned rotation : 8;
+        unsigned screen_time : 8;
+        unsigned speed : 8;
+        unsigned timestamp : 32;
+    };
 
-        float speed;
+    // should be 2 bytes (a short) (we only use 12)
+    // to get degrees of rotation do rotation * 1.40625
+    struct position {
 
-        glm::fvec2 location;
-        glm::fvec2 target;
     };
 
     struct meta_data
@@ -37,6 +40,7 @@ namespace dotto::gameplay
 
         std::string song;
         std::string edition;
+        std::string source;
 
         std::vector<std::string> producers;
         std::vector<std::string> mappers;

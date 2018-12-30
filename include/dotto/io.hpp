@@ -134,5 +134,6 @@ namespace dotto::io
         mkdir(file::make_relative("/skins/").c_str(), 0755);
         mkdir(file::make_relative("/data/").c_str(), 0755);
         mkdir(file::make_relative("/data/wallpapers/").c_str(), 0755);
+        mkdir(file::make_relative("/data/maps/").c_str(), 0755);
     }
 }

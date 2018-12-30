@@ -93,10 +93,10 @@ namespace dotto::view
 
         ui::rect* wallpaper = ui::asset::load(wallpaper_path);
         ui::rect* logo = ui::asset::load("res\\graphics\\logo");
-        ui::rect* rewind = ui::asset::load("res\\graphics\\rewind");
-        ui::rect* list = ui::asset::load("res\\graphics\\list");
-        ui::rect* play = ui::asset::load("res\\graphics\\play");
-        ui::rect* fast_forward = ui::asset::load("res\\graphics\\fast_forward");
+        ui::rect* rewind = ui::asset::load("res\\graphics\\menu\\rewind");
+        ui::rect* list = ui::asset::load("res\\graphics\\menu\\list");
+        ui::rect* play = ui::asset::load("res\\graphics\\menu\\play");
+        ui::rect* fast_forward = ui::asset::load("res\\graphics\\menu\\fast_forward");
 
         // adjust assets
         logo->scale *= 0.1f;

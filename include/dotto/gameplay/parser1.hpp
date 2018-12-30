@@ -9,13 +9,15 @@ namespace dotto::gameplay
     {
         void read_list(std::vector<std::string>& vec)
         {
-            while ((pos = reader->line.find(",")) != std::string::npos) {
-                vec.push(reader->line.substr(0, pos));
-                reader->line.erase(0, pos + 1);
+            size_t pos, lpos = 0;
+            while ((pos = reader->line.find(",", lpos)) != std::string::npos)
+            {
+                vec.push(reader->line.substr(lpos, pos));
+                lpos = pos + 1; // skip the ","
             }
 
             // push what remains
-            vec.push(reader->line);
+            vec.push(reader->line.substr(lpos, reader->line.length() -1));
         }
     }
 
@@ -29,6 +31,7 @@ namespace dotto::gameplay
         {
             // TODO parse target location
         }
+
         return elem;
     }
 
@@ -47,6 +50,10 @@ namespace dotto::gameplay
         // read map edition title
         if (reader->next()) m_data->edition = reader->line;
         else std::cout << "Failed to read edition title from " << path << std::endl;
+
+        // read map song title
+        if (reader->next()) m_data->source = reader->line;
+        else std::cout << "Failed to read song source from " << path << std::endl;
 
         // read map start offset
         if (reader->next()) m_data->start_offset = std::stoi(reader->line);

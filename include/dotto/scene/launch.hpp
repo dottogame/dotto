@@ -11,6 +11,6 @@ namespace dotto::view::launch
 
     void clean()
     {
-
+        
     }
 }
