@@ -6,7 +6,7 @@ set_target_properties(benchmark_main PROPERTIES FOLDER extern)
 
 macro(add_phosphor_benchmark BENCHNAME)
   add_executable(${BENCHNAME} ${ARGN})
-  target_link_libraries(${BENCHNAME} benchmark benchmark_main)
+  target_link_libraries(${BENCHNAME} benchmark benchmark_main glfw3)
   add_test(NAME ${BENCHNAME} COMMAND ${BENCHNAME})
   set_target_properties(${BENCHNAME} PROPERTIES FOLDER benchmark)
 endmacro()
