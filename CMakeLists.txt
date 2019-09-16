@@ -23,7 +23,7 @@ elseif(CMAKE_BUILD_TYPE MATCHES Release)
   message(STATUS "Compiling with flags: ${CMAKE_CXX_FLAGS_RELEASE}")
 endif()
 
-# add_subdirectory(source)
+add_subdirectory(source)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   enable_testing()
