@@ -1,6 +1,6 @@
 debug=false
 release=false
-options=""
+options="-DBENCHMARK_ENABLE_TESTING=OFF"
 for option in $@
 do
   case "$option" in

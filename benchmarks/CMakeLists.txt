@@ -1,0 +1,12 @@
+include_directories(../include)
+link_directories(../lib)
+add_subdirectory("${PROJECT_SOURCE_DIR}/extern/gbench" "extern/gbench")
+set_target_properties(benchmark      PROPERTIES FOLDER extern)
+set_target_properties(benchmark_main PROPERTIES FOLDER extern)
+
+macro(add_phosphor_benchmark BENCHNAME)
+  add_executable(${BENCHNAME} ${ARGN})
+  target_link_libraries(${BENCHNAME} benchmark benchmark_main)
+  add_test(NAME ${BENCHNAME} COMMAND ${BENCHNAME})
+  set_target_properties(${BENCHNAME} PROPERTIES FOLDER benchmark)
+endmacro()
