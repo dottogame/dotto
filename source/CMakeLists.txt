@@ -1,5 +1,5 @@
-include_directories(../include)
-link_directories(../lib)
+include_directories(../include "$ENV{TEMP_VK_SDK_PATH}/Include")
+link_directories(../lib "$ENV{TEMP_VK_SDK_PATH}/Lib")
 
 set(BUILD_FILES application.cpp entry.cpp)
 
@@ -11,4 +11,4 @@ endif()
 
 add_executable(${EXE_NAME} ${BUILD_FILES})
 set_target_properties(${EXE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ../../bin)
-target_link_libraries(${EXE_NAME} PUBLIC glfw3)
+target_link_libraries(${EXE_NAME} PUBLIC glfw3 vulkan-1)

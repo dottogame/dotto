@@ -23,6 +23,17 @@ elseif(CMAKE_BUILD_TYPE MATCHES Release)
   message(STATUS "Compiling with flags: ${CMAKE_CXX_FLAGS_RELEASE}")
 endif()
 
+message(STATUS "Checking for Vulkan SDK")
+
+if(DEFINED ENV{VK_SDK_PATH})
+  set(ENV{TEMP_VK_SDK_PATH} $ENV{VK_SDK_PATH})
+elseif(DEFINED ENV{VULKAN_SDK})
+  set(ENV{TEMP_VK_SDK_PATH} $ENV{VULKAN_SDK})
+else()
+  message(FATAL_ERROR "Vulkan SDK not found!")
+endif()
+
+message(STATUS "Vulkan SDK path found: $ENV{TEMP_VK_SDK_PATH}")
 add_subdirectory(source)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -30,3 +41,5 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_subdirectory(tests)
   add_subdirectory(benchmarks)
 endif()
+
+unset(ENV{TEMP_VK_SDK_PATH})

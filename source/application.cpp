@@ -23,7 +23,6 @@ Dotto::Application::Application() {
   glfwWindowHint(GLFW_RESIZABLE,  GLFW_FALSE);
   glfwWindowHint(GLFW_VISIBLE,    GLFW_FALSE);
 
-        int32_t      count;
   const GLFWvidmode* mode   = glfwGetVideoMode(glfwGetPrimaryMonitor());
   const uint32_t     width  = mode->width;
   const uint32_t     height = mode->height;
