@@ -1,6 +1,6 @@
 # Dotto
 
-![Logo](./documents/logo.png)
+![Logo](./documents/LogoColored.png)
 
 ## Cloning
 
