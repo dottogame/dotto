@@ -18,7 +18,7 @@ set_target_properties(gtest_main PROPERTIES FOLDER extern)
 set_target_properties(gmock      PROPERTIES FOLDER extern)
 set_target_properties(gmock_main PROPERTIES FOLDER extern)
 
-macro(add_phosphor_test TESTNAME)
+macro(add_dotto_test TESTNAME)
   add_executable(${TESTNAME} ${ARGN})
   target_link_libraries(${TESTNAME} gtest gmock gtest_main glfw3)
   add_test(NAME ${TESTNAME} COMMAND ${TESTNAME})
