@@ -1,7 +1,7 @@
 include_directories(../include)
 link_directories(../lib)
 
-set(BUILD_FILES entry.cpp)
+set(BUILD_FILES application.cpp entry.cpp)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   set(EXE_NAME "D_Dotto${PROJECT_VERSION}")
