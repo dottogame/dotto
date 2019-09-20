@@ -26,7 +26,7 @@ Dotto::Application::Application() {
   const GLFWvidmode* mode   = glfwGetVideoMode(glfwGetPrimaryMonitor());
   const uint32_t     width  = mode->width;
   const uint32_t     height = mode->height;
-  const uint32_t     xpos   = (width -  1280) / 2;
+  const uint32_t     xpos   = (width  - 1280) / 2;
   const uint32_t     ypos   = (height -  720) / 2;
 
   mWindow = glfwCreateWindow(1280, 720, windowName.data(), nullptr, nullptr);

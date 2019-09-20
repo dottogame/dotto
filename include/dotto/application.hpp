@@ -37,11 +37,9 @@ private:
   Application();
 
 public:
-  inline static const std::string_view name          = "Dotto";
-  inline static const std::string_view engineName    = "Dotto";
-  inline static const std::string_view windowName    = "Dotto";
-  inline static const Version          appVersion    = Version{ 1, 0, 0 };
-  inline static const Version          engineVersion = Version{ 1, 0, 0 };
+  inline static const std::string_view name       = "Dotto";
+  inline static const std::string_view windowName = "Dotto";
+  inline static const Version          version    = Version{ 1, 0, 0 };
 
 private:
   inline static Application* mInstance = nullptr;
