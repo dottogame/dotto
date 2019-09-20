@@ -1,5 +1,4 @@
 #include <dotto/application.hpp>
-#include <dotto/graphics/renderer.hpp>
 
 namespace Dotto {
   int main(const std::vector<const char*>&);
@@ -15,7 +14,7 @@ int Dotto::main(const std::vector<const char*>& arguments) {
   Application& app    = *appPtr;
   GLFWwindow*  wnd    = Application::getWindow();
 
-  Graphics::VulkanRenderer renderer;
+  Graphics::VulkanRenderer renderer(wnd);
 
   glfwShowWindow(wnd);
   while (!glfwWindowShouldClose(wnd)) {

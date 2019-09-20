@@ -1,6 +1,6 @@
 debug=false
 release=false
-options="-DBENCHMARK_ENABLE_TESTING=OFF"
+options=""
 for option in $@
 do
   case "$option" in
@@ -16,7 +16,7 @@ do
         mkdir debug
       fi
 
-      options="$options -DCMAKE_BUILD_TYPE=Debug"
+      options="$options -DCMAKE_BUILD_TYPE=Debug -DBENCHMARK_ENABLE_TESTING=OFF"
     ;;
     "-r")
       release=true

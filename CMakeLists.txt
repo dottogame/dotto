@@ -8,7 +8,7 @@ message(STATUS "Option: BUILD_QUIET set to \"${BUILD_QUIET}\"")
 
 set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG=1 -g -march=native -std=c++17 -Wpedantic -Wall -Wextra -Werror=implicit-function-declaration")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_DEBUG=0 -march=native -std=c++17 -pipe -O3 -Wpedantic -Wall -Wextra -Werror=implicit-function-declaration")
-set(QUIET_FLAGS "-Wno-unused-parameter -Wno-unused-variable -Wno-switch")
+set(QUIET_FLAGS "-Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-switch")
 
 if(BUILD_QUIET)
   set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} ${QUIET_FLAGS}")

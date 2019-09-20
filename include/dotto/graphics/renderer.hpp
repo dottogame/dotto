@@ -1,5 +1,6 @@
 #pragma once
 #include <vulkan/vulkan.h>
+#include <glfw/glfw3.h>
 
 namespace Dotto::Graphics {
   struct IRenderer;
@@ -18,19 +19,31 @@ struct Dotto::Graphics::IRenderer {
 struct Dotto::Graphics::VulkanRenderer final: Dotto::Graphics::IRenderer {
  ~VulkanRenderer();
   VulkanRenderer();
-  VulkanRenderer(const VulkanRenderer&);
   VulkanRenderer(VulkanRenderer&&) noexcept;
-  VulkanRenderer& operator=(const VulkanRenderer&);
   VulkanRenderer& operator=(VulkanRenderer&&) noexcept;
+
+  explicit VulkanRenderer(GLFWwindow*);
 
   void initialize() override;
   void terminate()  override;
 
 private:
+  VulkanRenderer(const VulkanRenderer&)            = delete;
+  VulkanRenderer& operator=(const VulkanRenderer&) = delete;
+
   void createInstance();
+  void getWindowSurface();
+  void pickPhysicalDevice();
+  void createLogicalDevice();
 
 private:
-  VkInstance mDriverInstance = nullptr;
+  GLFWwindow*      mWindow         = nullptr;
+  VkInstance       mDriverInstance = nullptr;
+  VkSurfaceKHR     mWindowSurface  = nullptr;
+  VkPhysicalDevice mPhysicalDevice = nullptr;
+  VkDevice         mLogicalDevice  = nullptr;
+  VkQueue          mGraphicsQueue  = nullptr;
+  VkQueue          mPresentQueue   = nullptr;
 
 #if _DEBUG
   VkDebugUtilsMessengerEXT            mDebugMessenger               = nullptr;

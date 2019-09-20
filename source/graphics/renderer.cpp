@@ -1,8 +1,21 @@
 #include <array>
+#include <cassert>
 #include <cstring>
 #include <iostream>
+#include <optional>
+#include <set>
 #include <dotto/application.hpp>
-#include <dotto/graphics/renderer.hpp>
+
+struct QueueFamilyIndices {
+  std::optional<uint32_t> graphicsFamily;
+  std::optional<uint32_t> computeFamily;
+  std::optional<uint32_t> transferFamily;
+  std::optional<uint32_t> sparseBindingFamily;
+  std::optional<uint32_t> protectedFamily;
+
+  // Modify this in the instance we need one or more of the other family types.
+  bool isComplete() { return graphicsFamily.has_value(); }
+};
 
 static const std::array<const char*, 1> validationLayers = { "VK_LAYER_KHRONOS_validation" };
 static const std::array<const char*, 1> deviceExtensions = { "VK_KHR_swapchain"            };
@@ -40,36 +53,67 @@ static bool hasValidationLayerSupport() {
   return false;
 }
 
+// TODO: alter to account for other types of families.
+static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surfaceToSupport) {
+  auto indices     = QueueFamilyIndices{};
+  auto familyCount = 0u;
+  vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, nullptr);
+
+  auto  size          = sizeof(VkQueueFamilyProperties) * familyCount;
+  auto* queueFamilies = reinterpret_cast<VkQueueFamilyProperties*>(alloca(size));
+  vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, queueFamilies);
+
+  VkBool32 presentSupport = VK_FALSE;
+  for (size_t index = 0; index < familyCount; index++) {
+    const auto& family          = queueFamilies[index];
+    const bool  hasManyQueues   = (0 < family.queueCount);
+    const bool  isGraphicsQueue = (family.queueFlags & VK_QUEUE_GRAPHICS_BIT);
+    vkGetPhysicalDeviceSurfaceSupportKHR(device, index, surfaceToSupport, &presentSupport);
+
+    if (hasManyQueues && isGraphicsQueue) {
+      indices.graphicsFamily = index;
+      break;
+    }
+  }
+
+  return indices;
+}
+
+static bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surfaceToSupport) {
+  return findQueueFamilies(device, surfaceToSupport).isComplete();
+}
+
 Dotto::Graphics::VulkanRenderer::~VulkanRenderer() {
   terminate(); }
 Dotto::Graphics::VulkanRenderer::VulkanRenderer() {
   initialize(); }
-Dotto::Graphics::VulkanRenderer::VulkanRenderer(const Dotto::Graphics::VulkanRenderer& other) {
-  initialize(); }
 Dotto::Graphics::VulkanRenderer::VulkanRenderer(Dotto::Graphics::VulkanRenderer&& other) noexcept:
   mDriverInstance(std::move(other.mDriverInstance)) {}
-
-Dotto::Graphics::VulkanRenderer& Dotto::Graphics::VulkanRenderer::operator=(const Dotto::Graphics::VulkanRenderer& other) {
-  if (&other != this) {
-    initialize();
-  }
-
-  return *this;
-}
 
 Dotto::Graphics::VulkanRenderer& Dotto::Graphics::VulkanRenderer::operator=(Dotto::Graphics::VulkanRenderer&& other) noexcept {
   std::swap(mDriverInstance, other.mDriverInstance);
   return *this;
 }
 
+Dotto::Graphics::VulkanRenderer::VulkanRenderer(GLFWwindow* window) {
+  mWindow = window;
+  initialize();
+}
+
 void Dotto::Graphics::VulkanRenderer::initialize() {
   createInstance();
+  getWindowSurface();
+  pickPhysicalDevice();
+  createLogicalDevice();
 }
 
 void Dotto::Graphics::VulkanRenderer::terminate() {
+  vkDestroyDevice(mLogicalDevice, nullptr);
+
 #if _DEBUG
   DestroyDebugUtilsMessengerEXT(mDriverInstance, mDebugMessenger, nullptr);
 #endif /* _DEBUG */
+  vkDestroySurfaceKHR(mDriverInstance, mWindowSurface, nullptr);
   vkDestroyInstance(mDriverInstance, nullptr);
 }
 
@@ -135,8 +179,8 @@ void Dotto::Graphics::VulkanRenderer::createInstance() {
     instanceCreateInfo.ppEnabledLayerNames = validationLayers.data();
     instanceCreateInfo.pNext               = &debugUtilsMessengerCreateInfo;
 #else
-    instanceCreateInfo.enableLayerCount = 0;
-    instanceCreateInfo.pNext            = nullptr;
+    instanceCreateInfo.enabledLayerCount = 0;
+    instanceCreateInfo.pNext             = nullptr;
 #endif /* _DEBUG */
 
   VkResult result = vkCreateInstance(&instanceCreateInfo, nullptr, &mDriverInstance);
@@ -167,4 +211,73 @@ void Dotto::Graphics::VulkanRenderer::createInstance() {
   if (result != VK_SUCCESS)
     if (bool fatal = reportError(result)) std::exit(fatal);
 #endif /* _DEBUG */
+}
+
+void Dotto::Graphics::VulkanRenderer::getWindowSurface() {
+  VkResult result = glfwCreateWindowSurface(mDriverInstance, mWindow, nullptr, &mWindowSurface);
+  if (result != VK_SUCCESS)
+    if (bool fatal = reportError(result)) std::exit(fatal);
+}
+
+void Dotto::Graphics::VulkanRenderer::pickPhysicalDevice() {
+  auto deviceCount = 0u;
+  vkEnumeratePhysicalDevices(mDriverInstance, &deviceCount, nullptr);
+  assert(deviceCount != 0);
+
+  auto  size    = sizeof(VkPhysicalDevice) * deviceCount;
+  auto* devices = reinterpret_cast<VkPhysicalDevice*>(alloca(size));
+  vkEnumeratePhysicalDevices(mDriverInstance, &deviceCount, devices);
+  for (size_t index = 0; index < deviceCount; index++) {
+    const auto device = devices[index];
+    if (isDeviceSuitable(device, mWindowSurface)) {
+      mPhysicalDevice = device;
+      return;
+    }
+  }
+
+  std::cerr << "Failed to find a suitable GPU.\n";
+  std::exit(EXIT_FAILURE);
+}
+
+// TODO: handle other queue families.
+void Dotto::Graphics::VulkanRenderer::createLogicalDevice() {
+  auto indices                = findQueueFamilies(mPhysicalDevice, mWindowSurface);
+  auto queuePriority          = 1.0f;
+  auto graphicsQueueIndex     = indices.graphicsFamily.value();
+  auto deviceQueueCreateInfos = std::array<VkDeviceQueueCreateInfo, 1>();
+
+  VkDeviceQueueCreateInfo
+    deviceQueueCreateInfo                  = {};
+    deviceQueueCreateInfo.sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    deviceQueueCreateInfo.queueFamilyIndex = graphicsQueueIndex;
+    deviceQueueCreateInfo.queueCount       = 1;
+    deviceQueueCreateInfo.pQueuePriorities = &queuePriority;
+
+  deviceQueueCreateInfos[0] = deviceQueueCreateInfo;
+
+  VkPhysicalDeviceFeatures
+    physicalDeviceFeatures = {};
+
+  VkDeviceCreateInfo
+    deviceCreateInfo                         = {};
+    deviceCreateInfo.sType                   = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    deviceCreateInfo.queueCreateInfoCount    = 1;
+    deviceCreateInfo.pQueueCreateInfos       = deviceQueueCreateInfos.data();
+    deviceCreateInfo.pEnabledFeatures        = &physicalDeviceFeatures;
+    deviceCreateInfo.enabledExtensionCount   = 1;
+    deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
+#if _DEBUG
+    deviceCreateInfo.enabledLayerCount   = 1;
+    deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+#else
+    deviceCreateInfo.enabledLayerCount = 0;
+#endif /* _DEBUG */
+
+  VkResult result = vkCreateDevice(mPhysicalDevice, &deviceCreateInfo, nullptr, &mLogicalDevice);
+  if (result != VK_SUCCESS)
+    if (bool fatal = reportError(result)) std::exit(fatal);
+
+  vkGetDeviceQueue(mLogicalDevice, graphicsQueueIndex, 0, &mGraphicsQueue);
+  vkGetDeviceQueue(mLogicalDevice, graphicsQueueIndex, 0, &mPresentQueue);
 }
