@@ -4,7 +4,7 @@
 #include <memory>
 #include <string_view>
 #include <vector>
-#include "graphics/renderer.hpp"
+#include <glfw/glfw3.h>
 
 namespace Dotto {
   struct Application;

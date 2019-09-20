@@ -1,5 +1,4 @@
 #pragma once
-#include <vulkan/vulkan.h>
 #include <glfw/glfw3.h>
 
 namespace Dotto::Graphics {
@@ -35,8 +34,13 @@ private:
   void getWindowSurface();
   void pickPhysicalDevice();
   void createLogicalDevice();
+  void createSwapChain();
+  void createImageViews();
 
 private:
+  std::vector<VkImage>     mSwapChainImages;
+  std::vector<VkImageView> mSwapChainImageViews;
+
   GLFWwindow*      mWindow         = nullptr;
   VkInstance       mDriverInstance = nullptr;
   VkSurfaceKHR     mWindowSurface  = nullptr;
@@ -44,10 +48,14 @@ private:
   VkDevice         mLogicalDevice  = nullptr;
   VkQueue          mGraphicsQueue  = nullptr;
   VkQueue          mPresentQueue   = nullptr;
+  VkSwapchainKHR   mSwapChain      = nullptr;
 
 #if _DEBUG
   VkDebugUtilsMessengerEXT            mDebugMessenger               = nullptr;
   PFN_vkCreateDebugUtilsMessengerEXT  CreateDebugUtilsMessengerEXT  = nullptr;
   PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessengerEXT = nullptr;
 #endif /* _DEBUG */
+
+  VkExtent2D mSwapChainExtent;
+  VkFormat   mSwapChainImageFormat;
 };

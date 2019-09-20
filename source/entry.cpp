@@ -1,4 +1,5 @@
 #include <dotto/application.hpp>
+#include <dotto/graphics/renderer.hpp>
 
 namespace Dotto {
   int main(const std::vector<const char*>&);

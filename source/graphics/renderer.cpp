@@ -5,6 +5,7 @@
 #include <optional>
 #include <set>
 #include <dotto/application.hpp>
+#include <dotto/graphics/renderer.hpp>
 
 struct QueueFamilyIndices {
   std::optional<uint32_t> graphicsFamily;
@@ -53,6 +54,20 @@ static bool hasValidationLayerSupport() {
   return false;
 }
 
+static bool supportsDeviceExtensions(VkPhysicalDevice device) {
+  auto extensionCount = 0u;
+  vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+  auto  size                = sizeof(VkExtensionProperties) * extensionCount;
+  auto* availableExtensions = reinterpret_cast<VkExtensionProperties*>(alloca(size));
+  vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions);
+
+  auto requiredExtensions = std::set<std::string>(deviceExtensions.begin(), deviceExtensions.end());
+  for (size_t index = 0; index < extensionCount; index++)
+    requiredExtensions.erase(availableExtensions[index].extensionName);
+  return requiredExtensions.empty();
+}
+
 // TODO: alter to account for other types of families.
 static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surfaceToSupport) {
   auto indices     = QueueFamilyIndices{};
@@ -70,7 +85,7 @@ static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
     const bool  isGraphicsQueue = (family.queueFlags & VK_QUEUE_GRAPHICS_BIT);
     vkGetPhysicalDeviceSurfaceSupportKHR(device, index, surfaceToSupport, &presentSupport);
 
-    if (hasManyQueues && isGraphicsQueue) {
+    if (hasManyQueues && isGraphicsQueue && presentSupport) {
       indices.graphicsFamily = index;
       break;
     }
@@ -79,8 +94,42 @@ static QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKH
   return indices;
 }
 
+static VkSurfaceFormatKHR chooseSwapSurfaceFormat(const VkSurfaceFormatKHR* formats, size_t count) {
+  for (size_t index = 0; index < count; index++) {
+    const auto format = formats[index];
+    if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+      return format;
+  }
+
+  return formats[0];
+}
+
+static VkPresentModeKHR chooseSwapPresentMode(const VkPresentModeKHR* modes, size_t count) {
+  for (size_t index = 0; index < count; index++) {
+    const auto mode = modes[index];
+    if (mode == VK_PRESENT_MODE_MAILBOX_KHR)
+      return mode;
+  }
+
+  return modes[0];
+}
+
+static VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities, uint32_t width, uint32_t height) {
+  if (capabilities.currentExtent.width != UINT32_MAX)
+    return capabilities.currentExtent;
+
+  const auto minExtent = capabilities.minImageExtent;
+  const auto maxExtent = capabilities.maxImageExtent;
+
+  VkExtent2D
+    actualExtent        = { width, height };
+    actualExtent.width  = std::max(minExtent.width,  std::min(maxExtent.width,  actualExtent.width));
+    actualExtent.height = std::max(minExtent.height, std::min(maxExtent.height, actualExtent.height));
+  return actualExtent;
+}
+
 static bool isDeviceSuitable(VkPhysicalDevice device, VkSurfaceKHR surfaceToSupport) {
-  return findQueueFamilies(device, surfaceToSupport).isComplete();
+  return findQueueFamilies(device, surfaceToSupport).isComplete() && supportsDeviceExtensions(device);
 }
 
 Dotto::Graphics::VulkanRenderer::~VulkanRenderer() {
@@ -105,9 +154,13 @@ void Dotto::Graphics::VulkanRenderer::initialize() {
   getWindowSurface();
   pickPhysicalDevice();
   createLogicalDevice();
+  createSwapChain();
 }
 
 void Dotto::Graphics::VulkanRenderer::terminate() {
+  for (auto imageView: mSwapChainImageViews)
+    vkDestroyImageView(mLogicalDevice, imageView, nullptr);
+  vkDestroySwapchainKHR(mLogicalDevice, mSwapChain, nullptr);
   vkDestroyDevice(mLogicalDevice, nullptr);
 
 #if _DEBUG
@@ -139,10 +192,10 @@ void Dotto::Graphics::VulkanRenderer::createInstance() {
   });
 
 #if _DEBUG
-  extensionCount        = 3;
+  extensionCount        = 3u;
   requiredExtensions[2] = "VK_EXT_debug_utils";
 #else
-  extensionCount = 2;
+  extensionCount = 2u;
 #endif /* _DEBUG */
 
   VkApplicationInfo
@@ -280,4 +333,105 @@ void Dotto::Graphics::VulkanRenderer::createLogicalDevice() {
 
   vkGetDeviceQueue(mLogicalDevice, graphicsQueueIndex, 0, &mGraphicsQueue);
   vkGetDeviceQueue(mLogicalDevice, graphicsQueueIndex, 0, &mPresentQueue);
+}
+
+void Dotto::Graphics::VulkanRenderer::createSwapChain() {
+  VkSurfaceCapabilitiesKHR capabilities;
+  vkGetPhysicalDeviceSurfaceCapabilitiesKHR(mPhysicalDevice, mWindowSurface, &capabilities);
+
+  auto                formatCount = 0u;
+  VkSurfaceFormatKHR* formats     = nullptr;
+  vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, mWindowSurface, &formatCount, nullptr);
+  if (formatCount) {
+    auto size    = sizeof(VkSurfaceFormatKHR) * formatCount;
+         formats = reinterpret_cast<VkSurfaceFormatKHR*>(alloca(size));
+    vkGetPhysicalDeviceSurfaceFormatsKHR(mPhysicalDevice, mWindowSurface, &formatCount, formats);
+  }
+
+  auto              modeCount = 0u;
+  VkPresentModeKHR* modes     = nullptr;
+  vkGetPhysicalDeviceSurfacePresentModesKHR(mPhysicalDevice, mWindowSurface, &modeCount, nullptr);
+  if (modeCount) {
+    auto size  = sizeof(VkPresentModeKHR) * modeCount;
+         modes = reinterpret_cast<VkPresentModeKHR*>(alloca(size));
+    vkGetPhysicalDeviceSurfacePresentModesKHR(mPhysicalDevice, mWindowSurface, &modeCount, modes);
+  }
+
+  int width, height;
+  glfwGetWindowSize(mWindow, &width, &height);
+
+  auto surfaceFormat = chooseSwapSurfaceFormat(formats, formatCount);
+  auto presentMode   = chooseSwapPresentMode(modes, modeCount);
+  auto extent        = chooseSwapExtent(capabilities, static_cast<uint32_t>(width), static_cast<uint32_t>(height));
+  auto imageCount    = capabilities.minImageCount + 1;
+  auto maxImages     = capabilities.maxImageCount;
+  bool hasImages     = (0 < maxImages);
+  if (hasImages && maxImages < imageCount)
+    imageCount = maxImages;
+
+  auto indices            = findQueueFamilies(mPhysicalDevice, mWindowSurface);
+  auto queueFamilyIndices = std::array<uint32_t, 1>({ indices.graphicsFamily.value() });
+
+  VkSwapchainCreateInfoKHR
+    swapChainCreateInfo                  = {};
+    swapChainCreateInfo.sType            = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    swapChainCreateInfo.surface          = mWindowSurface;
+    swapChainCreateInfo.minImageCount    = imageCount;
+    swapChainCreateInfo.imageFormat      = surfaceFormat.format;
+    swapChainCreateInfo.imageColorSpace  = surfaceFormat.colorSpace;
+    swapChainCreateInfo.imageExtent      = extent;
+    swapChainCreateInfo.imageArrayLayers = 1;
+    swapChainCreateInfo.imageUsage       = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    swapChainCreateInfo.preTransform     = capabilities.currentTransform;
+    swapChainCreateInfo.compositeAlpha   = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    swapChainCreateInfo.presentMode      = presentMode;
+    swapChainCreateInfo.clipped          = VK_TRUE;
+    swapChainCreateInfo.oldSwapchain     = VK_NULL_HANDLE;
+    swapChainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+  // TODO: handle this later for the different queue families.
+  // if (graphicsQueueIndex != presentQueueIndex) {
+  //   swapChainCreateInfo.imageSharingMode      = VK_SHARING_MODE_CONCURRENT;
+  //   swapChainCreateInfo.queueFamilyIndexCount = 2;
+  //   swapChainCreateInfo.pQueueFamilyIndices   = queueFamilyIndices.data();
+  // } else
+
+  VkResult result = vkCreateSwapchainKHR(mLogicalDevice, &swapChainCreateInfo, nullptr, &mSwapChain);
+  if (result != VK_SUCCESS)
+    if (bool fatal = reportError(result)) std::exit(fatal);
+
+  vkGetSwapchainImagesKHR(mLogicalDevice, mSwapChain, &imageCount, nullptr);
+  mSwapChainImages.resize(imageCount);
+  vkGetSwapchainImagesKHR(mLogicalDevice, mSwapChain, &imageCount, mSwapChainImages.data());
+
+  mSwapChainImageFormat = surfaceFormat.format;
+  mSwapChainExtent      = extent;
+}
+
+void Dotto::Graphics::VulkanRenderer::createImageViews() {
+  auto size = mSwapChainImages.size();
+
+  mSwapChainImageViews.resize(size);
+  VkResult result;
+  VkImageViewCreateInfo
+    imageViewCreateInfo                                 = {};
+    imageViewCreateInfo.sType                           = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    imageViewCreateInfo.viewType                        = VK_IMAGE_VIEW_TYPE_2D;
+    imageViewCreateInfo.format                          = mSwapChainImageFormat;
+    imageViewCreateInfo.components.r                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.g                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.b                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.components.a                    = VK_COMPONENT_SWIZZLE_IDENTITY;
+    imageViewCreateInfo.subresourceRange.aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT;
+    imageViewCreateInfo.subresourceRange.baseMipLevel   = 0;
+    imageViewCreateInfo.subresourceRange.levelCount     = 1;
+    imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
+    imageViewCreateInfo.subresourceRange.layerCount     = 1;
+
+  for (size_t index = 0; index < size; index++) {
+    imageViewCreateInfo.image = mSwapChainImages.at(index);
+    result = vkCreateImageView(mLogicalDevice, &imageViewCreateInfo, nullptr, &mSwapChainImageViews.at(index));
+    if (result != VK_SUCCESS)
+      if (bool fatal = reportError(result)) std::exit(fatal);
+  }
 }
